@@ -1,3 +1,4 @@
 # ft_irc
 
-## On range mal les dossiers merci !!!
+## Norme a respecter pour le serveur :
+https://www.rfc-editor.org/rfc/rfc1459#section-1.1
