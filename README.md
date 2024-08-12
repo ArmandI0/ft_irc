@@ -1,3 +1,3 @@
 # ft_irc
 
-## On range bien les dossiers merci !!!
+## On range mal les dossiers merci !!!
