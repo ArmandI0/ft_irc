@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/13 21:19:10 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/14 15:05:49 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <sys/epoll.h>
 # include <netdb.h>
 # include <map>
-
+#include <cstdlib>
 
 # include "Client.hpp"
 

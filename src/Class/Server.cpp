@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/13 21:37:59 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/14 15:22:59 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void    Server::listenSocket()
     this->_listen_socket = socket(this->_server_infos.sin_family, SOCK_STREAM, 0);
     if (this->_listen_socket == -1)
     {
-        std::cerr << "ERREUR : il faut throw une execption" << std::endl;
+        std::cerr << "Error TBD"<< std::endl;
         return ;
     }
 
@@ -43,13 +43,13 @@ void    Server::listenSocket()
     status = bind(this->_listen_socket, (struct sockaddr *)&(this->_server_infos), sizeof this->_server_infos);
     if (status != 0)
     {
-        std::cerr << "ERREUR : il faut throw une execption" << std::endl;
+        std::cerr << "Error TBD"<< std::endl;
         return ;
     }
 	status = listen(this->_listen_socket, log);
     if (status != 0)
 	{
-        std::cerr << "ERREUR : il faut throw une execption" << std::endl;
+        std::cerr << "Error TBD"<< std::endl;
         return ;
     } 
 
@@ -62,24 +62,26 @@ void    Server::listenSocket()
     this->_epoll_socket = epoll_create1(0);
     if (this->_epoll_socket == -1)
     {
-        perror("epoll_create1");
+        std::cerr << "Error TBD"<< std::endl;
         exit(EXIT_FAILURE); 
     }
 
     /* AJOUT FD A SURVEILLER TO EPOLL */
     if (epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, this->_listen_socket, &ev) == -1)
     {
-        perror("epoll_ctl: EPOLL_CTL_ADD");
+        std::cerr << "Error TBD"<< std::endl;
         exit(EXIT_FAILURE);
     }
 
+    std::cout << "Waiting connection..." << std::endl;
     struct epoll_event evs[10];
     int ret;
     while(1)
     {
         ret = epoll_wait(this->_epoll_socket, evs, 10, -1);
-        if (ret == -1) {
-            perror("epoll_wait");
+        if (ret == -1)
+        {
+            std::cerr << "Error TBD"<< std::endl;
             exit(EXIT_FAILURE);
         }
         /* gestion des events */
@@ -87,14 +89,37 @@ void    Server::listenSocket()
         {
             if (evs[i].events & EPOLLIN)
             {
-				// Gérer la lecture sur le socket_fd
-				// Par exemple : accepter une nouvelle connexion ou lire des données
-				int client_fd = accept(this->_listen_socket, NULL, NULL);
-				if (client_fd == -1) {
-					perror("accept");
-					continue;
+                /* Si events sur le socket d'entree du serveur : accepter la nouvelle connection */
+                if (evs[i].data.fd == this->_listen_socket)
+                {
+                    int new_client_fd = accept(this->_listen_socket, NULL, NULL);
+                    if (new_client_fd == -1)
+                        std::cerr << "Error TBD" << std::endl;
+                    else
+                    {
+                    	struct epoll_event new_ev;
+                        new_ev.events = EPOLLIN; // Surveiller les événements de lecture sur ce nouveau socket
+                        new_ev.data.fd = new_client_fd;
+				        std::cout << "connexion etablie fd =" << new_client_fd << std::endl;
+                        if(epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, new_client_fd, &new_ev) == -1)
+                        {
+                            std::cerr << "Error TBD"<< std::endl;
+                            exit(EXIT_FAILURE);
+                        }
+                    }
+                }
+                else
+                {
+                    std::cout << "Event sur le fd = " << evs[i].data.fd << std::endl;
+                    char buffer[1024];
+                    ssize_t bytes_read = recv(evs[i].data.fd, buffer, sizeof(buffer) - 1, 0);
+
+                    if (bytes_read > 0)
+					{
+                        buffer[bytes_read] = '\0';
+                        std::cout << "Reçu du fd " << evs[i].data.fd << ": " << buffer << std::endl;
+					}
 				}
-				std::cout << "connexion etablie fd =" << client_fd << std::endl;
         	}
     	}
 	}
