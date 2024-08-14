@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/14 15:05:49 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/14 16:36:50 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ class Server
 		void	execServer(); // lancer epoll
 
 
-
-		void	addClient(); // ajoute a std::map user
+		void	clientAuth();
+		epoll_event	addClient(int new_client_fd); // ajoute a std::map user
 		void	addChannel();      
 };
 

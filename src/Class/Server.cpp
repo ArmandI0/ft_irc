@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/14 15:22:59 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/14 16:37:08 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,10 +97,9 @@ void    Server::listenSocket()
                         std::cerr << "Error TBD" << std::endl;
                     else
                     {
-                    	struct epoll_event new_ev;
-                        new_ev.events = EPOLLIN; // Surveiller les événements de lecture sur ce nouveau socket
-                        new_ev.data.fd = new_client_fd;
 				        std::cout << "connexion etablie fd =" << new_client_fd << std::endl;
+
+						epoll_event new_ev = this->addClient(new_client_fd);
                         if(epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, new_client_fd, &new_ev) == -1)
                         {
                             std::cerr << "Error TBD"<< std::endl;
@@ -125,6 +124,25 @@ void    Server::listenSocket()
 	}
 	std::cout << "CA MARCHE PAS SI TU ES LA " <<std::endl;
 }
+
+void	clientAuth()
+{
+
+
+	
+}
+
+epoll_event	Server::addClient(int new_client_fd)
+{
+	struct epoll_event	new_ev;
+	Client				new_client = Client();		
+
+    new_ev.events = EPOLLIN;
+    new_ev.data.fd = new_client_fd;
+	
+	
+}
+
 
 void	Server::execServer()
 {

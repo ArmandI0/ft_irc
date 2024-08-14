@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/13 18:36:19 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/14 16:26:51 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,19 @@
 
 class Client
 {
-  private :
-	//socket;
+	private :
+		int	_socket;
 
-	
-	//grade;
-	//nickname;
-	//username;
-	//second_choice;
-	//third_choice;
+			
+		//grade;
+		std::string	_nickname;
+		std::string	_username;
+		std::string	_second_choice;
+		std::string	_third_choice;
 
-  public:
+	public:
+		Client();
+		~Client();
   
 };
 
