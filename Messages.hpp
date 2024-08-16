@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 10:37:51 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/14 14:36:10 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/15 19:38:17 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 // Parsing a faire avec 'sender', 'type', 'target', 'message'
 
 class Command

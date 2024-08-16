@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 10:37:53 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/14 17:34:47 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/15 20:22:53 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ void server_msg(void)
 	if(input == "/JOIN")
 	{
 		std::cout << "/JOIN" << std::endl;
+	}
+	if(std::strncmp(input.c_str(), "NICK", 4) == 0)
+	{
+		std::cout << "NICK : " << std::endl;
 	}
 	if(operators == 1)
 	{
