@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/16 10:59:14 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/16 12:58:40 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@ class Client
 		std::string	_second_choice;
 		std::string	_third_choice;
 		Client();
+		
+		//<std::string channel_name, Channel& channel>
+		std::map<std::string, Channel&> _channels_in; 
 	public:
 		Client(int socket);
 		~Client();

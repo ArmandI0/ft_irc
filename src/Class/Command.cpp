@@ -13,14 +13,14 @@
 #include "Command.hpp"
 
 // Parsing a faire avec 'sender', 'type', 'target', 'message'
-int connect = 0;
+/* int connect = 0;
 int operators = 1;
 std::string input;
 std::string PASS = "ircpassword";
 const char* nickname[10];
-int i = 0;
+int i = 0; */
 
-std::vector<std::string> split(const std::string &str, const char delimiter)
+/* std::vector<std::string> split(const std::string &str, const char delimiter)
 {
 	std::vector<std::string> tokens;
 	std::string token;
@@ -133,3 +133,4 @@ int main(void)
 		server_msg(); // User is in the server waiting to join a room/channel
 	}
 }
+ */
