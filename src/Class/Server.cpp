@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/16 12:00:51 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/16 15:28:43 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,19 +110,22 @@ void    Server::listenSocket()
                 else
                 {
                     /* PAS D"AUTH POUR L'INSTANT */
-                    /*if client authentifier */
-
-                    /* else if client non authentifie */
-                    
-                    std::cout << "Event sur le fd = " << evs[i].data.fd << std::endl;
                     char buffer[1024];
                     ssize_t bytes_read = recv(evs[i].data.fd, buffer, sizeof(buffer) - 1, 0);
-
                     if (bytes_read > 0)
 					{
                         buffer[bytes_read] = '\0';
                         std::cout << "Reçu du fd " << evs[i].data.fd << ": " << buffer << std::endl;
 					}
+
+                    if((this->_users[evs[i].data.fd]).getAuth() == false)
+                    {
+                        std::cout << "User = " << evs[i].data.fd << "Non conecte" << std::endl;
+                    }
+                    else
+                    {
+                        
+                    }                    
 				}
         	}
     	}

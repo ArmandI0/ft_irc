@@ -14,7 +14,7 @@ SRCS		=	\
 					main.cpp \
 					Class/Server.cpp \
 					Class/Client.cpp \
-					Class/Command.cpp \
+	#				Class/Command.cpp \
 
 #-UTILS-#
 
@@ -32,7 +32,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 				$(D_OBJS)
 				$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-$(NAME): 		$(OBJS) $(LIBFT_A) $(LIBMLX_A)
+$(NAME): 		$(OBJS)
 				@$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 				
 clean:
