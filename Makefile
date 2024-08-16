@@ -14,6 +14,7 @@ SRCS		=	\
 					main.cpp \
 					Class/Server.cpp \
 					Class/Client.cpp \
+					Class/Command.cpp \
 
 #-UTILS-#
 

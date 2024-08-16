@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Messages.hpp                                       :+:      :+:    :+:   */
+/*   Command.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,39 +10,46 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef Messages_hpp
-# define Messages_hpp
+#ifndef Command_hpp
+# define Command_hpp
 
-#include <iostream>
-#include <string>
-#include <cstring>
-#include <cctype>
-#include <sstream>
-#include <vector>
+# include <iostream>
+# include <string>
+# include <cstring>
+# include <cctype>
+# include <sstream>
+# include <vector>
+# include "Client.hpp"
+# include "Server.hpp"
+
+class Server;
+class Client;
 // Parsing a faire avec 'sender', 'type', 'target', 'message'
 
 class Command
 {
-	std::string command;
-	int	command_type; // KICK, INVITE, TOPIC, MODE with sub modes
-};
 
+    public:
+		Server(std::string message, Client client);
+		~Server();
+	private :	
+		Server();
+		Server(const Server& src);
+		Server& operator=(const Server& src);
 
-class Messages
-{
-	int	msg_to_serv;
-	int msg_to_client;
+		int	msg_to_serv;
+		int msg_to_client;
 
-	std::string sender;
-	int	sender_socket;
-	
-	std::string type;
-	int	command_type;
-	
-	std::string target;
-	int	target_socket;
-	
-	std::string message;
+		std::string sender;
+		int	sender_socket;
+		
+		std::string type;
+		int	command_type;
+		
+		std::string target;
+		int	target_socket;
+		
+		std::string message;
 };
 
 
