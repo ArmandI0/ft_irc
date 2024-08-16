@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/16 15:36:48 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/16 16:30:12 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,7 @@ Client::Client()
     
 }
 
-Client::Client(int socket) : _socket(socket)
-{
-}
-
-Client::Client(int socket): _socket(socket)
+Client::Client(int socket) : _socket(socket), _auth(0), _pass(0), _nick(0)
 {
 }
 

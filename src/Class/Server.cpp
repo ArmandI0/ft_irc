@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/16 15:58:48 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/16 16:18:14 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,4 +178,14 @@ void	Server::createChannel(std::string& channel_name, Client& client_creator)
 {
 	Channel new_channel(channel_name, client_creator, this);
 	_channels.insert(std::pair<std::string, Channel>(channel_name, new_channel));
+}
+
+void	Server::print_list_channels()
+{
+	std::map<std::string,Channel>::iterator it = _channels.begin();
+	std::map<std::string,Channel>::iterator ite = _channels.end();
+	for(; it != ite; it++)
+	{
+		std::cout << it->first << std::endl;
+	}
 }

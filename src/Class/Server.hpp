@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/16 15:58:30 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/16 16:09:11 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class Server
 		epoll_event	addClient(int new_client_fd); // ajoute a std::map user
 		void		createChannel(std::string& channel_name, Client& client_creator);
 		void		delChannel(std::string& channel_name);
-
+		void		print_list_channels();
     private:
 		Server();
 		struct sockaddr_in				_server_infos; //ip_type ; adr server ; port
