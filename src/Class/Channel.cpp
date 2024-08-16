@@ -4,7 +4,7 @@ Channel::Channel()
 {
 }
 
-Channel::Channel(const std::string& topic, Client& creator):_channel_topic(topic), _channel_mode("")
+Channel::Channel(const std::string& topic, Client& creator, Server* serv):_channel_topic(topic), _channel_mode(""), _server(serv)
 {
 	_clients.push_back(&creator);
 	_operators.push_back(&creator);
@@ -23,12 +23,17 @@ void	Channel::addClient(Client& client)
 {
 	(void)client;
 }
+
 void	Channel::delClient(Client& client)
 {
 	(void)client;
+	if (_clients.size() == 0)
+		delChannel();
 }
+
 void	Channel::delChannel()
 {
+	_server->delChannel(this->_channel_topic);
 }
 
 Channel& Channel::operator=(const Channel& src)

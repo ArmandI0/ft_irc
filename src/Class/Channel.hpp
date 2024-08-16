@@ -10,22 +10,22 @@ class Command;
 
 class Channel
 {
-    public:
+	public:
 		Channel();
-		Channel(const std::string& topic, Client& creator);
+		Channel(const std::string& topic, Client& creator, Server* serv);
 		Channel(const Channel& src);
 		Channel& operator=(const Channel& src);
 		~Channel();
-        void    addClient(Client& client);
-        void    delClient(Client& client);
-        void	delChannel();
+		void	addClient(Client& client);
+		void	delClient(Client& client);
+		void	delChannel();
 
 	private :	
-        std::vector<Client*> _clients;
-        std::vector<Client*> _operators;
-        std::string          _channel_topic;
-        std::string          _channel_mode;
+		std::vector<Client*>	_clients;
+		std::vector<Client*>	_operators;
+		std::string				_channel_topic;
+		std::string				_channel_mode;
+		Server*					_server;
 };
-
 
 #endif

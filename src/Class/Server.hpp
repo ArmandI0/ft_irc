@@ -6,7 +6,7 @@
 /*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/16 14:57:58 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/16 15:28:03 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ class Server
 
 		void		clientAuth();
 		epoll_event	addClient(int new_client_fd); // ajoute a std::map user
-		void		addChannel();
-		void		delChannel(std::string channel_name);
+		void		createChannel(std::string& channel_name, Client& client_creator);
+		void		delChannel(std::string& channel_name);
 
     private:
 		Server();
