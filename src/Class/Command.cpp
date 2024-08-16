@@ -12,6 +12,45 @@
 
 #include "Command.hpp"
 
+Command::Command(const std::string& input, const Client& client): _input(input), _client_requester(client)
+{
+}
+
+Command::Command()
+{
+}
+
+Command::Command(const Command& src)
+{
+	*this = src;
+}
+
+Command& Command::operator=(const Command& src)
+{
+	_client_requester = src._client_requester;
+	return(*this);
+}
+
+Command::~Command()
+{
+}
+
+int 	Command::parsing()
+{
+	return (0);
+}
+
+int 	Command::exec()
+{
+	int r_value = parsing();
+	return (r_value);
+}
+
+void	Command::response(std::string str_response, std::vector<Client> clients)
+{
+	(void)str_response;
+	(void)clients;
+}
 // Parsing a faire avec 'sender', 'type', 'target', 'message'
 /* int connect = 0;
 int operators = 1;
