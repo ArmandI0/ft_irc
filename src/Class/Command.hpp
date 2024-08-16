@@ -13,16 +13,12 @@
 #ifndef Command_hpp
 # define Command_hpp
 
-# include <iostream>
-# include <string>
-# include <cstring>
-# include <cctype>
-# include <sstream>
-# include <vector>
 # include "Client.hpp"
 # include "Server.hpp"
+# include "Channel.hpp"
 
 class Server;
+class Channel;
 class Client;
 // Parsing a faire avec 'sender', 'type', 'target', 'message'
 
@@ -30,26 +26,17 @@ class Command
 {
 
     public:
-		Server(std::string message, Client client);
-		~Server();
+		Command(std::string input, Client client);
+		~Command();
+		int 	parsing();
+		int 	exec();
+		void	response(std::string str_response, std::vector<Client> clients);
 	private :	
-		Server();
-		Server(const Server& src);
-		Server& operator=(const Server& src);
-
-		int	msg_to_serv;
-		int msg_to_client;
-
-		std::string sender;
-		int	sender_socket;
-		
-		std::string type;
-		int	command_type;
-		
-		std::string target;
-		int	target_socket;
-		
-		std::string message;
+		Command();
+		Command(const Command& src);
+		Command& operator=(const Command& src);
+		std::string _input;
+		Client 		_client;
 };
 
 
