@@ -13,9 +13,7 @@
 #ifndef Command_hpp
 # define Command_hpp
 
-# include "Client.hpp"
-# include "Server.hpp"
-# include "Channel.hpp"
+# include "../irc.hpp"
 
 class Server;
 class Channel;
@@ -26,17 +24,18 @@ class Command
 {
 
     public:
-		Command(std::string input, Client client);
+		Command();
+		Command(const std::string& input, const Client& client);
+		Command(const Command& src);
+		Command& operator=(const Command& src);
 		~Command();
 		int 	parsing();
 		int 	exec();
 		void	response(std::string str_response, std::vector<Client> clients);
 	private :	
-		Command();
-		Command(const Command& src);
-		Command& operator=(const Command& src);
-		std::string _input;
-		Client 		_client;
+
+		std::string 	_input;
+		Client	 		_client_requester;
 };
 
 
