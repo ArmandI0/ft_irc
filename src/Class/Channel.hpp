@@ -1,9 +1,8 @@
 #ifndef Channel_hpp
 # define Channel_hpp
 
-# include "Client.hpp"
-# include "Server.hpp"
-# include "Command.hpp"
+# include "../irc.hpp"
+
 
 class Server;
 class Client;
@@ -12,16 +11,18 @@ class Command;
 class Channel
 {
     public:
-		Channel(std::string topic, const Client& creator);
+		Channel();
+		Channel(const std::string& topic, Client& creator);
+		Channel(const Channel& src);
+		Channel& operator=(const Channel& src);
 		~Channel();
         void    addClient(Client& client);
         void    delClient(Client& client);
+        void	delChannel();
+
 	private :	
-		Channel();
-		Channel(const Channel& src);
-		Channel& operator=(const Channel& src);
-        std::vector<Client&> _clients;
-        std::vector<Client&> _operators;
+        std::vector<Client*> _clients;
+        std::vector<Client*> _operators;
         std::string          _channel_topic;
         std::string          _channel_mode;
 };
