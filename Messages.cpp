@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 10:37:53 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/16 09:56:52 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/16 10:03:38 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,25 +99,13 @@ void server_msg(void)
 		if(std::strncmp(input_char, "/KICK ", 6) == 0)
 		{
 			std::vector<std::string> name;
-			input_char += 6;
-			while(*input_char && std::isspace(*input_char))
-				input_char++;
-			while(*input_char && std::isalpha(*input_char))
-				input_char++;
-			while(*input_char)
-			{
-				if (!std::isspace(*input_char))
-				{
-					std::cout << "Error in the kick command" << std::endl;
-					return ;
-				}
-				else
-				{
-					input_char++;
-				}
-			}
 			name = split(input, ' ');
-			std::cout << "Kicking : " << name[0] << " " << name[1] << std::endl;
+			if(name.size() > 2)
+			{
+				std::cout << "Error in the kicking command" << std::endl;
+				return ;
+			}
+			std::cout << "Kicking : " << name[1] << std::endl;
 		}
 		if(input == "/INVITE")
 		{
