@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/14 16:36:50 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/16 10:42:13 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <sys/epoll.h>
 # include <netdb.h>
 # include <map>
-#include <cstdlib>
+# include <cstdlib>
 
 # include "Client.hpp"
 
@@ -43,13 +43,13 @@ class Server
 		Server(std::string port, std::string password); // create listen socket
 		~Server();
 
-		void	listenSocket();
-		void	execServer(); // lancer epoll
+		void		listenSocket();
+		void		execServer(); // lancer epoll
 
 
-		void	clientAuth();
+		void		clientAuth();
 		epoll_event	addClient(int new_client_fd); // ajoute a std::map user
-		void	addChannel();      
+		void		addChannel();      
 };
 
 #endif

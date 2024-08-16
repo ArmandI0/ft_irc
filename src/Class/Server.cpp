@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/14 16:37:08 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/16 12:00:51 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,11 @@ void    Server::listenSocket()
                 }
                 else
                 {
+                    /* PAS D"AUTH POUR L'INSTANT */
+                    /*if client authentifier */
+
+                    /* else if client non authentifie */
+                    
                     std::cout << "Event sur le fd = " << evs[i].data.fd << std::endl;
                     char buffer[1024];
                     ssize_t bytes_read = recv(evs[i].data.fd, buffer, sizeof(buffer) - 1, 0);
@@ -135,12 +140,12 @@ void	clientAuth()
 epoll_event	Server::addClient(int new_client_fd)
 {
 	struct epoll_event	new_ev;
-	Client				new_client = Client();		
+	Client				new_client = Client(new_client_fd);		
 
     new_ev.events = EPOLLIN;
     new_ev.data.fd = new_client_fd;
-	
-	
+    this->_users.insert(std::make_pair(new_client_fd, new_client));
+	return (new_ev);
 }
 
 
