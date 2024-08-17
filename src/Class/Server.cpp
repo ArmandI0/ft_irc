@@ -6,7 +6,7 @@
 /*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/16 16:18:14 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/17 22:15:31 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,4 +188,18 @@ void	Server::print_list_channels()
 	{
 		std::cout << it->first << std::endl;
 	}
+}
+
+std::map<std::string,Channel>&		Server::getChannels()
+{
+	return _channels;
+}
+
+Channel*							Server::getChannelByTopic(std::string topic)
+{
+	std::map<std::string,Channel>::iterator it = _channels.find(topic);
+	if (it != _channels.end())	
+		return(&(it->second));
+	else
+		return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/16 16:09:11 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/17 22:15:43 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,18 @@ class Server
 		Server(std::string port, std::string password); // create listen socket
 		~Server();
 
-		void		listenSocket();
-		void		execServer(); // lancer epoll
+		void								listenSocket();
+		void								execServer(); // lancer epoll
 
 
-		void		clientAuth();
-		epoll_event	addClient(int new_client_fd); // ajoute a std::map user
-		void		createChannel(std::string& channel_name, Client& client_creator);
-		void		delChannel(std::string& channel_name);
-		void		print_list_channels();
+		void								clientAuth();
+		epoll_event							addClient(int new_client_fd); // ajoute a std::map user
+		void								createChannel(std::string& channel_name, Client& client_creator);
+		void								delChannel(std::string& channel_name);
+		std::map<std::string,Channel>&		getChannels();
+		Channel*							getChannelByTopic(std::string topic);
+		void								print_list_channels();
+		
     private:
 		Server();
 		struct sockaddr_in				_server_infos; //ip_type ; adr server ; port

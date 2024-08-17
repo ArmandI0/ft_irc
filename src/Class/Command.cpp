@@ -12,7 +12,7 @@
 
 #include "Command.hpp"
 
-Command::Command(const std::string& input, Client& client): _input(input), _client_requester(client)
+Command::Command(const std::string& input, Client& client): _input(input), _client_requester(&client)
 {
 }
 

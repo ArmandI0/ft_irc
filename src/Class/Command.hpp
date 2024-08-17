@@ -35,7 +35,7 @@ class Command
 	private :	
 
 		std::string 	_input;
-		Client	 		_client_requester;
+		Client*	 		_client_requester;
 };
 
 

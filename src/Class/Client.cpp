@@ -6,7 +6,7 @@
 /*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/16 16:30:12 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/17 22:39:12 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,19 @@ bool	Client::getNick() const
     return this->_nick;
 }
 
+std::string Client::getUsername() const
+{
+	return (_username);
+}
+
 
 Client& Client::operator=(const Client& src)
 {
-    _socket = src._socket;
-    _nickname = src._nickname;
-    _second_choice = src._second_choice;
-    _third_choice = src._third_choice;
-    _channels_in = src._channels_in;
+	_socket = src._socket;
+	_nickname = src._nickname;
+	_username = src._username;
+	_second_choice = src._second_choice;
+	_third_choice = src._third_choice;
+	_channels_in = src._channels_in;
 	return (*this);
 }
