@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/18 15:18:42 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/18 15:20:58 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,16 +60,4 @@ bool	Client::getNick() const
 std::string Client::getUsername() const
 {
 	return (_username);
-}
-
-
-Client& Client::operator=(const Client& src)
-{
-	_socket = src._socket;
-	_nickname = src._nickname;
-	_username = src._username;
-	_second_choice = src._second_choice;
-	_third_choice = src._third_choice;
-	_channels_in = src._channels_in;
-	return (*this);
 }

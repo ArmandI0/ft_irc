@@ -187,7 +187,7 @@ void	Channel::setUnsetPassword(bool on_off, std::string password)
 	if (on_off)
 		_password = password;
 	else
-		_password == "";
+		_password = "";
 }
 
 void	Channel::setUnsetUserLimit(bool on_off, size_t user_limit)
