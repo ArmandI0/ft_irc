@@ -58,36 +58,37 @@ int connected = 0;
 int operators = 1;
 std::string input;
 
-// void nickname_command(std::vector<Channel> channels)
-// {
-// 	std::string::iterator it = input.begin();
-// 	if (input.compare(0, 5, "NICK ") == 0)
-// 	{
-// 		if(!nickname.empty())
-// 		{
-// 			std::cout << "You already have a nickname, to change please enter :<Nickname> NICK <New Nickname>" << std::endl;
-// 			return ;
-// 		}
-// 		it += 5;
-// 		while (it != input.end() && std::isspace(*it))
-// 			++it;
-// 		std::string::iterator start = it;
-// 		while (it != input.end() && std::isalpha(*it))
-// 			++it;
-// 		std::string temp_nickname(start, it);
-// 		while (it != input.end())
-// 		{
-// 			if (!std::isspace(*it))
-// 			{
-// 				std::cout << "Error in the nickname command" << std::endl;
-// 				return;
-// 			}
-// 			++it;
-// 		}
-// 		nickname = temp_nickname.c_str();
-// 		std::cout << "Introducing new nick " << nickname << std::endl;
-// 	}
-// }
+void nickname_command(std::vector<Channel> channels)
+{
+	(void)channels;
+	std::string::iterator it = input.begin();
+	if (input.compare(0, 5, "NICK ") == 0)
+	{
+		// if(!nickname.empty())
+		// {
+		// 	std::cout << "You already have a nickname, to change please enter :<Nickname> NICK <New Nickname>" << std::endl;
+		// 	return ;
+		// }
+		it += 5;
+		while (it != input.end() && std::isspace(*it))
+			++it;
+		std::string::iterator start = it;
+		while (it != input.end() && std::isalpha(*it))
+			++it;
+		std::string temp_nickname(start, it);
+		while (it != input.end())
+		{
+			if (!std::isspace(*it))
+			{
+				std::cout << "Error in the nickname command" << std::endl;
+				return;
+			}
+			++it;
+		}
+		// nickname = temp_nickname.c_str();
+		// std::cout << "Introducing new nick " << nickname << std::endl;
+	}
+}
 
 // void nickname_change(std::vector<Channel> channels)
 // {
@@ -262,47 +263,52 @@ void error_message(std::string error)
 	std::cout << "Syntax error : " << error << std::endl;
 }
 
-// void join_command(std::vector<Channel> channels, std::vector<Client *> clients)
-// {
-
-// 	std::string::iterator it = input.begin();
-// 	it += 6;
-// 	if(it == input.end())
-// 		error_message("Nothing after /JOIN");
-// 	it++;
-// 	if(*it != '#')
-// 		error_message("Enter a #channel after /JOIN");
-// 	it++;
-// 	std::string::iterator start = it;
-// 	while (it != input.end() && (std::isalpha(*it) || std::isdigit(*it)))
-// 		++it;
-// 	std::string temp_name(start, it);
-// 	for(const auto &ch : channels)
-// 	{
-// 		if(temp_name == ch._name)
-// 		{
-// 			std::cout << "Channel : " << ch._name << std::endl;
-// 		}
-// 	}
-// }
+void join_command(std::vector<Channel> channels, std::vector<Client> clients)
+{
+	(void)clients;
+	std::string::iterator it = input.begin();
+	it += 6;
+	if(it == input.end())
+		error_message("Nothing after /JOIN");
+	it++;
+	if(*it != '#')
+		error_message("Enter a #channel after /JOIN");
+	it++;
+	std::string::iterator start = it;
+	while (it != input.end() && (std::isalpha(*it) || std::isdigit(*it)))
+		++it;
+	std::string temp_name(start, it);
+	for(auto &ch : channels)
+	{
+		if(temp_name == ch.getName())
+		{
+			std::cout << "Channel : " << ch.getName() << std::endl;
+		}
+	}
+}
 
 void server_msg(std::vector<Channel> channels, std::vector<Client> clients)
 {
 	(void)clients;
+	
+	// Exemple pour faire un parsing avec split cpp
 	std::getline(std::cin, input);
 	std::istringstream iss(input);
-	std::string cmd;
-	iss >> cmd;
-	getline(iss, input);
-	std::cout << cmd << std::endl;
-	std::cout << input.substr(1) << std::endl;
-	
-	// if (input.compare(0, 6, "/JOIN ") == 0)
-	// {
-	// 	join_command(channels, clients);
-	// }
-	// if (input.compare(0, 4, "NICK") == 0)
-	// 	nickname_command(channels);
+	std::string split_string;
+	std::string split_string2;
+	iss >> split_string;
+	iss >> split_string2;
+	std::cout << "Split Word : "<< split_string << std::endl;
+	input.erase(0, split_string.length() + 1);
+	std::cout << "String :" << input << std::endl;
+	std::cout << "Split Word 2:"<< split_string2 << std::endl;
+	input.erase(0, split_string2.length() + 1);
+	std::cout << "String 2:" << input.substr(1) << std::endl;
+
+	if (split_string == "/JOIN")
+		join_command(channels, clients);
+	if (split_string == "NICK")
+		nickname_command(channels);
 	// if(input[0] == ':')
 	// 	nickname_change(channels);
 	if(operators == 1)
@@ -311,15 +317,15 @@ void server_msg(std::vector<Channel> channels, std::vector<Client> clients)
 		// {
 		// 	kick_command(channels);
 		// }
-		if(input == "/INVITE")
+		if(split_string == "/INVITE")
 		{
 			std::cout << "/INVITE" << std::endl;
 		}
-		if(input == "/TOPIC")
+		if(split_string == "/TOPIC")
 		{
 			std::cout << "/TOPIC" << std::endl;
 		}
-		if (input.compare(0, 5, "MODE ") == 0) // Need to be exactly like : MODE #channel +mode target_user / Example :Carol!carol@irc.example.com MODE #chatroom +v Dave
+		if (split_string == "MODE ") // Need to be exactly like : MODE #channel +mode target_user / Example :Carol!carol@irc.example.com MODE #chatroom +v Dave
 		{
 			mode_command(channels);
 			//go in function to see sub div mode
@@ -329,7 +335,7 @@ void server_msg(std::vector<Channel> channels, std::vector<Client> clients)
 	}
 }
 
-int Command_test(void)
+void Command_test(void)
 {
 	Client Client_1;
 	Client Client_2;
@@ -350,8 +356,8 @@ int Command_test(void)
 	Channel_1.addClient(Client_3);
 	Channel_2.addClient(Client_1);
 	
-	Channel_1.setUnsetOpPrivilege(1, "Dorian");
-	Channel_2.setUnsetOpPrivilege(1, "Nico");
+	// Channel_1.setUnsetOpPrivilege(1, "Nico");
+	// Channel_2.setUnsetOpPrivilege(1, "Dorian");
 	
 	Channel_1.setName("Channel 1");
 	Channel_2.setName("Channel 2");
@@ -369,7 +375,6 @@ int Command_test(void)
 	{
 		server_msg(channels, clients); // User is in the server waiting to join a room/channel
 	}
-
 }
  
  // Broken 
