@@ -11,6 +11,7 @@
 # include <map>
 # include <vector>
 # include <unistd.h>
+# include <sstream>
 
 # include "Class/Server.hpp"
 # include "Class/Client.hpp"

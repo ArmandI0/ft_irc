@@ -8,7 +8,7 @@ SRCS		=	\
 OBJS		= $(SRCS:%.cpp=%.o)
 
 CXX 		= c++
-CXXFLAGS 	= -Wall -Wextra -Werror
+CXXFLAGS 	= -Wall -Wextra -Werror -g
 NAME 		= UT_channel
 RM 			= rm -f
 RMR			= rm -rf

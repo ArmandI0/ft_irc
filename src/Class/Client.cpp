@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/18 15:20:58 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/18 15:48:50 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ bool	Client::getPass() const
 {
     return this->_pass;
 }
+
 bool	Client::getNick() const
 {
     return this->_nick;
@@ -60,4 +61,17 @@ bool	Client::getNick() const
 std::string Client::getUsername() const
 {
 	return (_username);
+}
+
+
+// Setters
+
+void	Client::setNick(const std::string &str)
+{
+	this->_nickname = str;
+}
+
+void	Client::setSocket(int socket)
+{
+	this->_socket = socket;
 }

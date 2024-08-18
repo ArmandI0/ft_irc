@@ -23,19 +23,19 @@ class Client;
 class Command
 {
 
-    public:
+	public:
 		Command();
-		Command(const std::string& input, Client& client);
+		Command(const std::string& input, const Client& client);
 		Command(const Command& src);
 		Command& operator=(const Command& src);
 		~Command();
-		int 	parsing();
-		int 	exec();
+		int		parsing();
+		int		exec();
 		void	response(std::string str_response, std::vector<Client> clients);
 	private :	
 
-		std::string 	_input;
-		Client*	 		_client_requester;
+		std::string		_input;
+		/*Client			_client_requester;*/
 };
 
 
