@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/17 22:39:12 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/18 15:18:42 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,15 @@ Client::Client(const Client& src)
 {
 	*this = src;
 }
+Client& Client::operator=(const Client& src)
+{
+    _socket = src._socket;
+    _nickname = src._nickname;
+    _second_choice = src._second_choice;
+    _third_choice = src._third_choice;
+    _channels_in = src._channels_in;
+	return (*this);
+}
 
 Client::~Client()
 {
@@ -34,6 +43,7 @@ int		Client::getSocket() const
 {
     return this->_socket;
 }
+
 bool 	Client::getAuth() const
 {
     return this->_auth;
