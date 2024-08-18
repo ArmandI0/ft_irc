@@ -16,4 +16,6 @@
 # include "Class/Server.hpp"
 # include "Class/Client.hpp"
 # include "Class/Channel.hpp"
+# include "Class/Command.hpp"
+
 #endif

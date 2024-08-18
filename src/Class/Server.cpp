@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/18 18:05:47 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/18 18:44:35 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void    Server::listenSocket()
 
 void	Server::clientAuth(Client & client)
 {
-	
+	(void)client;
 }
 
 epoll_event	Server::addClient(int new_client_fd)
@@ -147,14 +147,18 @@ void	Server::execServer()
 						epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, evs[i].data.fd, NULL);
 						this->delClient(evs[i].data.fd);
 					}
-                    if((this->_users[evs[i].data.fd]).getAuth() == false)
-                    {
-                        std::cout << "User = " << evs[i].data.fd << "Non conecte" << std::endl;
-                    }
-                    else
-                    {
+					std::string a(buffer);
+					Command	new_command(a, &(this->_users[evs[i].data.fd]));
+					new_command.server_msg();
+					
+                    // if((this->_users[evs[i].data.fd]).getAuth() == false)
+                    // {
+                    //     std::cout << "User = " << evs[i].data.fd << "Non conecte" << std::endl;
+                    // }
+                    // else
+                    // {
                         
-                    }                    
+                    // }                    
 				}
 			}
 		}
