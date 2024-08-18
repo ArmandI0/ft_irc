@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/18 13:44:49 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/18 18:05:07 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,10 @@ class Server
 		void								execServer(); // lancer epoll
 
 
-		void								clientAuth();
-		epoll_event							addClient(int new_client_fd); // ajoute a std::map user
-		void								createChannel(std::string& channel_name, Client& client_creator);
+		void								clientAuth(Client & client);
+		epoll_event							addClient(int new_client_fd);
+		void								delClient(int client_fd);
+		void								createChannel(std::string & channel_name, Client & client_creator);
 		void								delChannel(std::string& channel_name);
 		std::map<std::string,Channel>&		getChannels();
 		Channel*							getChannelByTopic(std::string topic);

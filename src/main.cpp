@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/13 21:36:45 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/18 18:45:52 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,4 +21,5 @@ int main(int ac, char** av)
     }
     Server serv = Server(av[1], av[2]);
     serv.listenSocket();
+    serv.execServer();
 }

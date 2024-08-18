@@ -15,6 +15,7 @@ SRCS		=	\
 					Class/Server.cpp \
 					Class/Client.cpp \
 					Class/Channel.cpp \
+					Class/Command.cpp \
 
 #-UTILS-#
 
