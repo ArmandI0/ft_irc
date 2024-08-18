@@ -45,6 +45,7 @@ class Client
 		bool 		getAuth() const;
 		bool		getPass() const;
 		bool		getNick() const;
+		void		setPass();
 		std::string getUsername() const;
 		
 		void		setNick(const std::string &str);

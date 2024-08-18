@@ -15,6 +15,10 @@
 Command::Command(std::string& input, Client* client): _input(input), _client_requester(client)
 {
 }
+Command::Command(std::string& input, Client* client, Server* server) : _input(input), _client_requester(client), _server(server)
+{
+
+}
 
 Command::Command()
 {
@@ -305,6 +309,11 @@ void Command::server_msg()
 	// std::cout << "String 2:" << this->_input.substr(1) << std::endl;
 	// std::cout << "exiting" << std::endl;
 
+	if (split_string == "PASS")
+	{
+		this->passCommand();
+	}
+
 
 	// if (split_string == "/JOIN")
 	// 	join_command();
@@ -336,5 +345,16 @@ void Command::server_msg()
 	// }
 
 }
+
+int	Command::passCommand()
+{
+	if(this->_input == this->_server->getPassword())
+	{
+		this->_client_requester->setPass();
+		return 1;
+	}
+	return 0;
+}
+
 
  

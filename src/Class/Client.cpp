@@ -75,3 +75,8 @@ void	Client::setSocket(int socket)
 {
 	this->_socket = socket;
 }
+
+void	Client::setPass()
+{
+	this->_pass = true;
+}

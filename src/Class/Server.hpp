@@ -36,6 +36,7 @@ class Server
 		std::map<std::string,Channel>&		getChannels();
 		Channel*							getChannelByTopic(std::string topic);
 		int									getClientFdByUsername(std::string username);
+		std::string							getPassword();
 		void								print_list_channels();
 		
     private:

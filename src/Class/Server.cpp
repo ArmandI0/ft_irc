@@ -148,17 +148,17 @@ void	Server::execServer()
 						this->delClient(evs[i].data.fd);
 					}
 					std::string a(buffer);
-					Command	new_command(a, &(this->_users[evs[i].data.fd]));
-					new_command.server_msg();
+					Command	new_command(a, &(this->_users[evs[i].data.fd]), &*this);
 					
-                    // if((this->_users[evs[i].data.fd]).getAuth() == false)
-                    // {
-                    //     std::cout << "User = " << evs[i].data.fd << "Non conecte" << std::endl;
-                    // }
-                    // else
-                    // {
-                        
-                    // }                    
+                    if((this->_users[evs[i].data.fd]).getAuth() == false)
+                    {
+                        std::cout << "User = " << evs[i].data.fd << "Non conecte" << std::endl;
+						new_command.server_msg();
+                    }
+                    else
+                    {
+                        std::cout << "User = " << evs[i].data.fd << "CONNECTE" << std::endl;
+                    }                    
 				}
 			}
 		}
@@ -215,3 +215,9 @@ int		Server::getClientFdByUsername(std::string username)
 	}
 	return (-1);
 }
+
+std::string	Server::getPassword()
+{
+	return this->_password;
+}
+

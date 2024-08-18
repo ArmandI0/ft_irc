@@ -26,6 +26,7 @@ class Command
 	public:
 		Command();
 		Command(std::string& input, Client* client);
+		Command(std::string& input, Client* client, Server* server);
 		Command(const Command& src);
 		Command& operator=(const Command& src);
 		~Command();
@@ -34,11 +35,13 @@ class Command
 		// int		parsing();
 		// int		exec();
 		void		server_msg();
+		int			passCommand();
 
 		// void	response(std::string str_response, std::vector<Client> clients);
 	private :	
 		std::string		_input;
-		Client*			_client_requester;		
+		Client*			_client_requester;
+		Server*			_server;	
 };
 
 
