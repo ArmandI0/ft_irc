@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/18 15:48:50 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/18 18:00:41 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,9 @@ void	Client::setNick(const std::string &str)
 void	Client::setSocket(int socket)
 {
 	this->_socket = socket;
+}
+
+void		Client::setUsername(std::string username)
+{
+	_username = username;
 }
