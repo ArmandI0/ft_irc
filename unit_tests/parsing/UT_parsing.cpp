@@ -3,18 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   UT_parsing.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
+/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/17 23:25:32 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/18 15:43:43 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../../src/irc.hpp"
 
+int Command_test(void);
 
 int main(int ac, char** av)
 {
 	(void)ac;
 	(void)av;
+	Command_test();
 }
