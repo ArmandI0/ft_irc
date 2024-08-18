@@ -3,7 +3,6 @@
 
 # include "../irc.hpp"
 
-
 class Server;
 class Client;
 class Command;
@@ -16,16 +15,35 @@ class Channel
 		Channel(const Channel& src);
 		Channel& operator=(const Channel& src);
 		~Channel();
-		void	addClient(Client& client);
-		void	delClient(Client& client);
-		void	delChannel();
+		void					addClient(Client& client);
+		void					delClient(Client& client);
+		void					delChannel();
+		std::map<int,std::string>	getOperatorsList();
+		std::map<int,std::string>	getClientsList();
+		std::string				getChannelTopic();
+		//std::string				getChannelModes();
+		size_t					getUserLimit();
+		bool					isModeOn(char mode);
+		bool					isOperator(int socket_user);
+		//void					changeChannelMode(std::string& str, std::vector<std::string> args);
+		void 					setUnsetTopicRestr(bool on_off);
+		void 					setUnsetInviteMode(bool on_off);
+		void 					setUnsetPassword(bool on_off, std::string password);
+		void 					setUnsetUserLimit(bool on_off, size_t user_limit);
+		void					setUnsetOpPrivilege(bool on_off, std::string username);
 
 	private :	
-		std::vector<Client*>	_clients;
-		std::vector<Client*>	_operators;
+		void					removeOperatorPrivilege(std::string username);
+		void					addOperatorPrivilege(std::string username);
+		std::map<int,std::string>	_clients;
+		std::map<int,std::string>	_operators;
 		std::string				_channel_topic;
-		std::string				_channel_mode;
+		//std::string				_channel_mode;
 		Server*					_server;
+		std::string				_password;
+		size_t					_user_limit;
+		bool					_invite_mode;
+		bool					_topic_op_mode;
 };
 
 #endif

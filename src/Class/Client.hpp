@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/16 15:51:18 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/17 22:37:43 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,11 @@ class Client
 		Client& operator=(const Client& src);
 		~Client();
 		
-		int		getSocket() const;
-		bool 	getAuth() const;
-		bool	getPass() const;
-		bool	getNick() const;
+		int			getSocket() const;
+		bool 		getAuth() const;
+		bool		getPass() const;
+		bool		getNick() const;
+		std::string getUsername() const;
 
 };
 

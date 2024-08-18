@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/18 15:12:56 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/18 15:18:58 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,4 +188,44 @@ void	Server::createChannel(std::string& channel_name, Client& client_creator)
 {
 	Channel new_channel(channel_name, client_creator, this);
 	_channels.insert(std::pair<std::string, Channel>(channel_name, new_channel));
+}
+
+void	Server::print_list_channels()
+{
+	std::map<std::string,Channel>::iterator it = _channels.begin();
+	std::map<std::string,Channel>::iterator ite = _channels.end();
+	for(; it != ite; it++)
+	{
+		std::cout << it->first << std::endl;
+	}
+}
+
+std::map<std::string,Channel>&		Server::getChannels()
+{
+	return _channels;
+}
+
+Channel*							Server::getChannelByTopic(std::string topic)
+{
+	std::map<std::string,Channel>::iterator it = _channels.find(topic);
+	if (it != _channels.end())	
+		return(&(it->second));
+	else
+		return (NULL);
+}
+
+/*
+return fd if found
+return -1 if not found
+*/
+int		Server::getClientFdByUsername(std::string username)
+{
+	std::map<int,Client>::iterator it = _users.begin();
+	std::map<int,Client>::iterator ite = _users.end();
+	for(; it != ite; it++)
+	{
+		if ((it->second).getUsername() == username)
+			return it->first;
+	}
+	return (-1);
 }

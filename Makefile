@@ -19,7 +19,7 @@ SRCS		=	\
 #-UTILS-#
 
 CXX 			= c++
-CXXFLAGS 		= -Wall -Wextra -Werror
+CXXFLAGS 		= -Wall -Wextra -Werror -g
 NAME 			= ft_irc
 RM 				= rm -f
 RMR				= rm -rf
