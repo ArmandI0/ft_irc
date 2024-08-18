@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/18 15:18:58 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/18 18:05:47 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,33 @@ void    Server::listenSocket()
 	{
 		std::cerr << "Error TBD"<< std::endl;
 		return ;
-	} 
+	}
+}	
 
-	/* CREATION STRUCT POUR EPOLL*/
+void	Server::clientAuth(Client & client)
+{
+	
+}
+
+epoll_event	Server::addClient(int new_client_fd)
+{
+	struct epoll_event	new_ev;
+	Client				new_client = Client(new_client_fd);		
+
+	new_ev.events = EPOLLIN;
+	new_ev.data.fd = new_client_fd;
+	this->_users.insert(std::make_pair(new_client_fd, new_client));
+	return (new_ev);
+}
+
+void	Server::delClient(int client_fd)
+{
+	std::cout << (this->_users[client_fd]).getUsername() << " left the channel." << std::endl;
+	this->_users.erase(client_fd);
+}
+
+void	Server::execServer()
+{
 	struct epoll_event ev;
 	ev.events = EPOLLIN;  // Par exemple, surveiller les événements de lecture (EPOLLIN)
 	ev.data.fd = this->_listen_socket;
@@ -87,10 +111,6 @@ void    Server::listenSocket()
 		/* gestion des events */
 		for (int i = 0; i < ret; i++)
 		{
-			if (evs[i].events & EPOLLOUT)
-			{
-				std::cout << "EPOLLOUT" << evs[i].data.fd << ": " << std::endl;
-			}
 			if (evs[i].events & EPOLLIN)
 			{
 				/* Si events sur le socket d'entree du serveur : accepter la nouvelle connection */
@@ -123,10 +143,9 @@ void    Server::listenSocket()
 					}
 					if (bytes_read == 0)
 					{
-						std::cout << "Le client avec fd " << evs[i].data.fd << " a fermé la connexion." << std::endl;
 						close(evs[i].data.fd);
 						epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, evs[i].data.fd, NULL);
-						/* AJOUTER DELETE USER DANS LE STD::VECTOR !!! */
+						this->delClient(evs[i].data.fd);
 					}
                     if((this->_users[evs[i].data.fd]).getAuth() == false)
                     {
@@ -140,43 +159,6 @@ void    Server::listenSocket()
 			}
 		}
 	}
-	std::cout << "CA MARCHE PAS SI TU ES LA " <<std::endl;
-}
-
-void	clientAuth()
-{
-
-}
-
-epoll_event	Server::addClient(int new_client_fd)
-{
-	struct epoll_event	new_ev;
-	Client				new_client = Client(new_client_fd);		
-
-	new_ev.events = EPOLLIN;
-	new_ev.data.fd = new_client_fd;
-	this->_users.insert(std::make_pair(new_client_fd, new_client));
-	return (new_ev);
-}
-
-
-void	Server::execServer()
-{
-
-	// epoll_wait()
-
-	// struct sockaddr_storage client_addr; 
-	// socklen_t addr_size;
-	// int client_fd;
-
-	// addr_size = sizeof client_addr;
-	// client_fd = accept(this->_listen_socket, (struct sockaddr *)&client_addr, &addr_size);
-	// if (client_fd == -1) 
-	// {
-	//		return ;
-	// }Command
-	// printf("Accepted new connection on client socket fd: %d\n", client_fd);
-
 }
 
 void	Server::delChannel(std::string& channel_name)
