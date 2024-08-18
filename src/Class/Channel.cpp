@@ -210,3 +210,13 @@ size_t	Channel::getUserLimit()
 {
 	return (_user_limit);
 }
+
+void	Channel::setName(std::string name)
+{
+	this->_name = name;
+}
+
+std::string Channel::getName()
+{
+	return this->_name;
+}
