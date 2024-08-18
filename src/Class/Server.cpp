@@ -6,7 +6,7 @@
 /*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/17 22:15:31 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/18 13:48:05 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,4 +202,20 @@ Channel*							Server::getChannelByTopic(std::string topic)
 		return(&(it->second));
 	else
 		return (NULL);
+}
+
+/*
+return fd if found
+return -1 if not found
+*/
+int		Server::getClientFdByUsername(std::string username)
+{
+	std::map<int,Client>::iterator it = _users.begin();
+	std::map<int,Client>::iterator ite = _users.end();
+	for(; it != ite; it++)
+	{
+		if ((it->second).getUsername() == username)
+			return it->first;
+	}
+	return (-1);
 }

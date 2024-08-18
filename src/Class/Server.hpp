@@ -6,7 +6,7 @@
 /*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/17 22:15:43 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/18 13:44:49 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class Server
 		void								delChannel(std::string& channel_name);
 		std::map<std::string,Channel>&		getChannels();
 		Channel*							getChannelByTopic(std::string topic);
+		int									getClientFdByUsername(std::string username);
 		void								print_list_channels();
 		
     private:
