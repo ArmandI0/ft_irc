@@ -263,7 +263,8 @@ void error_message(std::string error)
 {
 	std::cout << "Syntax error : " << error << std::endl;
 }
-
+	// std::cout << "String 2:" << this->_input.substr(1) << std::endl;
+	// std::cout << "exiting" << std::endl;
 void join_command(std::vector<Channel> channels, std::vector<Client> clients)
 {
 	(void)clients;
@@ -293,15 +294,17 @@ void Command::server_msg()
 	std::istringstream iss(this->_input);
 	std::string split_string;
 	std::string split_string2;
+	
 	iss >> split_string;
 	iss >> split_string2;
-	std::cout << "Split Word : "<< split_string << std::endl;
+	// std::cout << "Split Word : "<< split_string << std::endl;
 	this->_input.erase(0, split_string.length() + 1);
-	std::cout << "String :" << this->_input << std::endl;
-	std::cout << "Split Word 2:"<< split_string2 << std::endl;
-	this->_input.erase(0, split_string2.length() + 1);
-	std::cout << "String 2:" << this->_input.substr(1) << std::endl;
-	std::cout << "exiting" << std::endl;
+	// std::cout << "String :" << this->_input << std::endl;
+	// std::cout << "Split Word 2:"<< split_string2 << std::endl;
+	this->_input.erase(0, split_string2.length());
+	// std::cout << "String 2:" << this->_input.substr(1) << std::endl;
+	// std::cout << "exiting" << std::endl;
+
 
 	// if (split_string == "/JOIN")
 	// 	join_command();
