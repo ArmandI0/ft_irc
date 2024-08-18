@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/16 15:58:48 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/18 15:12:56 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,10 @@ void    Server::listenSocket()
 		/* gestion des events */
 		for (int i = 0; i < ret; i++)
 		{
+			if (evs[i].events & EPOLLOUT)
+			{
+				std::cout << "EPOLLOUT" << evs[i].data.fd << ": " << std::endl;
+			}
 			if (evs[i].events & EPOLLIN)
 			{
 				/* Si events sur le socket d'entree du serveur : accepter la nouvelle connection */
@@ -117,7 +121,13 @@ void    Server::listenSocket()
                         buffer[bytes_read] = '\0';
                         std::cout << "Reçu du fd " << evs[i].data.fd << ": " << buffer << std::endl;
 					}
-
+					if (bytes_read == 0)
+					{
+						std::cout << "Le client avec fd " << evs[i].data.fd << " a fermé la connexion." << std::endl;
+						close(evs[i].data.fd);
+						epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, evs[i].data.fd, NULL);
+						/* AJOUTER DELETE USER DANS LE STD::VECTOR !!! */
+					}
                     if((this->_users[evs[i].data.fd]).getAuth() == false)
                     {
                         std::cout << "User = " << evs[i].data.fd << "Non conecte" << std::endl;
@@ -135,7 +145,7 @@ void    Server::listenSocket()
 
 void	clientAuth()
 {
-	
+
 }
 
 epoll_event	Server::addClient(int new_client_fd)
@@ -164,7 +174,7 @@ void	Server::execServer()
 	// if (client_fd == -1) 
 	// {
 	//		return ;
-	// }
+	// }Command
 	// printf("Accepted new connection on client socket fd: %d\n", client_fd);
 
 }
