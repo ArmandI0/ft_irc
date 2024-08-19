@@ -15,6 +15,10 @@
 Command::Command(std::string& input, Client* client): _input(input), _client_requester(client)
 {
 }
+Command::Command(std::string& input, Client* client, Server* server) : _input(input), _client_requester(client), _server(server)
+{
+
+}
 
 Command::Command()
 {
@@ -263,38 +267,19 @@ void error_message(std::string error)
 {
 	std::cout << "Syntax error : " << error << std::endl;
 }
-	// std::cout << "String 2:" << this->_input.substr(1) << std::endl;
-	// std::cout << "exiting" << std::endl;
-void join_command(std::vector<Channel> channels, std::vector<Client> clients)
+	
+	
+void join_command()
 {
-	(void)clients;
-	std::string::iterator it = input.begin();
-	it += 6;
-	if(it == input.end())
-		error_message("Nothing after /JOIN");
-	it++;
-	if(*it != '#')
-		error_message("Enter a #channel after /JOIN");
-	it++;
-	std::string::iterator start = it;
-	while (it != input.end() && (std::isalpha(*it) || std::isdigit(*it)))
-		++it;
-	std::string temp_name(start, it);
-	for(auto &ch : channels)
-	{
-		if(temp_name == ch.getName())
-		{
-			std::cout << "Channel : " << ch.getName() << std::endl;
-		}
-	}
+	std::cout << "You are in the join command" << std::endl;
 }
 
 void Command::server_msg()
 {
+
 	std::istringstream iss(this->_input);
 	std::string split_string;
 	std::string split_string2;
-	
 	iss >> split_string;
 	iss >> split_string2;
 	// std::cout << "Split Word : "<< split_string << std::endl;
@@ -305,9 +290,12 @@ void Command::server_msg()
 	// std::cout << "String 2:" << this->_input.substr(1) << std::endl;
 	// std::cout << "exiting" << std::endl;
 
+	if (split_string == "/QUIT")
+		; // function to exit the irc server and free the socket
 
-	// if (split_string == "/JOIN")
-	// 	join_command();
+	if (split_string == "/JOIN") 
+		exec_join();
+
 	// if (split_string == "NICK")
 	// 	nickname_command(channels);
 	// // if(input[0] == ':')
@@ -318,15 +306,15 @@ void Command::server_msg()
 	// 	// {
 	// 	// 	kick_command(channels);
 	// 	// }
-	// 	if(split_string == "/INVITE")
+	// 	if(command == "/INVITE")
 	// 	{
 	// 		std::cout << "/INVITE" << std::endl;
 	// 	}
-	// 	if(split_string == "/TOPIC")
+	// 	if(command == "/TOPIC")
 	// 	{
 	// 		std::cout << "/TOPIC" << std::endl;
 	// 	}
-	// 	if (split_string == "MODE ") // Need to be exactly like : MODE #channel +mode target_user / Example :Carol!carol@irc.example.com MODE #chatroom +v Dave
+	// 	if (command == "MODE ") // Need to be exactly like : MODE #channel +mode target_user / Example :Carol!carol@irc.example.com MODE #chatroom +v Dave
 	// 	{
 	// 		mode_command(channels);
 	// 		//go in function to see sub div mode
@@ -337,4 +325,51 @@ void Command::server_msg()
 
 }
 
- 
+int	Command::serverAuth()
+{
+	std::istringstream iss(this->_input);
+	std::vector<std::string>	command;
+	std::string content;
+	std::string rest;
+	while (std::getline(iss, content))
+	{
+		command.push_back(content);
+	}
+	this->_input = content;
+	if (command[0] == "PASS" && this->_client_requester->getPass() == false && rest.empty() == true)
+	{
+		this->passCommand();
+	}
+	else if (command[0] == "NICK" && rest.empty() == true)
+	{
+		this->nickCommand();
+	}
+	else
+	{
+		std::cout << "Enter a valid command PASS / NICK" << std::endl;
+	}
+	if (this->_client_requester->getPass() == true && this->_client_requester->getNick().empty() == false)
+		this->_client_requester->setAuth();
+	return(0);
+}
+
+int	Command::passCommand()
+{
+	if(this->_input.compare(this->_server->getPassword()) == 0)
+	{
+		(this->_client_requester)->setPass();
+		return 1;
+	}
+	return 0;
+}
+
+int	Command::nickCommand()
+{
+	if (this->_input.empty())
+	{
+		std::cerr << "Error : Invalid Nickame" << std::endl;
+	}
+	else
+		(this->_client_requester)->setNick(this->_input);
+	return (1);
+}

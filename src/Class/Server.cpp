@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/18 18:44:35 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/19 13:28:40 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ Server::Server(std::string port, std::string password) :  _password(password)
 	this->_server_infos.sin_port = htons(std::atoi(port.c_str()));
 	this->_server_infos.sin_family = AF_INET;
 	this->_server_infos.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+	std::cout << "PASSWORD = " << password << std::endl;
 }
 
 Server::~Server()
@@ -54,10 +55,10 @@ void    Server::listenSocket()
 	}
 }	
 
-void	Server::clientAuth(Client & client)
-{
-	(void)client;
-}
+// void	Server::clientAuth(Client & client, Command & cmd)
+// {
+
+// }
 
 epoll_event	Server::addClient(int new_client_fd)
 {
@@ -133,32 +134,18 @@ void	Server::execServer()
                 }
                 else
                 {
-                    /* PAS D"AUTH POUR L'INSTANT */
-                    char buffer[1024];
-                    ssize_t bytes_read = recv(evs[i].data.fd, buffer, sizeof(buffer) - 1, 0);
-                    if (bytes_read > 0)
-					{
-                        buffer[bytes_read] = '\0';
-                        std::cout << "Reçu du fd " << evs[i].data.fd << ": " << buffer << std::endl;
-					}
-					if (bytes_read == 0)
-					{
-						close(evs[i].data.fd);
-						epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, evs[i].data.fd, NULL);
-						this->delClient(evs[i].data.fd);
-					}
-					std::string a(buffer);
-					Command	new_command(a, &(this->_users[evs[i].data.fd]));
-					new_command.server_msg();
-					
-                    // if((this->_users[evs[i].data.fd]).getAuth() == false)
-                    // {
-                    //     std::cout << "User = " << evs[i].data.fd << "Non conecte" << std::endl;
-                    // }
-                    // else
-                    // {
-                        
-                    // }                    
+					std::string buffer = readSocket(evs[i].data.fd);
+					Command	new_command(buffer, &(this->_users[evs[i].data.fd]), &*this);
+					std::cout << "AUTHENTIFICATION = " << (this->_users[evs[i].data.fd]).getAuth() << std::endl;
+                    if((this->_users[evs[i].data.fd]).getAuth() == false)
+                    {
+                        std::cout << "User = " << evs[i].data.fd << "Non conecte" << std::endl;
+						new_command.serverAuth();
+                    }
+                    else
+                    {
+                        std::cout << "User = " << evs[i].data.fd << "CONNECTE" << std::endl;
+                    }                    
 				}
 			}
 		}
@@ -214,4 +201,27 @@ int		Server::getClientFdByUsername(std::string username)
 			return it->first;
 	}
 	return (-1);
+}
+
+std::string	Server::getPassword()
+{
+	return this->_password;
+}
+
+std::string	Server::readSocket(int fd)
+{
+	char buffer[1024];
+    ssize_t bytes_read = recv(fd, buffer, sizeof(buffer) - 1, 0);
+    if (bytes_read > 0)
+	{
+        buffer[bytes_read] = '\0';
+        std::cout << "Reçu du fd " << fd << ": " << buffer << std::endl;
+	}
+	if (bytes_read == 0)
+	{
+		close(fd);
+		epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, fd, NULL);
+		this->delClient(fd);
+	}
+	return buffer;
 }

@@ -10,6 +10,7 @@
 # include <cstdlib>
 # include <map>
 # include <vector>
+# include <list>
 # include <unistd.h>
 # include <sstream>
 

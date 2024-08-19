@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/18 18:05:07 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/19 13:26:02 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,10 @@ class Server
 
 		void								listenSocket();
 		void								execServer(); // lancer epoll
+		std::string							readSocket(int fd);
 
 
-		void								clientAuth(Client & client);
+		void								clientAuth(Client & client, Command & cmd);
 		epoll_event							addClient(int new_client_fd);
 		void								delClient(int client_fd);
 		void								createChannel(std::string & channel_name, Client & client_creator);
@@ -36,6 +37,7 @@ class Server
 		std::map<std::string,Channel>&		getChannels();
 		Channel*							getChannelByTopic(std::string topic);
 		int									getClientFdByUsername(std::string username);
+		std::string							getPassword();
 		void								print_list_channels();
 		
     private:

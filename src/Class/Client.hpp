@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/18 15:49:32 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/19 09:30:09 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ class Client
 
 		bool	_auth;
 		bool	_pass;
-		bool	_nick;
 	
 		std::string	_nickname;
 		std::string	_username;
@@ -44,7 +43,9 @@ class Client
 		int			getSocket() const;
 		bool 		getAuth() const;
 		bool		getPass() const;
-		bool		getNick() const;
+		std::string	getNick() const;
+		void		setPass();
+		void		setAuth();
 		std::string getUsername() const;
 		
 		void		setNick(const std::string &str);
