@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 09:24:44 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/19 13:26:02 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class Server
 
 		void								listenSocket();
 		void								execServer(); // lancer epoll
+		std::string							readSocket(int fd);
 
 
 		void								clientAuth(Client & client, Command & cmd);

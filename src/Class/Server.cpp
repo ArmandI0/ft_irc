@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 09:29:47 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/19 13:28:40 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,22 +134,8 @@ void	Server::execServer()
                 }
                 else
                 {
-                    /* PAS D"AUTH POUR L'INSTANT */
-                    char buffer[1024];
-                    ssize_t bytes_read = recv(evs[i].data.fd, buffer, sizeof(buffer) - 1, 0);
-                    if (bytes_read > 0)
-					{
-                        buffer[bytes_read] = '\0';
-                        std::cout << "Reçu du fd " << evs[i].data.fd << ": " << buffer << std::endl;
-					}
-					if (bytes_read == 0)
-					{
-						close(evs[i].data.fd);
-						epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, evs[i].data.fd, NULL);
-						this->delClient(evs[i].data.fd);
-					}
-					std::string a(buffer);
-					Command	new_command(a, &(this->_users[evs[i].data.fd]), &*this);
+					std::string buffer = readSocket(evs[i].data.fd);
+					Command	new_command(buffer, &(this->_users[evs[i].data.fd]), &*this);
 					std::cout << "AUTHENTIFICATION = " << (this->_users[evs[i].data.fd]).getAuth() << std::endl;
                     if((this->_users[evs[i].data.fd]).getAuth() == false)
                     {
@@ -222,3 +208,20 @@ std::string	Server::getPassword()
 	return this->_password;
 }
 
+std::string	Server::readSocket(int fd)
+{
+	char buffer[1024];
+    ssize_t bytes_read = recv(fd, buffer, sizeof(buffer) - 1, 0);
+    if (bytes_read > 0)
+	{
+        buffer[bytes_read] = '\0';
+        std::cout << "Reçu du fd " << fd << ": " << buffer << std::endl;
+	}
+	if (bytes_read == 0)
+	{
+		close(fd);
+		epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, fd, NULL);
+		this->delClient(fd);
+	}
+	return buffer;
+}
