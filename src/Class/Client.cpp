@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 09:30:20 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/19 17:28:54 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,13 @@ Client::Client(const Client& src)
 }
 Client& Client::operator=(const Client& src)
 {
-    _socket = src._socket;
-    _nickname = src._nickname;
-    _second_choice = src._second_choice;
-    _third_choice = src._third_choice;
-    _channels_in = src._channels_in;
+    this->_socket = src._socket;
+    this->_auth = src._auth;
+    this->_pass = src._pass;
+    this->_nickname = src._nickname;
+    this->_second_choice = src._second_choice;
+    this->_third_choice = src._third_choice;
+    this->_channels_in = src._channels_in;
 	return (*this);
 }
 

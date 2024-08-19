@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 16:10:03 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/19 17:34:46 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,15 +136,14 @@ void	Server::execServer()
                 {
 					std::string buffer = readSocket(evs[i].data.fd);
 					Command	new_command(buffer, &(this->_users[evs[i].data.fd]), &*this);
-					std::cout << "AUTHENTIFICATION = " << (this->_users[evs[i].data.fd]).getAuth() << "BUFFER = " << buffer << std::endl;
+					std::cout << "BUFFER = " << buffer << std::endl;
                     if((this->_users[evs[i].data.fd]).getAuth() == false)
                     {
-                        std::cout << "User = " << evs[i].data.fd << "Non conecte" << std::endl;
 						new_command.serverAuth();
                     }
                     else
                     {
-                        std::cout << "User = " << evs[i].data.fd << "CONNECTE" << std::endl;
+						new_command.server_msg();
                     }                    
 				}
 			}
