@@ -331,24 +331,19 @@ void Command::server_msg()
 int	Command::serverAuth()
 {
 	std::istringstream iss(this->_input);
-	std::string command;
+	std::vector<std::string>	command;
 	std::string content;
 	std::string rest;
-	// while (std::getline(iss, content))
-	// {
-
-	// }
-
-	iss >> command;
-	iss >> content;
-	iss >> rest;
+	while (std::getline(iss, content))
+	{
+		command.push_back(content);
+	}
 	this->_input = content;
-
-	if (command == "PASS" && this->_client_requester->getPass() == false && rest.empty() == true)
+	if (command[0] == "PASS" && this->_client_requester->getPass() == false && rest.empty() == true)
 	{
 		this->passCommand();
 	}
-	else if (command == "NICK" && rest.empty() == true)
+	else if (command[0] == "NICK" && rest.empty() == true)
 	{
 		this->nickCommand();
 	}
