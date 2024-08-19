@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 13:28:40 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/19 16:10:03 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ void	Server::execServer()
                 {
 					std::string buffer = readSocket(evs[i].data.fd);
 					Command	new_command(buffer, &(this->_users[evs[i].data.fd]), &*this);
-					std::cout << "AUTHENTIFICATION = " << (this->_users[evs[i].data.fd]).getAuth() << std::endl;
+					std::cout << "AUTHENTIFICATION = " << (this->_users[evs[i].data.fd]).getAuth() << "BUFFER = " << buffer << std::endl;
                     if((this->_users[evs[i].data.fd]).getAuth() == false)
                     {
                         std::cout << "User = " << evs[i].data.fd << "Non conecte" << std::endl;
@@ -208,20 +208,28 @@ std::string	Server::getPassword()
 	return this->_password;
 }
 
-std::string	Server::readSocket(int fd)
+std::string Server::readSocket(int fd)
 {
-	char buffer[1024];
+    char buffer[1024];
     ssize_t bytes_read = recv(fd, buffer, sizeof(buffer) - 1, 0);
+    
     if (bytes_read > 0)
-	{
+    {
         buffer[bytes_read] = '\0';
         std::cout << "Reçu du fd " << fd << ": " << buffer << std::endl;
-	}
-	if (bytes_read == 0)
-	{
-		close(fd);
-		epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, fd, NULL);
-		this->delClient(fd);
-	}
-	return buffer;
+        return std::string(buffer);
+    }
+    else if (bytes_read == 0) // Le client a fermé la connexion
+    {
+        std::cout << "Client fd " << fd << " a fermé la connexion." << std::endl;
+        close(fd);
+        epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, fd, NULL);
+        this->delClient(fd);
+        return "";  // Retourner une chaîne vide pour indiquer la fermeture de la connexion
+    }
+    else // bytes_read == -1
+    {
+        std::cerr << "Erreur lors de la réception de données du fd " << fd << std::endl;
+        return "";  // Retourner une chaîne vide ou gérer l'erreur de manière appropriée
+    }
 }

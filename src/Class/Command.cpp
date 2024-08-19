@@ -274,57 +274,6 @@ void join_command()
 	std::cout << "You are in the join command" << std::endl;
 }
 
-void Command::server_msg()
-{
-
-	std::istringstream iss(this->_input);
-	std::string split_string;
-	std::string split_string2;
-	iss >> split_string;
-	iss >> split_string2;
-	// std::cout << "Split Word : "<< split_string << std::endl;
-	this->_input.erase(0, split_string.length() + 1);
-	// std::cout << "String :" << this->_input << std::endl;
-	// std::cout << "Split Word 2:"<< split_string2 << std::endl;
-	this->_input.erase(0, split_string2.length());
-	// std::cout << "String 2:" << this->_input.substr(1) << std::endl;
-	// std::cout << "exiting" << std::endl;
-
-	if (split_string == "/QUIT")
-		; // function to exit the irc server and free the socket
-
-	if (split_string == "/JOIN") 
-		exec_join();
-
-	// if (split_string == "NICK")
-	// 	nickname_command(channels);
-	// // if(input[0] == ':')
-	// // 	nickname_change(channels);
-	// if(operators == 1)
-	// {
-	// 	// if (input.compare(0, 6, "/KICK ") == 0)
-	// 	// {
-	// 	// 	kick_command(channels);
-	// 	// }
-	// 	if(command == "/INVITE")
-	// 	{
-	// 		std::cout << "/INVITE" << std::endl;
-	// 	}
-	// 	if(command == "/TOPIC")
-	// 	{
-	// 		std::cout << "/TOPIC" << std::endl;
-	// 	}
-	// 	if (command == "MODE ") // Need to be exactly like : MODE #channel +mode target_user / Example :Carol!carol@irc.example.com MODE #chatroom +v Dave
-	// 	{
-	// 		mode_command(channels);
-	// 		//go in function to see sub div mode
-	// 	}
-	// 	if(input == "EXIT")
-	// 		exit(0);
-	// }
-
-}
-
 int	Command::serverAuth()
 {
 	std::istringstream iss(this->_input);
