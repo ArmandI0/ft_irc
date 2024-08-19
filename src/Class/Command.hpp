@@ -35,7 +35,11 @@ class Command
 		// int		parsing();
 		// int		exec();
 		void		server_msg();
+
+		/* COMMANDE D'AUTHENTIFICATION */
+		int			serverAuth();
 		int			passCommand();
+		int			nickCommand();
 
 		// void	response(std::string str_response, std::vector<Client> clients);
 	private :	
@@ -44,5 +48,7 @@ class Command
 		Server*			_server;	
 };
 
+bool	onlySpaces(std::string str);
+bool	containSpaces(std::string str);
 
 #endif

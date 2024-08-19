@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/18 18:05:07 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/19 09:24:44 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class Server
 		void								execServer(); // lancer epoll
 
 
-		void								clientAuth(Client & client);
+		void								clientAuth(Client & client, Command & cmd);
 		epoll_event							addClient(int new_client_fd);
 		void								delClient(int client_fd);
 		void								createChannel(std::string & channel_name, Client & client_creator);

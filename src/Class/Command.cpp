@@ -295,29 +295,12 @@ void join_command(std::vector<Channel> channels, std::vector<Client> clients)
 
 void Command::server_msg()
 {
-	std::istringstream iss(this->_input);
-	std::string split_string;
-	std::string split_string2;
-	
-	iss >> split_string;
-	iss >> split_string2;
-	// std::cout << "Split Word : "<< split_string << std::endl;
-	this->_input.erase(0, split_string.length() + 1);
-	// std::cout << "String :" << this->_input << std::endl;
-	// std::cout << "Split Word 2:"<< split_string2 << std::endl;
-	this->_input.erase(0, split_string2.length());
-	// std::cout << "String 2:" << this->_input.substr(1) << std::endl;
-	// std::cout << "exiting" << std::endl;
-
-	if (split_string == "PASS")
-	{
-		this->passCommand();
-	}
 
 
-	// if (split_string == "/JOIN")
+
+	// if (command == "/JOIN")
 	// 	join_command();
-	// if (split_string == "NICK")
+	// if (command == "NICK")
 	// 	nickname_command(channels);
 	// // if(input[0] == ':')
 	// // 	nickname_change(channels);
@@ -327,15 +310,15 @@ void Command::server_msg()
 	// 	// {
 	// 	// 	kick_command(channels);
 	// 	// }
-	// 	if(split_string == "/INVITE")
+	// 	if(command == "/INVITE")
 	// 	{
 	// 		std::cout << "/INVITE" << std::endl;
 	// 	}
-	// 	if(split_string == "/TOPIC")
+	// 	if(command == "/TOPIC")
 	// 	{
 	// 		std::cout << "/TOPIC" << std::endl;
 	// 	}
-	// 	if (split_string == "MODE ") // Need to be exactly like : MODE #channel +mode target_user / Example :Carol!carol@irc.example.com MODE #chatroom +v Dave
+	// 	if (command == "MODE ") // Need to be exactly like : MODE #channel +mode target_user / Example :Carol!carol@irc.example.com MODE #chatroom +v Dave
 	// 	{
 	// 		mode_command(channels);
 	// 		//go in function to see sub div mode
@@ -345,16 +328,57 @@ void Command::server_msg()
 	// }
 
 }
+int	Command::serverAuth()
+{
+	std::istringstream iss(this->_input);
+	std::string command;
+	std::string content;
+	std::string rest;
+	// while (std::getline(iss, content))
+	// {
+
+	// }
+
+	iss >> command;
+	iss >> content;
+	iss >> rest;
+	this->_input = content;
+
+	if (command == "PASS" && this->_client_requester->getPass() == false && rest.empty() == true)
+	{
+		this->passCommand();
+	}
+	else if (command == "NICK" && rest.empty() == true)
+	{
+		this->nickCommand();
+	}
+	else
+	{
+		std::cout << "Enter a valid command PASS / NICK" << std::endl;
+	}
+	if (this->_client_requester->getPass() == true && this->_client_requester->getNick().empty() == false)
+		this->_client_requester->setAuth();
+	return(0);
+}
 
 int	Command::passCommand()
 {
-	if(this->_input == this->_server->getPassword())
+	if(this->_input.compare(this->_server->getPassword()) == 0)
 	{
-		this->_client_requester->setPass();
+		(this->_client_requester)->setPass();
 		return 1;
 	}
 	return 0;
 }
 
-
+int	Command::nickCommand()
+{
+	if (this->_input.empty())
+	{
+		std::cerr << "Error : Invalid Nickame" << std::endl;
+	}
+	else
+		(this->_client_requester)->setNick(this->_input);
+	return (1);
+}
  

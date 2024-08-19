@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/18 15:48:50 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/19 09:30:20 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Client::Client()
     
 }
 
-Client::Client(int socket) : _socket(socket), _auth(0), _pass(0), _nick(0)
+Client::Client(int socket) : _socket(socket), _auth(0), _pass(0)
 {
 }
 
@@ -53,9 +53,9 @@ bool	Client::getPass() const
     return this->_pass;
 }
 
-bool	Client::getNick() const
+std::string	Client::getNick() const
 {
-    return this->_nick;
+    return this->_nickname;
 }
 
 std::string Client::getUsername() const
@@ -80,3 +80,9 @@ void	Client::setPass()
 {
 	this->_pass = true;
 }
+
+void    Client::setAuth()
+{
+    this->_auth = true;
+}
+
