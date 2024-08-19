@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 13:28:40 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/19 16:07:06 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,8 @@ void	Server::execServer()
                     else
                     {
                         std::cout << "User = " << evs[i].data.fd << "CONNECTE" << std::endl;
-                    }                    
+                        new_command.serverAuth();
+                    }
 				}
 			}
 		}
@@ -224,4 +225,26 @@ std::string	Server::readSocket(int fd)
 		this->delClient(fd);
 	}
 	return buffer;
+}
+
+bool	Server::hasChannel(std::string& channel_name)
+{
+	if(_channels.find(channel_name) != _channels.end())
+		return (true);
+	return(false);
+}
+
+void	Server::addUserToChannel(const std::string& channel_name, Client* user)
+{
+	std::map<std::string, Channel>::iterator it = _channels.find(channel_name);
+	if(it != _channels.end())
+	{
+		it->second.addClient(user);
+		std::cout << "Welcome : " << user->getNick() << "!" << std::endl; 
+	}
+	else
+	{
+		std::cout << "Channel does not exist" << std::endl;
+	}
+	
 }

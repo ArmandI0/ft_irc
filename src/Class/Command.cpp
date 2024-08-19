@@ -268,33 +268,29 @@ void error_message(std::string error)
 	std::cout << "Syntax error : " << error << std::endl;
 }
 	
-	
-void join_command()
+
+void Command::execJoin()
 {
-	std::cout << "You are in the join command" << std::endl;
+	if(this->_server->hasChannel(this->_command[1]) == true)
+	{
+		this->_server->addUserToChannel(this->_command[1], _client_requester);
+	}
 }
 
 void Command::server_msg()
 {
 
 	std::istringstream iss(this->_input);
-	std::string split_string;
-	std::string split_string2;
-	iss >> split_string;
-	iss >> split_string2;
-	// std::cout << "Split Word : "<< split_string << std::endl;
-	this->_input.erase(0, split_string.length() + 1);
-	// std::cout << "String :" << this->_input << std::endl;
-	// std::cout << "Split Word 2:"<< split_string2 << std::endl;
-	this->_input.erase(0, split_string2.length());
-	// std::cout << "String 2:" << this->_input.substr(1) << std::endl;
-	// std::cout << "exiting" << std::endl;
+	std::string content;
 
-	if (split_string == "/QUIT")
+	while (std::getline(iss, content))
+		this->_command.push_back(content);
+
+	if (this->_command[0] == "/QUIT")
 		; // function to exit the irc server and free the socket
 
-	if (split_string == "/JOIN") 
-		exec_join();
+	if (this->_command[0] == "/JOIN" && !this->_command[1].empty() && this->_command[2].empty())
+		execJoin();
 
 	// if (split_string == "NICK")
 	// 	nickname_command(channels);

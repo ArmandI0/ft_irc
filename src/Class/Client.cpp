@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 09:30:20 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/19 15:14:34 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,10 @@ std::string Client::getUsername() const
 	return (_username);
 }
 
+const std::map<std::string, Channel*> Client::getChannelsIn()
+{
+	return this->_channels_in;
+}
 
 // Setters
 

@@ -30,8 +30,9 @@ class Command
 		Command(const Command& src);
 		Command& operator=(const Command& src);
 		~Command();
-		void		exec_pass();
-		void		exec_join();
+
+		// void		exec_pass();
+		void		execJoin();
 		// int		parsing();
 		// int		exec();
 		void		server_msg();
@@ -40,12 +41,14 @@ class Command
 		int			serverAuth();
 		int			passCommand();
 		int			nickCommand();
+		
 
 		// void	response(std::string str_response, std::vector<Client> clients);
 	private :	
-		std::string		_input;
-		Client*			_client_requester;
-		Server*			_server;	
+		std::string					_input;
+		Client*						_client_requester;
+		Server*						_server;
+		std::vector<std::string>	_command;
 };
 
 bool	onlySpaces(std::string str);
