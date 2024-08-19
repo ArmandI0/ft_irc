@@ -267,40 +267,36 @@ void error_message(std::string error)
 {
 	std::cout << "Syntax error : " << error << std::endl;
 }
-	// std::cout << "String 2:" << this->_input.substr(1) << std::endl;
-	// std::cout << "exiting" << std::endl;
-void join_command(std::vector<Channel> channels, std::vector<Client> clients)
+	
+	
+void join_command()
 {
-	(void)clients;
-	std::string::iterator it = input.begin();
-	it += 6;
-	if(it == input.end())
-		error_message("Nothing after /JOIN");
-	it++;
-	if(*it != '#')
-		error_message("Enter a #channel after /JOIN");
-	it++;
-	std::string::iterator start = it;
-	while (it != input.end() && (std::isalpha(*it) || std::isdigit(*it)))
-		++it;
-	std::string temp_name(start, it);
-	for(auto &ch : channels)
-	{
-		if(temp_name == ch.getName())
-		{
-			std::cout << "Channel : " << ch.getName() << std::endl;
-		}
-	}
+	std::cout << "You are in the join command" << std::endl;
 }
 
 void Command::server_msg()
 {
 
+	std::istringstream iss(this->_input);
+	std::string split_string;
+	std::string split_string2;
+	iss >> split_string;
+	iss >> split_string2;
+	// std::cout << "Split Word : "<< split_string << std::endl;
+	this->_input.erase(0, split_string.length() + 1);
+	// std::cout << "String :" << this->_input << std::endl;
+	// std::cout << "Split Word 2:"<< split_string2 << std::endl;
+	this->_input.erase(0, split_string2.length());
+	// std::cout << "String 2:" << this->_input.substr(1) << std::endl;
+	// std::cout << "exiting" << std::endl;
 
+	if (split_string == "/QUIT")
+		; // function to exit the irc server and free the socket
 
-	// if (command == "/JOIN")
-	// 	join_command();
-	// if (command == "NICK")
+	if (split_string == "/JOIN") 
+		exec_join();
+
+	// if (split_string == "NICK")
 	// 	nickname_command(channels);
 	// // if(input[0] == ':')
 	// // 	nickname_change(channels);
@@ -328,6 +324,7 @@ void Command::server_msg()
 	// }
 
 }
+
 int	Command::serverAuth()
 {
 	std::istringstream iss(this->_input);
@@ -376,4 +373,3 @@ int	Command::nickCommand()
 		(this->_client_requester)->setNick(this->_input);
 	return (1);
 }
- 
