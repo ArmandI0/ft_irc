@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 16:07:06 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/19 16:20:04 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,6 +231,7 @@ bool	Server::hasChannel(std::string& channel_name)
 {
 	if(_channels.find(channel_name) != _channels.end())
 		return (true);
+	std::cout << "The channel : " << channel_name << " does not exist" << std::endl;
 	return(false);
 }
 
