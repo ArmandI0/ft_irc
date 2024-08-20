@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 11:37:02 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 11:37:15 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void	Server::execServer()
                     }
                     else
                     {
-						//new_command.server_msg();
+						new_command.server_msg();
                     }
 					if ((this->_users[evs[i].data.fd]).getAuth())
 						std::cout << "WELCOME !" << std::endl;   
