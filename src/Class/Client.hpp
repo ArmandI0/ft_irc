@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 09:30:09 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 11:38:11 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,18 @@ class Client
 		Client& operator=(const Client& src);
 		~Client();
 		
-		int			getSocket() const;
-		bool 		getAuth() const;
-		bool		getPass() const;
-		std::string	getNick() const;
+		int										getSocket() const;
+		bool 									getAuth() const;
+		bool									getPass() const;
+		std::string								getNick() const;
+		std::string								getUsername() const;
+		const std::map<std::string, Channel*>	getChannelsIn();
+
+
 		void		setPass();
 		void		setAuth();
-		std::string getUsername() const;
-		
 		void		setNick(const std::string &str);
+		void		setUser(const std::string & str);		
 		void		setSocket(int socket);
 
 };

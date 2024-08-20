@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 13:28:40 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 11:42:11 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ Server::Server(std::string port, std::string password) :  _password(password)
 	this->_server_infos.sin_port = htons(std::atoi(port.c_str()));
 	this->_server_infos.sin_family = AF_INET;
 	this->_server_infos.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-	std::cout << "PASSWORD = " << password << std::endl;
 }
 
 Server::~Server()
@@ -136,18 +135,20 @@ void	Server::execServer()
                 {
 					std::string buffer = readSocket(evs[i].data.fd);
 					Command	new_command(buffer, &(this->_users[evs[i].data.fd]), &*this);
-					std::cout << "AUTHENTIFICATION = " << (this->_users[evs[i].data.fd]).getAuth() << std::endl;
+					std::cout << "buffer '" << buffer << "' buffer" << std::endl;
                     if((this->_users[evs[i].data.fd]).getAuth() == false)
                     {
-                        std::cout << "User = " << evs[i].data.fd << "Non conecte" << std::endl;
 						new_command.serverAuth();
                     }
                     else
                     {
-                        std::cout << "User = " << evs[i].data.fd << "CONNECTE" << std::endl;
-                    }                    
+						new_command.server_msg();
+                    }
+					if ((this->_users[evs[i].data.fd]).getAuth())
+						std::cout << "WELCOME !" << std::endl;   
 				}
 			}
+			std::cout << std::endl;
 		}
 	}
 }
@@ -208,20 +209,51 @@ std::string	Server::getPassword()
 	return this->_password;
 }
 
-std::string	Server::readSocket(int fd)
+std::string Server::readSocket(int fd)
 {
-	char buffer[1024];
+    char buffer[4096];
     ssize_t bytes_read = recv(fd, buffer, sizeof(buffer) - 1, 0);
+    
     if (bytes_read > 0)
-	{
+    {
         buffer[bytes_read] = '\0';
-        std::cout << "Reçu du fd " << fd << ": " << buffer << std::endl;
-	}
-	if (bytes_read == 0)
+        //std::cout << "Reçu du fd " << fd << ": " << buffer << std::endl;
+        return std::string(buffer);
+    }
+    else if (bytes_read == 0) // Le client a fermé la connexion
+    {
+        //std::cout << "Client fd " << fd << " a fermé la connexion." << std::endl;
+        close(fd);
+        epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, fd, NULL);
+        this->delClient(fd);
+        return "";  // Retourner une chaîne vide pour indiquer la fermeture de la connexion
+    }
+    else // bytes_read == -1
+    {
+        std::cerr << "Erreur lors de la réception de données du fd " << fd << std::endl;
+        return "";  // Retourner une chaîne vide ou gérer l'erreur de manière appropriée
+    }
+}
+
+bool	Server::hasChannel(std::string& channel_name)
+{
+	if(_channels.find(channel_name) != _channels.end())
+		return (true);
+	std::cout << "The channel : " << channel_name << " does not exist" << std::endl;
+	return(false);
+}
+
+void	Server::addUserToChannel(const std::string& channel_name, Client* user)
+{
+	std::map<std::string, Channel>::iterator it = _channels.find(channel_name);
+	if(it != _channels.end())
 	{
-		close(fd);
-		epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, fd, NULL);
-		this->delClient(fd);
+		it->second.addClient(user);
+		std::cout << "Welcome : " << user->getNick() << "!" << std::endl; 
 	}
-	return buffer;
+	else	
+	{
+		std::cout << "Channel does not exist" << std::endl;
+	}
+	
 }

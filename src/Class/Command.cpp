@@ -40,264 +40,60 @@ Command::~Command()
 {
 }
 
-// int 	Command::parsing()
-// {
-// 	return (0);
-// }
-
-// int 	Command::exec()
-// {
-// 	int r_value = parsing();
-// 	return (r_value);
-// }
-
-// void	Command::response(std::string str_response, std::vector<Client> clients)
-// {
-// 	(void)str_response;
-// 	(void)clients;
-// }
-
-
-//Parsing a faire avec 'sender', 'type', 'target', 'message'
-int connected = 0;
-int operators = 1;
-std::string input;
-
-void nickname_command(std::vector<Channel> channels)
-{
-	(void)channels;
-	std::string::iterator it = input.begin();
-	if (input.compare(0, 5, "NICK ") == 0)
-	{
-		// if(!nickname.empty())
-		// {
-		// 	std::cout << "You already have a nickname, to change please enter :<Nickname> NICK <New Nickname>" << std::endl;
-		// 	return ;
-		// }
-		it += 5;
-		while (it != input.end() && std::isspace(*it))
-			++it;
-		std::string::iterator start = it;
-		while (it != input.end() && std::isalpha(*it))
-			++it;
-		std::string temp_nickname(start, it);
-		while (it != input.end())
-		{
-			if (!std::isspace(*it))
-			{
-				std::cout << "Error in the nickname command" << std::endl;
-				return;
-			}
-			++it;
-		}
-		// nickname = temp_nickname.c_str();
-		// std::cout << "Introducing new nick " << nickname << std::endl;
-	}
-}
-
-// void nickname_change(std::vector<Channel> channels)
-// {
-// 	std::string::iterator it = input.begin();
-// 	if (input.compare(1, nickname.size(), nickname) == 0)
-// 	{
-// 		it += nickname.size();
-// 		while (it != input.end() && std::isspace(*it))
-// 			++it;
-// 		if (input.compare(nickname.size() + 1, 6, " NICK ") == 0)
-// 			it += 7;
-// 		std::string::iterator start = it;
-// 		while (it != input.end() && std::isalpha(*it))
-// 			++it;
-// 		std::string temp_nickname(start, it);
-// 		while (it != input.end())
-// 		{
-// 			if (!std::isspace(*it))
-// 			{
-// 				std::cout << "Error in the nickname command" << std::endl;
-// 				return;
-// 			}
-// 			++it;
-// 		}
-// 		nickname = temp_nickname.c_str();
-// 		std::cout << "Introducing new nick " << nickname << std::endl;
-// 	}
-// }
-
-// void kick_command(std::vector<Channel> channels)
-// {
-// 	std::string::iterator it = input.begin();
-// 	it += 6;
-// 	while (it != input.end() && std::isspace(*it))
-// 		++it;
-// 	std::string::iterator start = it;
-// 	if(it == input.end())
-// 	{
-// 		std::cout << "Please enter the name of the user you want to kick" << std::endl;
-// 		return ;
-// 	}
-// 	while (it != input.end() && std::isalpha(*it))
-// 		++it;
-// 	std::string temp_name(start, it);
-// 	while (it != input.end())
-// 	{
-// 		if (!std::isspace(*it))
-// 		{
-// 			std::cout << "Error in the nickname command" << std::endl;
-// 			return;
-// 		}
-// 		++it;
-// 	}
-// 	std::cout << "Kicking : " << temp_name << std::endl;
-// }
-
-// Submode
-
-void i_submode(std::string input, std::vector<Channel> channels)
-{
-	std::string::iterator it = input.begin();
-	it += 9;
-	while (it != input.end() && std::isspace(*it))
-		++it;
-	std::string::iterator start = it;
-	while (it != input.end() && (std::isalpha(*it) || std::isdigit(*it)))
-		++it;
-	while (it != input.end() && std::isspace(*it))
-		++it;
-	if(it == input.end())
-	{
-		std::string temp_name(start, it);
-		for(auto &ch : channels)
-		{
-			if(temp_name == ch.getName())
-			{
-				std::cout << "Channel : " << ch.getName() << std::endl;
-			}
-		}
-	}
-}
-
-void t_submode(std::string input, std::vector<Channel> channels)
-{
-	std::string::iterator it = input.begin();
-	it += 9;
-	while (it != input.end() && std::isspace(*it))
-		++it;
-	std::string::iterator start = it;
-	while (it != input.end() && (std::isalpha(*it) || std::isdigit(*it)))
-		++it;
-	while (it != input.end() && std::isspace(*it))
-		++it;
-	if(it == input.end())
-	{
-		std::string temp_name(start, it);
-		for(auto &ch : channels)
-		{
-			if(temp_name == ch.getName())
-			{
-				std::cout << "Channel : " << ch.getName() << std::endl;
-			}
-		}
-	}
-}
-
-void k_submode(std::string input, std::vector<Channel> channels)
-{
-	std::string::iterator it = input.begin();
-	it += 9;
-	while (it != input.end() && std::isspace(*it))
-		++it;
-	std::string::iterator start = it;
-	while (it != input.end() && (std::isalpha(*it) || std::isdigit(*it)))
-		++it;
-	while (it != input.end() && std::isspace(*it))
-		++it;
-	if(it == input.end())
-	{
-		std::string temp_name(start, it);
-	for(auto &ch : channels)
-	{
-		if(temp_name == ch.getName())
-		{
-			std::cout << "Channel : " << ch.getName() << std::endl;
-		}
-	}
-	}
-}
-
-void mode_command(std::vector<Channel> channels)
-{
-	std::string::iterator it = input.begin();
-	it += 6;
-	if(*it != '#')
-	{
-		std::cout << "Here are the options for mode : +i, +t, +k, +o, +l" << std::endl;
-		return ;
-	}
-	it++;
-	std::string::iterator start = it;
-	while (it != input.end() && (std::isalpha(*it) || std::isdigit(*it)))
-		++it;
-	std::string temp_name(start, it);
-	for(auto &ch : channels)
-	{
-		if(temp_name == ch.getName())
-		{
-			std::cout << "Channel : " << ch.getName() << std::endl;
-		}
-	}
-	
-	if (input.compare(6, 1, "+") == 0)
-	{
-		if (input.compare(7, 2, "i ") == 0)
-			i_submode(input, channels);
-		if (input.compare(7, 2, "t ") == 0)
-			t_submode(input, channels);
-		if (input.compare(7, 2, "k ") == 0)
-			k_submode(input, channels);
-		if (input.compare(7, 2, "o ") == 0)
-			//o_submode(it + 2);
-		if (input.compare(7, 2, "l ") == 0)
-		{}//l_submode(it + 2);
-	}
-	else
-		std::cout << "Please put a + after /MODE" << std::endl;
-}
 
 void error_message(std::string error)
 {
 	std::cout << "Syntax error : " << error << std::endl;
 }
 	
-	
-void join_command()
+
+void	Command::execJoin()
 {
-	std::cout << "You are in the join command" << std::endl;
+	if(this->_server->hasChannel(this->_command[1]) == true)
+	{
+		this->_server->addUserToChannel(this->_command[1], _client_requester);
+	}
+}
+
+void	Command::execNick()
+{
+	std::string authorized_first_character = "-^~";
+	std::string invalid_chars = ",:!@.";
+	if(!isalpha(this->_command[1][0]) || (authorized_first_character.find(this->_command[1][0]) == std::string::npos))
+	{
+		std::cout << "First letter of the Nick must be a letter or - ^ ~" << std::endl;
+		return ;
+	}
+	for(char c : this->_command[1])
+	{
+		if(invalid_chars.find(c) != std::string::npos)
+		{
+			std::cout << "You have placed a forbidden character '" << c << "' in your Nickname" << std::endl;
+			return ;
+		}
+	}
+	//4. Nickname Change Notification TO DO
+		//Description: When a user changes their nickname, the IRC server broadcasts this change to all other users in the channels where the user is present.
+	this->_client_requester->setNick(this->_command[1]);
 }
 
 void Command::server_msg()
 {
 
 	std::istringstream iss(this->_input);
-	std::string split_string;
-	std::string split_string2;
-	iss >> split_string;
-	iss >> split_string2;
-	// std::cout << "Split Word : "<< split_string << std::endl;
-	this->_input.erase(0, split_string.length() + 1);
-	// std::cout << "String :" << this->_input << std::endl;
-	// std::cout << "Split Word 2:"<< split_string2 << std::endl;
-	this->_input.erase(0, split_string2.length());
-	// std::cout << "String 2:" << this->_input.substr(1) << std::endl;
-	// std::cout << "exiting" << std::endl;
+	std::string content;
 
-	if (split_string == "/QUIT")
+	while (std::getline(iss, content))
+		this->_command.push_back(content);
+
+	if (this->_command[0] == "/QUIT" && this->_command[1].empty())
 		; // function to exit the irc server and free the socket
 
-	if (split_string == "/JOIN") 
-		exec_join();
+	if (this->_command[0] == "/JOIN" && !this->_command[1].empty() && this->_command[2].empty())
+		execJoin();
 
-	// if (split_string == "NICK")
-	// 	nickname_command(channels);
+	if (this->_command[0] == "NICK" && !this->_command[1].empty() && this->_command[2].empty()) // OK
+		execNick();
 	// // if(input[0] == ':')
 	// // 	nickname_change(channels);
 	// if(operators == 1)
@@ -327,35 +123,38 @@ void Command::server_msg()
 
 int	Command::serverAuth()
 {
-	std::istringstream iss(this->_input);
+	size_t pos = 0;    
+	std::string delimiter = "\r\n";
+
+	while ((pos = this->_input.find(delimiter)) != std::string::npos)
+	{
+        std::string command = this->_input.substr(0, pos);
+        this->_input.erase(0, pos + delimiter.length());
+		this->doCommandAuth(command);
+    }
+	return (0);
+}
+void	Command::doCommandAuth(std::string cmd)
+{
+	std::istringstream 			iss(cmd);
 	std::vector<std::string>	command;
-	std::string content;
-	std::string rest;
-	while (std::getline(iss, content))
-	{
+	std::string					content;
+
+	while (iss >> content)
 		command.push_back(content);
-	}
-	this->_input = content;
-	if (command[0] == "PASS" && this->_client_requester->getPass() == false && rest.empty() == true)
-	{
-		this->passCommand();
-	}
-	else if (command[0] == "NICK" && rest.empty() == true)
-	{
-		this->nickCommand();
-	}
-	else
-	{
-		std::cout << "Enter a valid command PASS / NICK" << std::endl;
-	}
-	if (this->_client_requester->getPass() == true && this->_client_requester->getNick().empty() == false)
+	if (checkAndComp(command, 0, "PASS") && this->_client_requester->getPass() == false && command.size() == 2)
+		this->passCommand(command[1]);
+	else if (checkAndComp(command, 0, "NICK"))
+		this->nickCommand(command[1]);
+	else if (checkAndComp(command, 0, "USER"))
+		this->userCommand(command[1]);
+	if (this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
 		this->_client_requester->setAuth();
-	return(0);
 }
 
-int	Command::passCommand()
+int	Command::passCommand(std::string password)
 {
-	if(this->_input.compare(this->_server->getPassword()) == 0)
+	if(password.compare(this->_server->getPassword()) == 0)
 	{
 		(this->_client_requester)->setPass();
 		return 1;
@@ -363,13 +162,27 @@ int	Command::passCommand()
 	return 0;
 }
 
-int	Command::nickCommand()
+int	Command::nickCommand(std::string nickname)
 {
-	if (this->_input.empty())
-	{
-		std::cerr << "Error : Invalid Nickame" << std::endl;
-	}
-	else
-		(this->_client_requester)->setNick(this->_input);
-	return (1);
+	(this->_client_requester)->setNick(nickname);
+	return 0;
 }
+
+void Command::userCommand(std::string username)
+{
+	(this->_client_requester)->setUser(username);
+}
+
+
+bool checkAndComp(std::vector<std::string> & entry, size_t i, const char* toComp)
+{
+	if (i == 0 && entry.empty())
+		return false;
+	else if (entry.size() <= i)
+		return false;
+	else if (entry[i].compare(std::string(toComp)) == 0)
+		return true;
+	else
+		return false;
+}
+

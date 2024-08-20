@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 13:26:02 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/19 17:01:21 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,10 @@ class Server
 		int									getClientFdByUsername(std::string username);
 		std::string							getPassword();
 		void								print_list_channels();
+		bool								hasChannel(std::string& channel_name);
+		void								addUserToChannel(const std::string& channel_name, Client* user);
 		
-    private:
+	private:
 		Server();
 		struct sockaddr_in				_server_infos; //ip_type ; adr server ; port
 		std::map<int,Client>			_users;  //store int_fd for each client

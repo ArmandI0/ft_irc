@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 09:30:20 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 11:33:52 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ Client::Client()
 
 Client::Client(int socket) : _socket(socket), _auth(0), _pass(0)
 {
+    this->_nickname = "";
+    this->_username = "";
 }
 
 Client::Client(const Client& src)
@@ -27,11 +29,13 @@ Client::Client(const Client& src)
 }
 Client& Client::operator=(const Client& src)
 {
-    _socket = src._socket;
-    _nickname = src._nickname;
-    _second_choice = src._second_choice;
-    _third_choice = src._third_choice;
-    _channels_in = src._channels_in;
+    this->_socket = src._socket;
+    this->_auth = src._auth;
+    this->_pass = src._pass;
+    this->_nickname = src._nickname;
+    this->_second_choice = src._second_choice;
+    this->_third_choice = src._third_choice;
+    this->_channels_in = src._channels_in;
 	return (*this);
 }
 
@@ -63,12 +67,21 @@ std::string Client::getUsername() const
 	return (_username);
 }
 
+const std::map<std::string, Channel*> Client::getChannelsIn()
+{
+	return this->_channels_in;
+}
 
 // Setters
 
 void	Client::setNick(const std::string &str)
 {
 	this->_nickname = str;
+}
+
+void    Client::setUser(const std::string & str)
+{
+    this->_username = str;
 }
 
 void	Client::setSocket(int socket)
