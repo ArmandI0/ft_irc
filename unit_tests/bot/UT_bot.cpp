@@ -1,25 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   UT_bot.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 22:08:13 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/20 22:08:33 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Class/Server.hpp"
+# include "../../bonus/Bot.hpp"
+
 
 int main(int ac, char** av)
 {
-    if(ac != 3)
-    {
-        std::cout << "Error : usage : ./ircserv <port> <password>" << std::endl;
-        return 0;
-    }
-    Server serv = Server(av[1], av[2]);
-    serv.listenSocket();
-    serv.execServer();
+	(void)ac;
+	(void)av;
+	if (ac != 4)
+	{
+		std::cerr << "Error : usage : ./bot <server ip adress> <password> <port>" << std::endl;
+		return (1);	
+	}
+	Bot bot = Bot(av[1], av[2], av[3]);
+	try 
+	{
+		bot.connect_bot();
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "Error : " << e.what() << std::endl;
+	}
 }
