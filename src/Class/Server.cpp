@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 11:42:11 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 15:27:28 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,6 +192,7 @@ Channel*							Server::getChannelByTopic(std::string topic)
 return fd if found
 return -1 if not found
 */
+
 int		Server::getClientFdByUsername(std::string username)
 {
 	std::map<int,Client>::iterator it = _users.begin();
@@ -257,3 +258,17 @@ void	Server::addUserToChannel(const std::string& channel_name, Client* user)
 	}
 	
 }
+
+void Server::addNewNickname(std::string & nick, Client * client)
+{
+	this->_usersNick.insert(std::make_pair(nick, client));
+}
+
+Client*	Server::findUserByNickname(std::string & nickname)
+{
+	std::map<std::string,Client*>::iterator it = this->_usersNick.find(nickname);
+	if (it == this->_usersNick.end())
+		return NULL;
+	return it->second;
+}
+

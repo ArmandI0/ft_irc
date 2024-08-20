@@ -142,19 +142,25 @@ void	Command::doCommandAuth(std::string cmd)
 
 	while (iss >> content)
 		command.push_back(content);
-	if (checkAndComp(command, 0, "PASS") && this->_client_requester->getPass() == false && command.size() == 2)
-		this->passCommand(command[1]);
+	if (checkAndComp(command, 0, "PASS"))
+		this->passCommand(command);
 	else if (checkAndComp(command, 0, "NICK"))
-		this->nickCommand(command[1]);
+		this->nickCommand(command);
 	else if (checkAndComp(command, 0, "USER"))
-		this->userCommand(command[1]);
+		this->userCommand(command);
 	if (this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
 		this->_client_requester->setAuth();
 }
 
-int	Command::passCommand(std::string password)
+int	Command::passCommand(std::vector<std::string> & password)
 {
-	if(password.compare(this->_server->getPassword()) == 0)
+	if (this->_client_requester->getPass() == true)
+		sendErrorToClient(this->_client_requester->getSocket(), ERR_ALREADYREGISTRED);
+	else if (password.size() == 1)
+	{
+		sendErrorToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS("PASS"));
+	}
+	else if(password[1].compare(this->_server->getPassword()) == 0 && password.size() == 2)
 	{
 		(this->_client_requester)->setPass();
 		return 1;
@@ -162,15 +168,27 @@ int	Command::passCommand(std::string password)
 	return 0;
 }
 
-int	Command::nickCommand(std::string nickname)
+int	Command::nickCommand(std::vector<std::string> & nickname)
 {
-	(this->_client_requester)->setNick(nickname);
+	if (nickname.size() == 1)
+		sendErrorToClient(this->_client_requester->getSocket(), ERR_NONICKNAMEGIVEN);
+	else if (nickname.size() == 2 && nickname[1].find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_") != std::string::npos)
+		sendErrorToClient(this->_client_requester->getSocket(), ERR_ERRONEUSNICKNAME(nickname[1]));	
+	else if (nickname.size() == 2 && this->_server->findUserByNickname(nickname[1]) != NULL)
+		sendErrorToClient(this->_client_requester->getSocket(), ERR_ERRONEUSNICKNAME(nickname[1]));	
+	else if (nickname.size() == 2)
+	{
+		this->_client_requester->setNick(nickname[1]);
+		this->_server->addNewNickname(nickname[1], &*(_client_requester));
+	}
 	return 0;
 }
 
-void Command::userCommand(std::string username)
+void Command::userCommand(std::vector<std::string> & username)
 {
-	(this->_client_requester)->setUser(username);
+	if (username.size() < 5)
+		sendErrorToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS("USER"));
+	(this->_client_requester)->setUser(username[1]);
 }
 
 
@@ -184,5 +202,12 @@ bool checkAndComp(std::vector<std::string> & entry, size_t i, const char* toComp
 		return true;
 	else
 		return false;
+}
+
+void sendErrorToClient(int fd, std::string error)
+{
+	int send = write(fd, error.c_str(), error.size());
+	if (send < 0)
+		std::cerr << "Message error" << std::endl; 
 }
 
