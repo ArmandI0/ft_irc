@@ -93,10 +93,10 @@ std::map<int,std::string>	Channel::getOperatorsList()
 	return (_operators);
 }
 
-std::string				Channel::getChannelTopic()
-{
-	return (_channel_topic);
-}
+// std::string				Channel::getChannelTopic()
+// {
+// 	return (_channel_topic);
+// }
 
 std::string				Channel::getPassword()
 {
