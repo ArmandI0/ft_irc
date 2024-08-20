@@ -86,8 +86,7 @@ void Command::server_msg()
 	while (std::getline(iss, content))
 		this->_command.push_back(content);
 
-	if (this->_command[0] == "/QUIT" && this->_command[1].empty())
-		; // function to exit the irc server and free the socket
+	if (this->_command[0] == "/QUIT" && this->_command[1].empty()){}; // function to exit the irc server and free the socket
 
 	if (this->_command[0] == "/JOIN" && !this->_command[1].empty() && this->_command[2].empty())
 		execJoin();

@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 17:36:22 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 17:47:12 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ class Server
 		void								createChannel(std::string & channel_name, Client & client_creator);
 		void								delChannel(std::string& channel_name);
 		int									getChannelId(std::string topic);
-		Channel*							getChannelByTopic(std::string topic);
+		// Channel*							getChannelByTopic(std::string topic);
 		int									getClientFdByUsername(std::string username);
 		std::string							getPassword();
 		bool								hasChannel(std::string& channel_name);
