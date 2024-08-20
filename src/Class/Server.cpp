@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 16:53:28 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 17:18:35 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,65 +153,6 @@ void	Server::execServer()
 	}
 }
 
-void	Server::delChannel(std::string& channel_name)
-{
-	int id = getChannelId(channel_name);
-	std::vector<Channel>::iterator it = _channels.begin() + id;
-	_channels.erase(it);
-}
-
-void	Server::createChannel(std::string& channel_name, Client& client_creator)
-{
-	Channel new_channel(channel_name, client_creator, this);
-	_channels.push_back(new_channel);
-}
-
-void	Server::print_list_channels()
-{
-	std::vector<Channel>::iterator it = _channels.begin();
-	std::vector<Channel>::iterator ite = _channels.end();
-	for(; it != ite; it++)
-		std::cout << it->getChannelTopic() << std::endl;
-}
-
-std::vector<Channel>&		Server::getChannels()
-{
-	return _channels;
-}
-
-/*
-return id if found
-return -1 if not found
-*/
-int	Server::getChannelId(std::string topic)
-{
-	std::vector<Channel>::iterator it = _channels.begin();
-	std::vector<Channel>::iterator ite = _channels.end();
-	int id = 0;
-	for(; it != ite; it++)
-	{
-		if (it->getChannelTopic() == topic)
-			return (id);
-		id++;	
-	}
-	return (-1);	
-}
-
-/*
-return channel* if found
-return NULL		if not found
-*/
-Channel*	Server::getChannelByTopic(std::string topic)
-{
-	std::vector<Channel>::iterator it = _channels.begin();
-	std::vector<Channel>::iterator ite = _channels.end();
-	for(; it != ite; it++)
-	{
-		if (it->getChannelTopic() == topic)
-			return (&(*it));
-	}
-	return (NULL);
-}
 
 /*
 return fd if found
@@ -271,7 +212,7 @@ bool	Server::hasChannel(std::string& channel_name)
 
 void	Server::addUserToChannel(const std::string& channel_name, Client* user)
 {
-	std::map<std::string, Channel>::iterator it = _channels.find(channel_name);
+	std::map<std::string, Channel>::iterator it = this->_channels.find(channel_name);
 	if(it != _channels.end())
 	{
 		it->second.addClient(user);
@@ -322,3 +263,58 @@ Client&		Server::getClientByFd(int socket)
 	return (ref);
 }
 
+void	Server::delChannel(std::string& channel_name)
+{
+	int id = getChannelId(channel_name);
+	std::vector<Channel>::iterator it = _channels.begin() + id;
+	_channels.erase(it);
+}
+
+void	Server::createChannel(std::string& channel_name, Client& client_creator)
+{
+	Channel new_channel(channel_name, client_creator, this);
+	_channels.push_back(new_channel);
+}
+
+void	Server::print_list_channels()
+{
+	std::vector<Channel>::iterator it = _channels.begin();
+	std::vector<Channel>::iterator ite = _channels.end();
+	for(; it != ite; it++)
+		std::cout << it->getChannelTopic() << std::endl;
+}
+
+
+/*
+return id if found
+return -1 if not found
+*/
+int	Server::getChannelId(std::string topic)
+{
+	std::vector<Channel>::iterator it = _channels.begin();
+	std::vector<Channel>::iterator ite = _channels.end();
+	int id = 0;
+	for(; it != ite; it++)
+	{
+		if (it->getChannelTopic() == topic)
+			return (id);
+		id++;	
+	}
+	return (-1);	
+}
+
+/*
+return channel* if found
+return NULL		if not found
+*/
+Channel*	Server::getChannelByTopic(std::string topic)
+{
+	std::vector<Channel>::iterator it = _channels.begin();
+	std::vector<Channel>::iterator ite = _channels.end();
+	for(; it != ite; it++)
+	{
+		if (it->getChannelTopic() == topic)
+			return (&(*it));
+	}
+	return (NULL);
+}
