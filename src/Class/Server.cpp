@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 11:37:15 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 11:42:11 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ Server::Server(std::string port, std::string password) :  _password(password)
 	this->_server_infos.sin_port = htons(std::atoi(port.c_str()));
 	this->_server_infos.sin_family = AF_INET;
 	this->_server_infos.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-	std::cout << "PASSWORD = " << password << std::endl;
 }
 
 Server::~Server()
@@ -252,7 +251,7 @@ void	Server::addUserToChannel(const std::string& channel_name, Client* user)
 		it->second.addClient(user);
 		std::cout << "Welcome : " << user->getNick() << "!" << std::endl; 
 	}
-	else
+	else	
 	{
 		std::cout << "Channel does not exist" << std::endl;
 	}
