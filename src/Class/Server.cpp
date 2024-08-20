@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 15:27:28 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 16:30:25 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,14 +261,28 @@ void	Server::addUserToChannel(const std::string& channel_name, Client* user)
 
 void Server::addNewNickname(std::string & nick, Client * client)
 {
-	this->_usersNick.insert(std::make_pair(nick, client));
+	this->_nicknames.insert(std::make_pair(nick, client));
 }
 
 Client*	Server::findUserByNickname(std::string & nickname)
 {
-	std::map<std::string,Client*>::iterator it = this->_usersNick.find(nickname);
-	if (it == this->_usersNick.end())
+	std::map<std::string,Client*>::iterator it = this->_nicknames.find(nickname);
+	if (it == this->_nicknames.end())
 		return NULL;
 	return it->second;
 }
+
+void	Server::addNewUsername(std::string & username, Client * client)
+{
+	this->_usernames.insert(std::make_pair(username, client));
+}
+
+Client*	Server::findUserByUsername(std::string & username)
+{
+	std::map<std::string,Client*>::iterator it = this->_usernames.find(username);
+	if (it == this->_usernames.end())
+		return NULL;
+	return it->second;
+}
+
 

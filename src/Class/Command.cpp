@@ -121,6 +121,10 @@ void Command::server_msg()
 
 }
 
+
+
+/* AUTHENTIFICATION */
+
 int	Command::serverAuth()
 {
 	size_t pos = 0;    
@@ -175,7 +179,7 @@ int	Command::nickCommand(std::vector<std::string> & nickname)
 	else if (nickname.size() == 2 && nickname[1].find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_") != std::string::npos)
 		sendErrorToClient(this->_client_requester->getSocket(), ERR_ERRONEUSNICKNAME(nickname[1]));	
 	else if (nickname.size() == 2 && this->_server->findUserByNickname(nickname[1]) != NULL)
-		sendErrorToClient(this->_client_requester->getSocket(), ERR_ERRONEUSNICKNAME(nickname[1]));	
+		sendErrorToClient(this->_client_requester->getSocket(), ERR_NICKNAMEINUSE(nickname[1]));
 	else if (nickname.size() == 2)
 	{
 		this->_client_requester->setNick(nickname[1]);
@@ -188,7 +192,13 @@ void Command::userCommand(std::vector<std::string> & username)
 {
 	if (username.size() < 5)
 		sendErrorToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS("USER"));
-	(this->_client_requester)->setUser(username[1]);
+	else if (username.size() == 5 && this->_server->findUserByUsername(username[1]) != NULL)
+		sendErrorToClient(this->_client_requester->getSocket(), ERR_ALREADYREGISTRED);
+	else if (username.size() == 5)
+	{
+		this->_client_requester->setUser(username[1]);
+		this->_server->addNewUsername(username[1], &*(_client_requester));
+	}
 }
 
 
