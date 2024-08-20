@@ -20,7 +20,7 @@ Channel::~Channel()
 {
 }
 
-void	Channel::addClient(Client* client)
+void	Channel::addNewClient(Client* client)
 {
 	_clients[client->getSocket()] = client->getUsername();
 }
@@ -30,6 +30,8 @@ void	Channel::delClient(Client* client)
 	int socket = client->getSocket();
 	if (_clients.find(socket) != _clients.end())
 		_clients.erase(socket);
+	if (_operators.find(socket) != _operators.end())
+		_operators.erase(socket);		
 	if (_clients.size() == 0)
 		delChannel();
 }
@@ -41,7 +43,6 @@ void	Channel::delChannel()
 
 Channel& Channel::operator=(const Channel& src)
 {
-	//_channel_mode = src._channel_mode;
 	_channel_topic = src._channel_topic;
 	_clients = src._clients;
 	_operators = src._operators;
@@ -53,43 +54,6 @@ Channel& Channel::operator=(const Channel& src)
 	return (*this);
 }
 
-/*	changeChannelMode(std::string& str)
-	Takes as first arg a str that represents the different modes, for example : "+i-t+k+o+l" or just "-i-t-k"
-	Takes as second arg a vector that contains arguments if necessary (in ordrer)
-	if + : add (or do nothing if already present)
-	if - : erase (or do nothing if already absent)
-*/
-/* void	Channel::changeChannelMode(std::string& str, std::vector<std::string> args)
-{
-	std::string::iterator it = str.begin();
-	std::string::iterator ite = str.end();
-	int	arg_nb = 0;
-	for(; it != ite; it++)
-	{
-		if (*it == '+' || *it == '-')
-			continue;
-		else if (*(it-1) == '+' && _channel_mode.find(*it) == std::string::npos)
-		{
-			if (*it != 'o')
-				_channel_mode+=*it;
-			else if (*it == 'o')
-			{
-				addOperatorPrivilege(args[arg_nb]);
-				arg_nb++;
-			}
-		}
-		else if (*(it-1) == '-' && _channel_mode.find(*it) != std::string::npos)
-		{
-				_channel_mode.erase(_channel_mode.find(*it), 1);
-		}
-		else if (*(it-1) == '-' && *it == 'o')
-		{
-			removeOperatorPrivilege(args[arg_nb]);
-			arg_nb++;
-		}
-	}
-} */
-
 void	Channel::removeOperatorPrivilege(std::string username)
 {
 	std::map<int,std::string>::iterator it = _operators.begin();
@@ -97,7 +61,10 @@ void	Channel::removeOperatorPrivilege(std::string username)
 	for(; it != ite; it++)
 	{
 		if (it->second == username)
-			_operators.erase(it->first);
+		{
+			_operators.erase(it);
+			break;
+		}
 	}
 }
 
@@ -110,6 +77,7 @@ void	Channel::addOperatorPrivilege(std::string username)
 		if (it->second == username)
 			return;
 	}
+
 	int user_socket =_server->getClientFdByUsername(username);
 	if (user_socket != -1)
 		_operators[user_socket] = username;
@@ -125,15 +93,15 @@ std::map<int,std::string>	Channel::getOperatorsList()
 	return (_operators);
 }
 
-std::string				Channel::getChannelTopic()
-{
-	return (_channel_topic);
-}
+// std::string				Channel::getChannelTopic()
+// {
+// 	return (_channel_topic);
+// }
 
-/* std::string				Channel::getChannelModes()
+std::string				Channel::getPassword()
 {
-	return (_channel_mode);
-} */
+	return (_password);
+}
 
 bool					Channel::isModeOn(char mode)
 {
@@ -195,7 +163,7 @@ void	Channel::setUnsetUserLimit(bool on_off, size_t user_limit)
 	if (on_off)
 		_user_limit = user_limit;
 	else
-		user_limit = 0;
+		_user_limit = 0;
 }
 
 void	Channel::setUnsetOpPrivilege(bool on_off, std::string username)
@@ -204,6 +172,11 @@ void	Channel::setUnsetOpPrivilege(bool on_off, std::string username)
 		addOperatorPrivilege(username);
 	else
 		removeOperatorPrivilege(username);
+}
+
+void	Channel::setTopicName(std::string new_topic_name)
+{
+	_channel_topic = new_topic_name;
 }
 
 size_t	Channel::getUserLimit()

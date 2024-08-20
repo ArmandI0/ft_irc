@@ -41,9 +41,9 @@ class Command
 		/* COMMANDE D'AUTHENTIFICATION */
 		int			serverAuth();
 		void		doCommandAuth(std::string cmd);
-		int			passCommand(std::string password);
-		void		userCommand(std::string username);
-		int			nickCommand(std::string nickname);
+		int			passCommand(std::vector<std::string> & password);
+		void		userCommand(std::vector<std::string> & username);
+		int			nickCommand(std::vector<std::string> & nickname);
 
 		// void	response(std::string str_response, std::vector<Client> clients);
 	private :	
@@ -53,6 +53,7 @@ class Command
 		std::vector<std::string>	_command;
 };
 
-bool checkAndComp(std::vector<std::string> & entry, size_t i, const char* toComp);
+bool	checkAndComp(std::vector<std::string> & entry, size_t i, const char* toComp);
+void	sendErrorToClient(int fd, std::string error);
 
 #endif

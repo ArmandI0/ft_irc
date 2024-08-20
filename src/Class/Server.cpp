@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 11:42:11 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 17:47:26 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void    Server::listenSocket()
 
 // }
 
-epoll_event	Server::addClient(int new_client_fd)
+epoll_event	Server::addNewClient(int new_client_fd)
 {
 	struct epoll_event	new_ev;
 	Client				new_client = Client(new_client_fd);		
@@ -123,7 +123,7 @@ void	Server::execServer()
 					{
 						std::cout << "connexion etablie fd =" << new_client_fd << std::endl;
 
-						epoll_event new_ev = this->addClient(new_client_fd);
+						epoll_event new_ev = this->addNewClient(new_client_fd);
                         if(epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, new_client_fd, &new_ev) == -1)
                         {
                             std::cerr << "Error TBD"<< std::endl;
@@ -153,45 +153,12 @@ void	Server::execServer()
 	}
 }
 
-void	Server::delChannel(std::string& channel_name)
-{
-	_channels.erase(channel_name);
-}
-
-void	Server::createChannel(std::string& channel_name, Client& client_creator)
-{
-	Channel new_channel(channel_name, client_creator, this);
-	_channels.insert(std::pair<std::string, Channel>(channel_name, new_channel));
-}
-
-void	Server::print_list_channels()
-{
-	std::map<std::string,Channel>::iterator it = _channels.begin();
-	std::map<std::string,Channel>::iterator ite = _channels.end();
-	for(; it != ite; it++)
-	{
-		std::cout << it->first << std::endl;
-	}
-}
-
-std::map<std::string,Channel>&		Server::getChannels()
-{
-	return _channels;
-}
-
-Channel*							Server::getChannelByTopic(std::string topic)
-{
-	std::map<std::string,Channel>::iterator it = _channels.find(topic);
-	if (it != _channels.end())	
-		return(&(it->second));
-	else
-		return (NULL);
-}
 
 /*
 return fd if found
 return -1 if not found
 */
+
 int		Server::getClientFdByUsername(std::string username)
 {
 	std::map<int,Client>::iterator it = _users.begin();
@@ -245,10 +212,10 @@ bool	Server::hasChannel(std::string& channel_name)
 
 void	Server::addUserToChannel(const std::string& channel_name, Client* user)
 {
-	std::map<std::string, Channel>::iterator it = _channels.find(channel_name);
+	std::map<std::string, Channel>::iterator it = this->_channels.find(channel_name);
 	if(it != _channels.end())
 	{
-		it->second.addClient(user);
+		it->second.addNewClient(user);
 		std::cout << "Welcome : " << user->getNick() << "!" << std::endl; 
 	}
 	else	
@@ -257,3 +224,89 @@ void	Server::addUserToChannel(const std::string& channel_name, Client* user)
 	}
 	
 }
+
+void Server::addNewNickname(std::string & nick, Client * client)
+{
+	this->_nicknames.insert(std::make_pair(nick, client));
+}
+
+Client*	Server::findUserByNickname(std::string & nickname)
+{
+	std::map<std::string,Client*>::iterator it = this->_nicknames.find(nickname);
+	if (it == this->_nicknames.end())
+		return NULL;
+	return it->second;
+}
+
+void	Server::addNewUsername(std::string & username, Client * client)
+{
+	this->_usernames.insert(std::make_pair(username, client));
+}
+
+Client*	Server::findUserByUsername(std::string & username)
+{
+	std::map<std::string,Client*>::iterator it = this->_usernames.find(username);
+	if (it == this->_usernames.end())
+		return NULL;
+	return it->second;
+}
+
+
+void	Server::setClientUsernameByFd(int socket, std::string username)
+{
+	_users[socket].setUsername(username);
+}
+
+Client&		Server::getClientByFd(int socket)
+{
+	Client& ref = _users[socket];
+	return (ref);
+}
+
+void	Server::delChannel(std::string& channel_name)
+{
+	std::map<std::string, Channel>::iterator it = _channels.find(channel_name);
+	if(it != _channels.end())
+	_channels.erase(it);
+}
+
+void	Server::createChannel(std::string& channel_name, Client& client_creator)
+{
+	if(_channels.find(channel_name) == _channels.end())
+	{
+		Channel new_channel(channel_name, client_creator, this);
+		_channels[channel_name] = new_channel;
+		std::cout << "Channel : " << channel_name << " created" << std::endl;
+	}
+	else
+		std::cout << "Channel : " << channel_name << " already created" << std::endl;
+}
+
+void	Server::print_list_channels()
+{
+	std::map<std::string, Channel>::iterator it;
+	for (it = _channels.begin(); it != _channels.end(); it++)
+		std::cout << it->first << std::endl;
+}
+
+void	Server::delClientByNickname(std::string & nickname)
+{
+	std::map<std::string,Client*>::iterator it = this->_usernames.find(nickname);
+	this->_nicknames.erase(it);
+}
+void	Server::delClientByUsername(std::string & username)
+{
+	std::map<std::string,Client*>::iterator it = this->_usernames.find(username);
+	this->_usernames.erase(it);
+}
+// Channel*	Server::getChannelByTopic(std::string topic)
+// {
+// 	std::vector<Channel>::iterator it = _channels.begin();
+// 	std::vector<Channel>::iterator ite = _channels.end();
+// 	for(; it != ite; it++)
+// 	{
+// 		if (it->getChannelTopic() == topic)
+// 			return (&(*it));
+// 	}
+// 	return (NULL);
+// }
