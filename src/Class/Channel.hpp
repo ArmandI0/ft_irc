@@ -16,7 +16,7 @@ class Channel
 		Channel& operator=(const Channel& src);
 		~Channel();
 		
-		void					addClient(Client* client);
+		void					addNewClient(Client* client);
 		void					delClient(Client* client);
 		void					delChannel();
 

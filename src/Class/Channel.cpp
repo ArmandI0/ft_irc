@@ -20,7 +20,7 @@ Channel::~Channel()
 {
 }
 
-void	Channel::addClient(Client* client)
+void	Channel::addNewClient(Client* client)
 {
 	_clients[client->getSocket()] = client->getUsername();
 }

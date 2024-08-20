@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   UT_channel.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/18 17:57:48 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/20 17:21:27 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ int main(int ac, char** av)
 	(void)ac;
 	(void)av;
 	Server serv("5252", "pswd");
-	serv.addClient(5);
-	serv.addClient(6);
+	serv.addNewClient(5);
+	serv.addNewClient(6);
 	serv.setClientUsernameByFd(5, "El matador");
 	serv.setClientUsernameByFd(6, "User lambda");
 	Client& client_creator = serv.getClientByFd(5);
@@ -72,7 +72,7 @@ int main(int ac, char** av)
 	// add client
 	std::cout << std::endl;
 	std::cout << "Add '"<< client2.getUsername() <<"' then list clients :" << std::endl;	
-	channel_test->addClient(client2);
+	channel_test->addNewClient(client2);
 	std::map<int,std::string> list_clients = channel_test->getClientsList();
 	for (std::map<int,std::string>::iterator it=list_clients.begin(); it != list_clients.end();it++)
 		std::cout<< "client fd, username : " << (it->first) << ":"<<it->second << std::endl;

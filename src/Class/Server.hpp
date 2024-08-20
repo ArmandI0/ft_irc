@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 17:16:59 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 17:36:22 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,23 +21,26 @@ class Channel;
 class Server
 {
     public:
-		Server(std::string port, std::string password); // create listen socket
+		Server(std::string port, std::string password);
 		~Server();
 
+		/*		Server					*/
 		void								listenSocket();
-		void								execServer(); // lancer epoll
+		void								execServer();
 		std::string							readSocket(int fd);
-
-
-		void								clientAuth(Client & client, Command & cmd);
-		epoll_event							addClient(int new_client_fd);
-		void								delClient(int client_fd);
 		
+		/*		Clients managements		*/
+		epoll_event							addNewClient(int new_client_fd);
 		void								addNewNickname(std::string & nick, Client * client);
-		Client*								findUserByNickname(std::string & nickname);
 		void								addNewUsername(std::string & username, Client * client);
+		Client&								getClientByFd(int socket);
+		Client*								findUserByNickname(std::string & nickname);
 		Client*								findUserByUsername(std::string & username);
+		void								delClient(int client_fd);
+		void								delClientByNickname(std::string & nickname);
+		void								delClientByUsername(std::string & username);
 		
+		/*		Channels managements	*/
 		void								createChannel(std::string & channel_name, Client & client_creator);
 		void								delChannel(std::string& channel_name);
 		int									getChannelId(std::string topic);
@@ -46,21 +49,21 @@ class Server
 		std::string							getPassword();
 		bool								hasChannel(std::string& channel_name);
 		void								addUserToChannel(const std::string& channel_name, Client* user);
-		Client&								getClientByFd(int socket);
 		void								setClientUsernameByFd(int socket, std::string username);
 		void								print_list_channels();
 
 	private:
 		Server();
-		struct sockaddr_in				_server_infos; //ip_type ; adr server ; port
-		std::map<int,Client>			_users;  //store int_fd for each client
-		std::map<std::string, Client*>	_nicknames; // store nickname and client
-		std::map<std::string, Client*>	_usernames;
-		std::map<std::string,Channel>	_channels;
-		std::string						_password;
+		
+		struct sockaddr_in					_server_infos;
+		std::map<int,Client>				_users;
+		std::map<std::string, Client*>		_nicknames;
+		std::map<std::string, Client*>		_usernames;
+		std::map<std::string,Channel>		_channels;
+		std::string							_password;
 
-		int								_epoll_socket;
-		int								_listen_socket;
+		int									_epoll_socket;
+		int									_listen_socket;
 };
 
 #endif

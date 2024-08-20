@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 17:18:35 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 17:41:48 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void    Server::listenSocket()
 
 // }
 
-epoll_event	Server::addClient(int new_client_fd)
+epoll_event	Server::addNewClient(int new_client_fd)
 {
 	struct epoll_event	new_ev;
 	Client				new_client = Client(new_client_fd);		
@@ -123,7 +123,7 @@ void	Server::execServer()
 					{
 						std::cout << "connexion etablie fd =" << new_client_fd << std::endl;
 
-						epoll_event new_ev = this->addClient(new_client_fd);
+						epoll_event new_ev = this->addNewClient(new_client_fd);
                         if(epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, new_client_fd, &new_ev) == -1)
                         {
                             std::cerr << "Error TBD"<< std::endl;
@@ -215,7 +215,7 @@ void	Server::addUserToChannel(const std::string& channel_name, Client* user)
 	std::map<std::string, Channel>::iterator it = this->_channels.find(channel_name);
 	if(it != _channels.end())
 	{
-		it->second.addClient(user);
+		it->second.addNewClient(user);
 		std::cout << "Welcome : " << user->getNick() << "!" << std::endl; 
 	}
 	else	
@@ -317,4 +317,16 @@ Channel*	Server::getChannelByTopic(std::string topic)
 			return (&(*it));
 	}
 	return (NULL);
+}
+
+
+void	Server::delClientByNickname(std::string & nickname)
+{
+	std::map<std::string,Client*>::iterator it = this->_usernames.find(nickname);
+	this->_nicknames.erase(it);
+}
+void	Server::delClientByUsername(std::string & username)
+{
+	std::map<std::string,Client*>::iterator it = this->_usernames.find(username);
+	this->_usernames.erase(it);
 }
