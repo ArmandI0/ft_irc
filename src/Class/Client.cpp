@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 11:33:52 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 16:53:53 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,3 +99,7 @@ void    Client::setAuth()
     this->_auth = true;
 }
 
+void		Client::setUsername(std::string username)
+{
+	_username = username;
+}
