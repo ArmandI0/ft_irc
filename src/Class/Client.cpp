@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 17:28:54 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 11:22:39 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ Client::Client()
 
 Client::Client(int socket) : _socket(socket), _auth(0), _pass(0)
 {
+    this->_nickname = "";
+    this->_username = "";
 }
 
 Client::Client(const Client& src)
@@ -65,12 +67,14 @@ std::string Client::getUsername() const
 	return (_username);
 }
 
-
-// Setters
-
 void	Client::setNick(const std::string &str)
 {
 	this->_nickname = str;
+}
+
+void    Client::setUser(const std::string & str)
+{
+    this->_username = str;
 }
 
 void	Client::setSocket(int socket)

@@ -276,35 +276,38 @@ void join_command()
 
 int	Command::serverAuth()
 {
-	std::istringstream iss(this->_input);
+	size_t pos = 0;    
+	std::string delimiter = "\r\n";
+
+	while ((pos = this->_input.find(delimiter)) != std::string::npos)
+	{
+        std::string command = this->_input.substr(0, pos);
+        this->_input.erase(0, pos + delimiter.length());
+		this->doCommandAuth(command);
+    }
+	return (0);
+}
+void	Command::doCommandAuth(std::string cmd)
+{
+	std::istringstream 			iss(cmd);
 	std::vector<std::string>	command;
-	std::string content;
-	std::string rest;
-	while (std::getline(iss, content))
-	{
+	std::string					content;
+
+	while (iss >> content)
 		command.push_back(content);
-	}
-	this->_input = content;
-	if (command[0] == "PASS" && this->_client_requester->getPass() == false && rest.empty() == true)
-	{
-		this->passCommand();
-	}
-	else if (command[0] == "NICK" && rest.empty() == true)
-	{
-		this->nickCommand();
-	}
-	else
-	{
-		std::cout << "Enter a valid command PASS / NICK" << std::endl;
-	}
-	if (this->_client_requester->getPass() == true && this->_client_requester->getNick().empty() == false)
+	if (checkAndComp(command, 0, "PASS") && this->_client_requester->getPass() == false && command.size() == 2)
+		this->passCommand(command[1]);
+	else if (checkAndComp(command, 0, "NICK"))
+		this->nickCommand(command[1]);
+	else if (checkAndComp(command, 0, "USER"))
+		this->userCommand(command[1]);
+	if (this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
 		this->_client_requester->setAuth();
-	return(0);
 }
 
-int	Command::passCommand()
+int	Command::passCommand(std::string password)
 {
-	if(this->_input.compare(this->_server->getPassword()) == 0)
+	if(password.compare(this->_server->getPassword()) == 0)
 	{
 		(this->_client_requester)->setPass();
 		return 1;
@@ -312,13 +315,27 @@ int	Command::passCommand()
 	return 0;
 }
 
-int	Command::nickCommand()
+int	Command::nickCommand(std::string nickname)
 {
-	if (this->_input.empty())
-	{
-		std::cerr << "Error : Invalid Nickame" << std::endl;
-	}
-	else
-		(this->_client_requester)->setNick(this->_input);
-	return (1);
+	(this->_client_requester)->setNick(nickname);
+	return 0;
 }
+
+void Command::userCommand(std::string username)
+{
+	(this->_client_requester)->setUser(username);
+}
+
+
+bool checkAndComp(std::vector<std::string> & entry, size_t i, const char* toComp)
+{
+	if (i == 0 && entry.empty())
+		return false;
+	else if (entry.size() <= i)
+		return false;
+	else if (entry[i].compare(std::string(toComp)) == 0)
+		return true;
+	else
+		return false;
+}
+

@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 09:30:09 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 11:21:33 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,10 @@ class Client
 		std::string	getNick() const;
 		void		setPass();
 		void		setAuth();
+		void		setNick(const std::string &str);
+		void		setUser(const std::string & str);
 		std::string getUsername() const;
 		
-		void		setNick(const std::string &str);
 		void		setSocket(int socket);
 
 };

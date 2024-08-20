@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/19 17:34:46 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 11:25:20 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,17 +136,20 @@ void	Server::execServer()
                 {
 					std::string buffer = readSocket(evs[i].data.fd);
 					Command	new_command(buffer, &(this->_users[evs[i].data.fd]), &*this);
-					std::cout << "BUFFER = " << buffer << std::endl;
+					std::cout << "buffer '" << buffer << "' buffer" << std::endl;
                     if((this->_users[evs[i].data.fd]).getAuth() == false)
                     {
 						new_command.serverAuth();
                     }
                     else
                     {
-						new_command.server_msg();
-                    }                    
+						//new_command.server_msg();
+                    }
+					if ((this->_users[evs[i].data.fd]).getAuth())
+						std::cout << "WELCOME !" << std::endl;   
 				}
 			}
+			std::cout << std::endl;
 		}
 	}
 }
@@ -209,18 +212,18 @@ std::string	Server::getPassword()
 
 std::string Server::readSocket(int fd)
 {
-    char buffer[1024];
+    char buffer[4096];
     ssize_t bytes_read = recv(fd, buffer, sizeof(buffer) - 1, 0);
     
     if (bytes_read > 0)
     {
         buffer[bytes_read] = '\0';
-        std::cout << "Reçu du fd " << fd << ": " << buffer << std::endl;
+        //std::cout << "Reçu du fd " << fd << ": " << buffer << std::endl;
         return std::string(buffer);
     }
     else if (bytes_read == 0) // Le client a fermé la connexion
     {
-        std::cout << "Client fd " << fd << " a fermé la connexion." << std::endl;
+        //std::cout << "Client fd " << fd << " a fermé la connexion." << std::endl;
         close(fd);
         epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, fd, NULL);
         this->delClient(fd);

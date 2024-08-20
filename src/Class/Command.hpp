@@ -38,8 +38,10 @@ class Command
 
 		/* COMMANDE D'AUTHENTIFICATION */
 		int			serverAuth();
-		int			passCommand();
-		int			nickCommand();
+		void		doCommandAuth(std::string cmd);
+		int			passCommand(std::string password);
+		void		userCommand(std::string username);
+		int			nickCommand(std::string nickname);
 
 		// void	response(std::string str_response, std::vector<Client> clients);
 	private :	
@@ -48,7 +50,6 @@ class Command
 		Server*			_server;	
 };
 
-bool	onlySpaces(std::string str);
-bool	containSpaces(std::string str);
+bool checkAndComp(std::vector<std::string> & entry, size_t i, const char* toComp);
 
 #endif
