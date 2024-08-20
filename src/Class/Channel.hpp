@@ -15,8 +15,9 @@ class Channel
 		Channel(const Channel& src);
 		Channel& operator=(const Channel& src);
 		~Channel();
-		void					addClient(Client& client);
-		void					delClient(Client& client);
+		
+		void					addClient(Client* client);
+		void					delClient(Client* client);
 		void					delChannel();
 		std::string					getName();
 		std::map<int,std::string>	getOperatorsList();

@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 11:25:20 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/20 11:37:02 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,4 +234,27 @@ std::string Server::readSocket(int fd)
         std::cerr << "Erreur lors de la réception de données du fd " << fd << std::endl;
         return "";  // Retourner une chaîne vide ou gérer l'erreur de manière appropriée
     }
+}
+
+bool	Server::hasChannel(std::string& channel_name)
+{
+	if(_channels.find(channel_name) != _channels.end())
+		return (true);
+	std::cout << "The channel : " << channel_name << " does not exist" << std::endl;
+	return(false);
+}
+
+void	Server::addUserToChannel(const std::string& channel_name, Client* user)
+{
+	std::map<std::string, Channel>::iterator it = _channels.find(channel_name);
+	if(it != _channels.end())
+	{
+		it->second.addClient(user);
+		std::cout << "Welcome : " << user->getNick() << "!" << std::endl; 
+	}
+	else
+	{
+		std::cout << "Channel does not exist" << std::endl;
+	}
+	
 }

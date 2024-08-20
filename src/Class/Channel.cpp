@@ -20,14 +20,14 @@ Channel::~Channel()
 {
 }
 
-void	Channel::addClient(Client& client)
+void	Channel::addClient(Client* client)
 {
-	_clients[client.getSocket()] = client.getUsername();
+	_clients[client->getSocket()] = client->getUsername();
 }
 
-void	Channel::delClient(Client& client)
+void	Channel::delClient(Client* client)
 {
-	int socket = client.getSocket();
+	int socket = client->getSocket();
 	if (_clients.find(socket) != _clients.end())
 		_clients.erase(socket);
 	if (_clients.size() == 0)
