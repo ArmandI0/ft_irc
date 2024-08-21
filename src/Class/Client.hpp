@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 16:52:04 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/21 13:48:53 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ class Client
 		std::string	_username;
 		std::string	_second_choice;
 		std::string	_third_choice;
+		std::string	_entry;
 		std::map<std::string, Channel*> _channels_in;
 		
 	public:
@@ -45,16 +46,17 @@ class Client
 		bool									getPass() const;
 		std::string								getNick() const;
 		std::string								getUsername() const;
+		std::string								&getEntry();
 		const std::map<std::string, Channel*>	getChannelsIn();
+		
 		void									setUsername(std::string username);
-
-
-		void		setPass();
-		void		setAuth();
-		void		setNick(const std::string &str);
-		void		setUser(const std::string & str);		
-		void		setSocket(int socket);
-
+		void									setEntry(const std::string & str);
+		void									setPass();
+		void									setAuth();
+		void									setNick(const std::string &str);
+		void									setUser(const std::string & str);		
+		void									setSocket(int socket);
+		void									eraseEntry();
 };
 
 #endif

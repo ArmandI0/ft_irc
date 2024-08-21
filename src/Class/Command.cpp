@@ -46,13 +46,26 @@ void error_message(std::string error)
 	std::cout << "Syntax error : " << error << std::endl;
 }
 	
+void	Command::createChannel(std::string& channel_name, Client& client_creator, Server* server)
+{
+		// Modifying operator
+		Channel new_channel(channel_name, client_creator, server);
+		server->setChannel(new_channel, channel_name);
+		// Commande who
+		// std::string msg = "331 " + client_creator.getNick() + " " + channel_name + ":No topic is set\r\n";
+		std::string msg = "WHO " + channel_name + "\r\n";
+		sendMessageToClient(this->_client_requester->getSocket(), msg);
+		// sendMessageToClient(server.)
+		std::cout << "Channel : " << channel_name << " created" << std::endl;
+}
 
 void	Command::execJoin()
 {
-	if(this->_server->hasChannel(this->_command[1]) == true)
-	{
-		this->_server->addUserToChannel(this->_command[1], _client_requester);
-	}
+	Channel* channel = this->_server->hasChannel(this->_command[1]);
+	if(channel)
+		channel->addNewClient(this->_client_requester);
+	else
+		createChannel(this->_command[1], *this->_client_requester, this->_server);
 }
 
 void	Command::execNick()
@@ -83,12 +96,18 @@ void Command::server_msg()
 	std::istringstream iss(this->_input);
 	std::string content;
 
-	while (std::getline(iss, content))
+	std::cout << "Input :" << this->_input << std::endl;
+	while (iss >> content)
+	{
 		this->_command.push_back(content);
+		std::cout << "Content : " << content << std::endl;
+	}
+	std::cout << "Command[0] : " << this->_command[0] << std::endl;
+	std::cout << "Command[1] : " << this->_command[1] << std::endl;
 
-	if (this->_command[0] == "/QUIT" && this->_command[1].empty()){}; // function to exit the irc server and free the socket
+	if (this->_command[0] == "QUIT" && this->_command[1].empty()){}; // function to exit the irc server and free the socket
 
-	if (this->_command[0] == "/JOIN" && !this->_command[1].empty() && this->_command[2].empty())
+	if (this->_command[0] == "JOIN" && !this->_command[1].empty())
 		execJoin();
 
 	if (this->_command[0] == "NICK" && !this->_command[1].empty() && this->_command[2].empty()) // OK
@@ -152,16 +171,20 @@ void	Command::doCommandAuth(std::string cmd)
 	else if (checkAndComp(command, 0, "USER"))
 		this->userCommand(command);
 	if (this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
+	{
 		this->_client_requester->setAuth();
+		sendMessageToClient(this->_client_requester->getSocket(), "Welcome " + this->_client_requester->getNick() + "\r\n");
+	}
 }
 
 int	Command::passCommand(std::vector<std::string> & password)
 {
+	std::cout << "PASS" << std::endl;
 	if (this->_client_requester->getPass() == true)
-		sendErrorToClient(this->_client_requester->getSocket(), ERR_ALREADYREGISTRED);
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_ALREADYREGISTRED);
 	else if (password.size() == 1)
 	{
-		sendErrorToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS("PASS"));
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS("PASS"));
 	}
 	else if(password[1].compare(this->_server->getPassword()) == 0 && password.size() == 2)
 	{
@@ -173,12 +196,13 @@ int	Command::passCommand(std::vector<std::string> & password)
 
 int	Command::nickCommand(std::vector<std::string> & nickname)
 {
+	std::cout << "NICK" << std::endl;
 	if (nickname.size() == 1)
-		sendErrorToClient(this->_client_requester->getSocket(), ERR_NONICKNAMEGIVEN);
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NONICKNAMEGIVEN);
 	else if (nickname.size() == 2 && nickname[1].find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_") != std::string::npos)
-		sendErrorToClient(this->_client_requester->getSocket(), ERR_ERRONEUSNICKNAME(nickname[1]));	
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_ERRONEUSNICKNAME(nickname[1]));	
 	else if (nickname.size() == 2 && this->_server->findUserByNickname(nickname[1]) != NULL)
-		sendErrorToClient(this->_client_requester->getSocket(), ERR_NICKNAMEINUSE(nickname[1]));
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NICKNAMEINUSE(nickname[1]));
 	else if (nickname.size() == 2)
 	{
 		this->_client_requester->setNick(nickname[1]);
@@ -189,10 +213,11 @@ int	Command::nickCommand(std::vector<std::string> & nickname)
 
 void Command::userCommand(std::vector<std::string> & username)
 {
+	std::cout << "USER" << std::endl;
 	if (username.size() < 5)
-		sendErrorToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS("USER"));
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS("USER"));
 	else if (username.size() == 5 && this->_server->findUserByUsername(username[1]) != NULL)
-		sendErrorToClient(this->_client_requester->getSocket(), ERR_ALREADYREGISTRED);
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_ALREADYREGISTRED);
 	else if (username.size() == 5)
 	{
 		this->_client_requester->setUser(username[1]);
@@ -213,7 +238,7 @@ bool checkAndComp(std::vector<std::string> & entry, size_t i, const char* toComp
 		return false;
 }
 
-void sendErrorToClient(int fd, std::string error)
+void sendMessageToClient(int fd, std::string error)
 {
 	int send = write(fd, error.c_str(), error.size());
 	if (send < 0)
