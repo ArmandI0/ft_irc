@@ -3,6 +3,7 @@
 # define irc_hpp
 
 #define RED "\033[31m"
+#define GREEN "\033[32m"
 #define RESET "\033[0m"
 
 # include <iostream>
@@ -17,6 +18,8 @@
 # include <list>
 # include <unistd.h>
 # include <sstream>
+# include <csignal>
+
 
 # include "Class/Server.hpp"
 # include "Class/Client.hpp"

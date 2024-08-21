@@ -6,11 +6,17 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/21 15:25:25 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/21 17:15:23 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+
+void handle_sigint(int sig)
+{
+	(void)sig;
+}
 
 Server::Server(std::string port, std::string password) :  _password(password)
 {
@@ -27,19 +33,14 @@ Server::~Server()
 void    Server::listenSocket()
 {
 	int status;
-	int log = 10;	//nb max de connexion
-
-	/* CREER LE SOCKET D'ECOUTE */
+	int log = 10;
 
 	this->_listen_socket = socket(this->_server_infos.sin_family, SOCK_STREAM, 0);
 	if (this->_listen_socket == -1)
 	{
 		std::cerr << "Error TBD"<< std::endl;
 		return ;
-	}
-
-	/* ECOUTE SUR LE SOCKET CREE */
-    
+	}    
 	status = bind(this->_listen_socket, (struct sockaddr *)&(this->_server_infos), sizeof this->_server_infos);
 	if (status != 0)
 	{
@@ -53,11 +54,6 @@ void    Server::listenSocket()
 		return ;
 	}
 }	
-
-// void	Server::clientAuth(Client & client, Command & cmd)
-// {
-
-// }
 
 epoll_event	Server::addNewClient(int new_client_fd)
 {
@@ -81,7 +77,9 @@ void	Server::execServer()
 	struct epoll_event ev;
 	ev.events = EPOLLIN;  // Par exemple, surveiller les événements de lecture (EPOLLIN)
 	ev.data.fd = this->_listen_socket;
-
+	
+    std::signal(SIGINT, handle_sigint);
+	
 	/* CREATION EPOLL*/
 	this->_epoll_socket = epoll_create1(0);
 	if (this->_epoll_socket == -1)
@@ -105,7 +103,8 @@ void	Server::execServer()
 		ret = epoll_wait(this->_epoll_socket, evs, 10, -1);
 		if (ret == -1)
 		{
-			std::cerr << "Error TBD"<< std::endl;
+			close(this->_epoll_socket);
+    		close(this->_listen_socket);
 			exit(EXIT_FAILURE);
 		}
 		for (int i = 0; i < ret; i++)
@@ -136,6 +135,8 @@ void	Server::execServer()
 			}
 		}
 	}
+	close(this->_epoll_socket);
+    close(this->_listen_socket);
 }
 
 void	Server::execCommand(Client & client)
