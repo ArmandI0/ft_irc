@@ -16,8 +16,8 @@ class Channel
 		Channel& operator=(const Channel& src);
 		~Channel();
 		
-		void					addClient(Client* client);
-		void					delClient(Client* client);
+		void					addNewClient(Client* client);
+		void					delClient(std::string nickname);
 		void					delChannel();
 
 		std::map<int,std::string>	getOperatorsList();
@@ -25,6 +25,8 @@ class Channel
 		std::string					getPassword();
 		size_t						getUserLimit();
 		std::string 				getName();
+		
+		Client*						findUser(std::string nickname);
 
 		bool					isModeOn(char mode);
 		bool					isOperator(int socket_user);
