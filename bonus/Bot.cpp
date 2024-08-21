@@ -16,6 +16,27 @@ Bot::Bot(char* ip, char* pass, char *port): _server_ip(ip), _server_pass(pass), 
 {
 }
 
+void	Bot::getInsults()
+{
+	std::ifstream file;
+	std::string line;
+
+	file.open(INSULTS);
+	std::cout << INSULTS << std::endl;
+	if (file.is_open())
+	{
+		while (std::getline(file, line))
+		{
+			std::cout<<line<<std::endl;
+			if (!file.eof())
+				_insults.push_back(line);
+		}
+		file.close();
+	}
+	else
+		throw std::runtime_error("open file error : " + std::string(INSULTS));
+}
+
 Bot::Bot(const Bot& src)
 {
 	*this = src;
@@ -145,7 +166,7 @@ void 	Bot::	authentification()
 void	Bot::botResponse(std::string& request)
 {
 	(void)request;
-	std::cout << "response BOTTTTT" << std::endl;
+	std::cout << "response BOTTTTT" << std::endl;	
 }
 
 void	Bot::createBotChannel()

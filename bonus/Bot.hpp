@@ -22,11 +22,13 @@
 # include <map>
 # include <vector>
 # include <list>
+# include <fstream>
 # include <unistd.h>
 # include <sstream>
 # include <string.h>
 # define PORT 4243
 # define BOT "Best_Bot"
+# define INSULTS "insults.txt"
 
 class Bot
 {
@@ -38,7 +40,7 @@ class Bot
 
 		void				connectBot();
 		void				loopBot();
-		
+		void				getInsults();
 	private:
 		void				waitingEvents();
 		std::string 		readSocket(int fd);
@@ -56,6 +58,7 @@ class Bot
 		char*				_server_port;
 		int					_epoll_socket;
 		struct addrinfo*	_res;
+		std::vector<std::string> _insults;
 		Bot();
 };
 

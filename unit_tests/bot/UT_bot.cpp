@@ -6,7 +6,7 @@
 /*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/21 12:05:09 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/21 17:20:29 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int main(int ac, char** av)
 	Bot bot = Bot(av[1], av[2], av[3]);
 	try 
 	{
+		bot.getInsults();
 		bot.connectBot();
 		bot.loopBot();
 	}
