@@ -22,18 +22,26 @@ Channel::~Channel()
 
 void	Channel::addNewClient(Client* client)
 {
-	_clients[client->getSocket()] = client->getUsername();
+	(void)client;
+	// _clients[client->getSocket()] = client->getUsername();
+	std::cout << "Client added" << std::endl;
 }
 
-void	Channel::delClient(Client* client)
+void	Channel::delClient(std::string nickname)
 {
-	int socket = client->getSocket();
+	int socket = _server->getClientFdByUsername(nickname);
+	if(socket == -1)
+	{
+		std::cout << "User " << nickname << " not found" << std::endl;
+		return ;
+	}
 	if (_clients.find(socket) != _clients.end())
 		_clients.erase(socket);
 	if (_operators.find(socket) != _operators.end())
-		_operators.erase(socket);		
+		_operators.erase(socket);
 	if (_clients.size() == 0)
 		delChannel();
+	std::cout << "Kicking " << nickname << std::endl;
 }
 
 void	Channel::delChannel()
@@ -193,3 +201,12 @@ std::string Channel::getName()
 {
 	return this->_name;
 }
+
+// Client*	Channel::findUser(std::string client_name)
+// {
+// 	std::map<int, Client>::iterator it  = this->_clients.find(client_name);
+// 	if(it != _clients.end())
+// 		return (&it->second);
+// 	std::cout << "The channel : " << _clients << " does not exist" << std::endl;
+// 	return(NULL);
+// }

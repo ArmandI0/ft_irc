@@ -52,8 +52,8 @@ void	Command::createChannel(std::string& channel_name, Client& client_creator, S
 		Channel new_channel(channel_name, client_creator, server);
 		server->setChannel(new_channel, channel_name);
 		// Commande who
-		// std::string msg = "331 " + client_creator.getNick() + " " + channel_name + ":No topic is set\r\n";
-		std::string msg = "WHO " + channel_name + "\r\n";
+		std::string msg = "331 " + client_creator.getNick() + " " + channel_name + ":No topic is set\r\n";
+		// std::string msg = "WHO " + channel_name + "\r\n";
 		sendMessageToClient(this->_client_requester->getSocket(), msg);
 		// sendMessageToClient(server.)
 		std::cout << "Channel : " << channel_name << " created" << std::endl;
@@ -65,7 +65,12 @@ void	Command::execJoin()
 	if(channel)
 		channel->addNewClient(this->_client_requester);
 	else
+	{
 		createChannel(this->_command[1], *this->_client_requester, this->_server);
+		channel->addNewClient(this->_client_requester);
+	}
+	// std::string msg = this->_client_requester->getNick() + " entered " + channel->getName() + "\r\n";
+	// sendMessageToClient(this->_client_requester->getSocket(), msg);
 }
 
 void	Command::execNick()
@@ -90,6 +95,13 @@ void	Command::execNick()
 	this->_client_requester->setNick(this->_command[1]);
 }
 
+void	Command::execKick()
+{
+	Channel* channel = this->_server->hasChannel(this->_command[1]);
+	if(channel)
+		channel->delClient(this->_command[2]);
+}
+
 void Command::server_msg()
 {
 
@@ -112,6 +124,8 @@ void Command::server_msg()
 
 	if (this->_command[0] == "NICK" && !this->_command[1].empty() && this->_command[2].empty()) // OK
 		execNick();
+	if (checkAndComp(_command, 0, "KICK"))
+		execKick();
 	// // if(input[0] == ':')
 	// // 	nickname_change(channels);
 	// if(operators == 1)
@@ -159,17 +173,16 @@ int	Command::serverAuth()
 void	Command::doCommandAuth(std::string cmd)
 {
 	std::istringstream 			iss(cmd);
-	std::vector<std::string>	command;
 	std::string					content;
 
 	while (iss >> content)
-		command.push_back(content);
-	if (checkAndComp(command, 0, "PASS"))
-		this->passCommand(command);
-	else if (checkAndComp(command, 0, "NICK"))
-		this->nickCommand(command);
-	else if (checkAndComp(command, 0, "USER"))
-		this->userCommand(command);
+		_command.push_back(content);
+	if (checkAndComp(_command, 0, "PASS"))
+		this->passCommand(_command);
+	else if (checkAndComp(_command, 0, "NICK"))
+		this->nickCommand(_command);
+	else if (checkAndComp(_command, 0, "USER"))
+		this->userCommand(_command);
 	if (this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
 	{
 		this->_client_requester->setAuth();
