@@ -5,12 +5,13 @@ SRCS		=	\
 OBJS		= $(SRCS:%.cpp=%.o)
 
 CXX 		= c++
-CXXFLAGS 	= -Wall -Wextra -Werror -g
-NAME 		= UT_channel
+CXXFLAGS 	= -Wall -Wextra -Werror -g 
+NAME 		= UT_bot
 RM 			= rm -f
 RMR			= rm -rf
 
-#-RULES-#
+API_FILE = api_irc.txt
+API_KEY = $(shell cat $(API_FILE))
 
 all: $(NAME)
 

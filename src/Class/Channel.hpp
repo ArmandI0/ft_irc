@@ -16,13 +16,12 @@ class Channel
 		Channel& operator=(const Channel& src);
 		~Channel();
 		
-		void					addNewClient(Client* client);
+		void					addClient(Client* client);
 		void					delClient(Client* client);
 		void					delChannel();
 
 		std::map<int,std::string>	getOperatorsList();
 		std::map<int,std::string>	getClientsList();
-		// std::string					getChannelTopic();
 		std::string					getPassword();
 		size_t						getUserLimit();
 		std::string 				getName();

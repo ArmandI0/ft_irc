@@ -26,6 +26,7 @@
 # include <sstream>
 # include <string.h>
 # define PORT 4243
+# define BOT "Best_Bot"
 
 class Bot
 {
@@ -35,18 +36,23 @@ class Bot
 		Bot& operator=(const Bot& src);
 		~Bot();
 
-		/*		Bot					*/
-		void								connectBot();
-		void								loopBot();
-		void								waitingEvents();
+		void				connectBot();
+		void				loopBot();
 		
 	private:
+		void				waitingEvents();
+		std::string 		readSocket(int fd);
+		void				authentification();
+		void				createBotChannel();
+		void				botResponse(std::string& request);
+
+
 		struct sockaddr_in	_bot_infos;
 		std::string			_nickname;
 		std::string			_username;
 		int					_server_socket;
 		char*				_server_ip;
-		char*				_server_pass;
+		std::string			_server_pass;
 		char*				_server_port;
 		int					_epoll_socket;
 		struct addrinfo*	_res;
