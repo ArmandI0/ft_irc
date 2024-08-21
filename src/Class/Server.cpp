@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 17:47:26 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/21 14:38:06 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,12 +108,10 @@ void	Server::execServer()
 			std::cerr << "Error TBD"<< std::endl;
 			exit(EXIT_FAILURE);
 		}
-		/* gestion des events */
 		for (int i = 0; i < ret; i++)
 		{
 			if (evs[i].events & EPOLLIN)
 			{
-				/* Si events sur le socket d'entree du serveur : accepter la nouvelle connection */
 				if (evs[i].data.fd == this->_listen_socket)
 				{
 					int new_client_fd = accept(this->_listen_socket, NULL, NULL);
@@ -133,31 +131,37 @@ void	Server::execServer()
                 }
                 else
                 {
-					std::string buffer = readSocket(evs[i].data.fd);
-					Command	new_command(buffer, &(this->_users[evs[i].data.fd]), &*this);
-					std::cout << "buffer '" << buffer << "' buffer" << std::endl;
-                    if((this->_users[evs[i].data.fd]).getAuth() == false)
-                    {
-						new_command.serverAuth();
-                    }
-                    else
-                    {
-						new_command.server_msg();
-                    }
-					if ((this->_users[evs[i].data.fd]).getAuth())
-						std::cout << "WELCOME !" << std::endl;   
+					execCommand(this->_users[evs[i].data.fd]);	
 				}
 			}
-			std::cout << std::endl;
 		}
 	}
 }
 
-
-/*
-return fd if found
-return -1 if not found
-*/
+void	Server::execCommand(Client & client)
+{
+	std::string buffer = readSocket(client.getSocket());
+	if (!buffer.empty())
+	{
+		std::cout << client.getSocket() << "Buffer read" << buffer << std::endl;
+		if (!buffer.empty())
+		{
+			client.setEntry(buffer);
+			std::cout << "Buffer client" << client.getEntry() << std::endl;
+			if (client.getEntry().find("\n") != std::string::npos)
+			{
+				Command	new_command(client.getEntry(), &client, &*this);
+				client.eraseEntry();
+				std::cout << "buffer '" << buffer << "' buffer" << std::endl;
+				if(client.getAuth() == false)
+					new_command.serverAuth();
+				else
+					new_command.server_msg();
+			}
+			std::cout << "Buffer client" << client.getEntry() << std::endl;
+		}
+	}
+}
 
 int		Server::getClientFdByUsername(std::string username)
 {
@@ -184,21 +188,19 @@ std::string Server::readSocket(int fd)
     if (bytes_read > 0)
     {
         buffer[bytes_read] = '\0';
-        //std::cout << "Reçu du fd " << fd << ": " << buffer << std::endl;
         return std::string(buffer);
     }
-    else if (bytes_read == 0) // Le client a fermé la connexion
+    else if (bytes_read == 0)
     {
-        //std::cout << "Client fd " << fd << " a fermé la connexion." << std::endl;
         close(fd);
         epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, fd, NULL);
         this->delClient(fd);
-        return "";  // Retourner une chaîne vide pour indiquer la fermeture de la connexion
+        return "";
     }
     else // bytes_read == -1
     {
         std::cerr << "Erreur lors de la réception de données du fd " << fd << std::endl;
-        return "";  // Retourner une chaîne vide ou gérer l'erreur de manière appropriée
+        return "";
     }
 }
 

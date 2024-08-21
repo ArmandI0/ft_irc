@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 16:53:53 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/21 14:15:32 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ Client& Client::operator=(const Client& src)
     this->_second_choice = src._second_choice;
     this->_third_choice = src._third_choice;
     this->_channels_in = src._channels_in;
+	this->_entry = src._entry;
 	return (*this);
 }
 
@@ -43,63 +44,22 @@ Client::~Client()
 {
 }
 
-int		Client::getSocket() const
-{
-    return this->_socket;
-}
+/*		Getters		*/
+int										Client::getSocket() 	const{return this->_socket;}
+bool 									Client::getAuth() 		const{return this->_auth;}
+bool									Client::getPass() 		const{return this->_pass;}
+std::string								Client::getNick() 		const{return this->_nickname;}
+std::string 							Client::getUsername() 	const{return (_username);}
+const std::map<std::string, Channel*>	Client::getChannelsIn()	{return this->_channels_in;}
+std::string								&Client::getEntry() 	{return this->_entry;}
 
-bool 	Client::getAuth() const
-{
-    return this->_auth;
-}
-bool	Client::getPass() const
-{
-    return this->_pass;
-}
+/*      Setters     */
+void	Client::setNick(const std::string &str)		{this->_nickname = str;}
+void    Client::setUser(const std::string & str)	{this->_username = str;}
+void	Client::setSocket(int socket)				{this->_socket = socket;}
+void	Client::setPass()							{this->_pass = true;}
+void    Client::setAuth()							{this->_auth = true;}
+void    Client::setUsername(std::string username)	{this->_username = username;}
 
-std::string	Client::getNick() const
-{
-    return this->_nickname;
-}
-
-std::string Client::getUsername() const
-{
-	return (_username);
-}
-
-const std::map<std::string, Channel*> Client::getChannelsIn()
-{
-	return this->_channels_in;
-}
-
-// Setters
-
-void	Client::setNick(const std::string &str)
-{
-	this->_nickname = str;
-}
-
-void    Client::setUser(const std::string & str)
-{
-    this->_username = str;
-}
-
-void	Client::setSocket(int socket)
-{
-	this->_socket = socket;
-}
-
-void	Client::setPass()
-{
-	this->_pass = true;
-}
-
-void    Client::setAuth()
-{
-    this->_auth = true;
-}
-
-void		Client::setUsername(std::string username)
-{
-	_username = username;
-}
+void    Client::setEntry(const std::string & str)	{this->_entry.append(str);}
+void	Client::eraseEntry()						{this->_entry = "";}
