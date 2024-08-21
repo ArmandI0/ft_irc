@@ -36,9 +36,9 @@ class Bot
 		~Bot();
 
 		/*		Bot					*/
-		void								connect_bot();
-		void								execBot();
-		std::string							readSocket(int fd);
+		void								connectBot();
+		void								loopBot();
+		void								waitingEvents();
 		
 	private:
 		struct sockaddr_in	_bot_infos;
@@ -48,6 +48,7 @@ class Bot
 		char*				_server_ip;
 		char*				_server_pass;
 		char*				_server_port;
+		int					_epoll_socket;
 		struct addrinfo*	_res;
 		Bot();
 };

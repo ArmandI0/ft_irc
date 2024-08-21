@@ -35,7 +35,7 @@ Bot::~Bot()
 	freeaddrinfo(_res);
 }
 
-void	Bot::connect_bot()
+void	Bot::connectBot()
 {
 	int status;
 	struct addrinfo hints;
@@ -57,4 +57,28 @@ void	Bot::connect_bot()
 		throw std::runtime_error("connect() failed with error: " + std::string(strerror(errno)));
 }
 
+void	Bot::loopBot()
+{
+	struct epoll_event event;
 
+	_epoll_socket = epoll_create1(0);
+
+	if (status == -1)
+		throw std::runtime_error("epoll_create() failed with error: " + std::string(strerror(errno)));
+
+	event.events=EPOLLIN;
+	event.data.fd=_server_socket;
+
+    if (epoll_ctl(_epoll_socket, EPOLL_CTL_ADD, _server_socket, &event) == -1)
+		throw std::runtime_error("epoll_ctl() failed with error: " + std::string(strerror(errno)));
+	
+	while (true)
+	{
+		waitingEvents();
+	}
+}
+
+void Bot::waitingEvents()
+{
+	
+}

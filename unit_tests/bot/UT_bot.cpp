@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   UT_bot.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@42angouleme.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/20 22:08:33 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/21 09:13:22 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int main(int ac, char** av)
 	Bot bot = Bot(av[1], av[2], av[3]);
 	try 
 	{
-		bot.connect_bot();
+		bot.connectBot();
 	}
 	catch (std::exception &e)
 	{
