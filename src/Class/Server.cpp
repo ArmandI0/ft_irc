@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/21 15:25:25 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/21 17:29:35 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,7 +218,7 @@ void	Server::addUserToChannel(const std::string& channel_name, Client* user)
 	std::map<std::string, Channel>::iterator it = this->_channels.find(channel_name);
 	if(it != _channels.end())
 	{
-		it->second.addNewClient(user);
+		it->second.addClient(user);
 		std::cout << "Welcome : " << user->getNick() << "!" << std::endl; 
 	}
 	else	

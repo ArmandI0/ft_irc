@@ -63,11 +63,11 @@ void	Command::execJoin()
 {
 	Channel* channel = this->_server->hasChannel(this->_command[1]);
 	if(channel)
-		channel->addNewClient(this->_client_requester);
+		channel->addClient(this->_client_requester);
 	else
 	{
 		createChannel(this->_command[1], *this->_client_requester, this->_server);
-		channel->addNewClient(this->_client_requester);
+		channel->addClient(this->_client_requester);
 	}
 	// std::string msg = this->_client_requester->getNick() + " entered " + channel->getName() + "\r\n";
 	// sendMessageToClient(this->_client_requester->getSocket(), msg);
