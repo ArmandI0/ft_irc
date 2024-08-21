@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/21 14:38:06 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/21 15:25:25 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,12 +204,13 @@ std::string Server::readSocket(int fd)
     }
 }
 
-bool	Server::hasChannel(std::string& channel_name)
+Channel*	Server::hasChannel(std::string& channel_name)
 {
-	if(_channels.find(channel_name) != _channels.end())
-		return (true);
+	std::map<std::string,Channel>::iterator it  = this->_channels.find(channel_name);
+	if(it != _channels.end())
+		return (&it->second);
 	std::cout << "The channel : " << channel_name << " does not exist" << std::endl;
-	return(false);
+	return(NULL);
 }
 
 void	Server::addUserToChannel(const std::string& channel_name, Client* user)
@@ -272,18 +273,6 @@ void	Server::delChannel(std::string& channel_name)
 	_channels.erase(it);
 }
 
-void	Server::createChannel(std::string& channel_name, Client& client_creator)
-{
-	if(_channels.find(channel_name) == _channels.end())
-	{
-		Channel new_channel(channel_name, client_creator, this);
-		_channels[channel_name] = new_channel;
-		std::cout << "Channel : " << channel_name << " created" << std::endl;
-	}
-	else
-		std::cout << "Channel : " << channel_name << " already created" << std::endl;
-}
-
 void	Server::print_list_channels()
 {
 	std::map<std::string, Channel>::iterator it;
@@ -312,3 +301,8 @@ void	Server::delClientByUsername(std::string & username)
 // 	}
 // 	return (NULL);
 // }
+
+void Server::setChannel(Channel channel, std::string& channel_name)
+{
+	_channels[channel_name] = channel;
+}

@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/21 14:17:51 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/21 15:25:45 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,12 @@ class Server
 		int									getChannelId(std::string topic);
 		int									getClientFdByUsername(std::string username);
 		std::string							getPassword();
-		bool								hasChannel(std::string& channel_name);
+		Channel*							hasChannel(std::string& channel_name);
 		void								addUserToChannel(const std::string& channel_name, Client* user);
 		void								setClientUsernameByFd(int socket, std::string username);
 		void								print_list_channels();
-		// Channel*							getChannelByTopic(std::string topic);
+		
+		void								setChannel(Channel channel, std::string& channel_name);
 
 	private:
 		Server();
