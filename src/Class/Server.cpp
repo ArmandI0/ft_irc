@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/21 17:15:23 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/21 19:13:09 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ Server::Server(std::string port, std::string password) :  _password(password)
 
 Server::~Server()
 {
-	
+
 }
 
 void    Server::listenSocket()
@@ -38,7 +38,7 @@ void    Server::listenSocket()
 	this->_listen_socket = socket(this->_server_infos.sin_family, SOCK_STREAM, 0);
 	if (this->_listen_socket == -1)
 	{
-		std::cerr << "Error TBD"<< std::endl;
+		std::cerr << "Error "<< std::endl;
 		return ;
 	}    
 	status = bind(this->_listen_socket, (struct sockaddr *)&(this->_server_infos), sizeof this->_server_infos);
@@ -53,7 +53,7 @@ void    Server::listenSocket()
 		std::cerr << "Error TBD"<< std::endl;
 		return ;
 	}
-}	
+}
 
 epoll_event	Server::addNewClient(int new_client_fd)
 {
@@ -144,22 +144,19 @@ void	Server::execCommand(Client & client)
 	std::string buffer = readSocket(client.getSocket());
 	if (!buffer.empty())
 	{
-		std::cout << client.getSocket() << "Buffer read" << buffer << std::endl;
 		if (!buffer.empty())
 		{
 			client.setEntry(buffer);
-			std::cout << "Buffer client" << client.getEntry() << std::endl;
 			if (client.getEntry().find("\n") != std::string::npos)
 			{
 				Command	new_command(client.getEntry(), &client, &*this);
 				client.eraseEntry();
-				std::cout << "buffer '" << buffer << "' buffer" << std::endl;
+				std::cout << "Buffer read :\n" GREEN << buffer  << RESET "Buffer read :" << std::endl;
 				if(client.getAuth() == false)
 					new_command.serverAuth();
 				else
 					new_command.server_msg();
 			}
-			std::cout << "Buffer client" << client.getEntry() << std::endl;
 		}
 	}
 }
