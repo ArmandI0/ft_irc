@@ -63,7 +63,7 @@ void	Command::execJoin()
 {
 	Channel* channel = this->_server->hasChannel(this->_command[1]);
 	if(channel)
-		channel->addClient(this->_client_requester);
+		channel->addNewClient(this->_client_requester);
 	else
 		createChannel(this->_command[1], *this->_client_requester, this->_server);
 }
@@ -173,7 +173,7 @@ void	Command::doCommandAuth(std::string cmd)
 	if (this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
 	{
 		this->_client_requester->setAuth();
-		sendErrorToClient(this->_client_requester->getSocket(), "Welcome " + this->_client_requester->getNick() + "\r\n");
+		sendMessageToClient(this->_client_requester->getSocket(), "Welcome " + this->_client_requester->getNick() + "\r\n");
 	}
 }
 
