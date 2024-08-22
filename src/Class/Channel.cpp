@@ -20,20 +20,42 @@ Channel::~Channel()
 {
 }
 
-void	Channel::addNewClient(Client* client)
+void	Channel::addClientToCh(Client* client)
 {
-	_clients[client->getSocket()] = client->getUsername();
+	if(!client)
+		return ;
+	int	socket = client->getSocket();
+	std::cout << "Socket : " << socket << std::endl;
+	std::string nickname = client->getNick();
+	if(nickname.empty())
+	{
+		std::cout << "No Nickname" << std::endl;
+		return ;
+	}
+	std::cout << "Nickname : " << nickname << std::endl;
+	 if (_clients.find(socket) == _clients.end())
+	{
+		std::cout << "Adding new client to the map." << std::endl;
+		_clients[socket] = nickname;
+	}
+	std::cout << "Client added" << std::endl;
 }
 
-void	Channel::delClient(Client* client)
+void	Channel::delClient(std::string nickname)
 {
-	int socket = client->getSocket();
+	int socket = _server->getClientFdByUsername(nickname);
+	if(socket == -1)
+	{
+		std::cout << "User " << nickname << " not found" << std::endl;
+		return ;
+	}
 	if (_clients.find(socket) != _clients.end())
 		_clients.erase(socket);
 	if (_operators.find(socket) != _operators.end())
-		_operators.erase(socket);		
+		_operators.erase(socket);
 	if (_clients.size() == 0)
 		delChannel();
+	std::cout << "Kicking " << nickname << std::endl;
 }
 
 void	Channel::delChannel()
@@ -192,4 +214,14 @@ void	Channel::setName(std::string name)
 std::string Channel::getName()
 {
 	return this->_name;
+}
+
+bool	Channel::hasUser(std::string nickname)
+{
+	for(std::map<int,std::string>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if(it->second == nickname)
+			return (true);
+	}
+	return (false);
 }

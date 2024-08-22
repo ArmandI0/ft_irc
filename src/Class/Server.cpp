@@ -6,11 +6,17 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/21 15:25:25 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/22 12:45:33 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+
+void handle_sigint(int sig)
+{
+	(void)sig;
+}
 
 Server::Server(std::string port, std::string password) :  _password(password)
 {
@@ -21,43 +27,27 @@ Server::Server(std::string port, std::string password) :  _password(password)
 
 Server::~Server()
 {
-	
+
 }
 
 void    Server::listenSocket()
 {
 	int status;
-	int log = 10;	//nb max de connexion
-
-	/* CREER LE SOCKET D'ECOUTE */
+	int log = 10;
 
 	this->_listen_socket = socket(this->_server_infos.sin_family, SOCK_STREAM, 0);
 	if (this->_listen_socket == -1)
-	{
-		std::cerr << "Error TBD"<< std::endl;
-		return ;
-	}
-
-	/* ECOUTE SUR LE SOCKET CREE */
-    
+		throw std::runtime_error("Error : socket");
 	status = bind(this->_listen_socket, (struct sockaddr *)&(this->_server_infos), sizeof this->_server_infos);
 	if (status != 0)
-	{
-		std::cerr << "Error TBD"<< std::endl;
-		return ;
-	}
+		throw std::runtime_error("Error : bind socket");
 	status = listen(this->_listen_socket, log);
 	if (status != 0)
 	{
 		std::cerr << "Error TBD"<< std::endl;
 		return ;
 	}
-}	
-
-// void	Server::clientAuth(Client & client, Command & cmd)
-// {
-
-// }
+}
 
 epoll_event	Server::addNewClient(int new_client_fd)
 {
@@ -67,6 +57,7 @@ epoll_event	Server::addNewClient(int new_client_fd)
 	new_ev.events = EPOLLIN;
 	new_ev.data.fd = new_client_fd;
 	this->_users.insert(std::make_pair(new_client_fd, new_client));
+	new_client.setSocket(new_client_fd);
 	return (new_ev);
 }
 
@@ -81,7 +72,9 @@ void	Server::execServer()
 	struct epoll_event ev;
 	ev.events = EPOLLIN;  // Par exemple, surveiller les événements de lecture (EPOLLIN)
 	ev.data.fd = this->_listen_socket;
-
+	
+    std::signal(SIGINT, handle_sigint);
+	
 	/* CREATION EPOLL*/
 	this->_epoll_socket = epoll_create1(0);
 	if (this->_epoll_socket == -1)
@@ -105,7 +98,8 @@ void	Server::execServer()
 		ret = epoll_wait(this->_epoll_socket, evs, 10, -1);
 		if (ret == -1)
 		{
-			std::cerr << "Error TBD"<< std::endl;
+			close(this->_epoll_socket);
+    		close(this->_listen_socket);
 			exit(EXIT_FAILURE);
 		}
 		for (int i = 0; i < ret; i++)
@@ -122,11 +116,11 @@ void	Server::execServer()
 						std::cout << "connexion etablie fd =" << new_client_fd << std::endl;
 
 						epoll_event new_ev = this->addNewClient(new_client_fd);
-                        if(epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, new_client_fd, &new_ev) == -1)
-                        {
-                            std::cerr << "Error TBD"<< std::endl;
-                            exit(EXIT_FAILURE);
-                        }
+						if(epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, new_client_fd, &new_ev) == -1)
+						{
+							std::cerr << "Error TBD"<< std::endl;
+							exit(EXIT_FAILURE);
+						}
                     }
                 }
                 else
@@ -136,6 +130,8 @@ void	Server::execServer()
 			}
 		}
 	}
+	close(this->_epoll_socket);
+    close(this->_listen_socket);
 }
 
 void	Server::execCommand(Client & client)
@@ -143,31 +139,26 @@ void	Server::execCommand(Client & client)
 	std::string buffer = readSocket(client.getSocket());
 	if (!buffer.empty())
 	{
-		std::cout << client.getSocket() << "Buffer read" << buffer << std::endl;
 		if (!buffer.empty())
 		{
 			client.setEntry(buffer);
-			std::cout << "Buffer client" << client.getEntry() << std::endl;
 			if (client.getEntry().find("\n") != std::string::npos)
 			{
 				Command	new_command(client.getEntry(), &client, &*this);
 				client.eraseEntry();
-				std::cout << "buffer '" << buffer << "' buffer" << std::endl;
+				std::cout << "Buffer read :\n" GREEN << buffer  << RESET "Buffer read :" << std::endl;
 				if(client.getAuth() == false)
 					new_command.serverAuth();
 				else
 					new_command.server_msg();
 			}
-			std::cout << "Buffer client" << client.getEntry() << std::endl;
 		}
 	}
 }
 
 int		Server::getClientFdByUsername(std::string username)
 {
-	std::map<int,Client>::iterator it = _users.begin();
-	std::map<int,Client>::iterator ite = _users.end();
-	for(; it != ite; it++)
+	for(std::map<int,Client>::iterator it = _users.begin(); it != _users.end(); it++)
 	{
 		if ((it->second).getUsername() == username)
 			return it->first;
@@ -204,7 +195,7 @@ std::string Server::readSocket(int fd)
     }
 }
 
-Channel*	Server::hasChannel(std::string& channel_name)
+Channel*	Server:: hasChannel(std::string& channel_name)
 {
 	std::map<std::string,Channel>::iterator it  = this->_channels.find(channel_name);
 	if(it != _channels.end())
@@ -218,8 +209,8 @@ void	Server::addUserToChannel(const std::string& channel_name, Client* user)
 	std::map<std::string, Channel>::iterator it = this->_channels.find(channel_name);
 	if(it != _channels.end())
 	{
-		it->second.addNewClient(user);
-		std::cout << "Welcome : " << user->getNick() << "!" << std::endl; 
+		it->second.addClientToCh(user);
+		std::cout << "Welcome : " << user->getNick() << "!" << std::endl;
 	}
 	else	
 	{

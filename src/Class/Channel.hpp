@@ -16,19 +16,20 @@ class Channel
 		Channel& operator=(const Channel& src);
 		~Channel();
 		
-		void					addNewClient(Client* client);
-		void					delClient(Client* client);
+		void					addClientToCh(Client* client);
+		void					delClient(std::string nickname);
 		void					delChannel();
 
 		std::map<int,std::string>	getOperatorsList();
 		std::map<int,std::string>	getClientsList();
-		// std::string					getChannelTopic();
 		std::string					getPassword();
 		size_t						getUserLimit();
 		std::string 				getName();
 
 		bool					isModeOn(char mode);
 		bool					isOperator(int socket_user);
+		
+		bool					hasUser(std::string nickname);
 
 		void 					setUnsetTopicRestr(bool on_off);
 		void 					setUnsetInviteMode(bool on_off);
@@ -41,8 +42,10 @@ class Channel
 	private :	
 		void					removeOperatorPrivilege(std::string username);
 		void					addOperatorPrivilege(std::string username);
-		std::map<int,std::string>	_clients;
-		std::map<int,std::string>	_operators;
+		
+		std::map<int, std::string>	_clients;
+		
+		std::map<int, std::string>	_operators;
 		std::string				_channel_topic;
 		std::string				_name;
 		Server*					_server;

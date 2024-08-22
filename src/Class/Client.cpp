@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/21 15:26:08 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/22 11:38:24 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ Client& Client::operator=(const Client& src)
 
 Client::~Client()
 {
+    
 }
 
 /*		Getters		*/
