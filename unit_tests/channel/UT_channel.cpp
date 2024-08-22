@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/22 12:42:24 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/22 16:02:41 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int main(int ac, char** av)
 	// std::cout << "Create two channels then print the list of channels :" << std::endl;	
 	// serv.createChannel(channel_name, client_creator);
 	// serv.createChannel(channel_name2, client_creator);
-	// serv.print_list_channels();
+	// serv.printChannels();
 	
 	// // get channel by topic
 	// std::cout << std::endl;
@@ -97,10 +97,10 @@ int main(int ac, char** av)
 
 	// std::cout << std::endl;
  	// std::cout<< "Print list channels :"<<std::endl;	
-	// serv.print_list_channels();
+	// serv.printChannels();
 
 	// std::cout << std::endl;
  	// std::cout<< "Delete last client then print list channels :"<<std::endl;	
 	// // channel_test->delClient(client_creator);
-	// serv.print_list_channels();
+	// serv.printChannels();
 }

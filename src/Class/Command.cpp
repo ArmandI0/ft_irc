@@ -96,7 +96,7 @@ void	Command::createChannel(std::string& channel_name, Client& client_creator, S
 
 void	Command::execJoin(std::vector<std::string> & command)
 {
-	Channel* channel = this->_server->hasChannel(command[1]);
+	Channel* channel = this->_server->getChannel(command[1]);
 	if(channel)
 	{
 		if(channel->hasUser(_client_requester->getNick()) == true)
@@ -114,7 +114,7 @@ void	Command::execJoin(std::vector<std::string> & command)
 void	Command::execKick(std::vector<std::string> & command)
 {
 	/* && !command[1].empty() && !command[2].empty() && command[3].empty()*/
-	Channel* channel = this->_server->hasChannel(command[1]);
+	Channel* channel = this->_server->getChannel(command[1]);
 	if(channel)
 		channel->delClient(command[2]);
 }
