@@ -1,34 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   UT_bot.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/22 12:33:47 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/21 17:20:29 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Class/Server.hpp"
+# include "../../bonus/Bot.hpp"
+
 
 int main(int ac, char** av)
 {
-    if(ac != 3)
-    {
-        std::cout << RED "Error : socket and password are required." RESET << std::endl;
-        return 0;
-    }
-    try
-    {
-        Server serv = Server(av[1], av[2]);
-        serv.listenSocket();
-        serv.execServer();
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-    
-
+	(void)ac;
+	(void)av;
+	if (ac != 4)
+	{
+		std::cerr << "Error : usage : ./bot <server ip adress> <password> <port>" << std::endl;
+		return (1);	
+	}
+	Bot bot = Bot(av[1], av[2], av[3]);
+	try 
+	{
+		bot.getInsults();
+		bot.connectBot();
+		bot.loopBot();
+	}
+	catch (std::exception &e)
+	{
+		std::cerr << "Error : " << e.what() << std::endl;
+	}
 }

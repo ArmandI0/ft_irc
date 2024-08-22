@@ -22,7 +22,6 @@ class Channel
 
 		std::map<int,std::string>	getOperatorsList();
 		std::map<int,std::string>	getClientsList();
-		// std::string				getChannelTopic();
 		std::string					getPassword();
 		size_t						getUserLimit();
 		std::string 				getName();
