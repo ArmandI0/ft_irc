@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/21 19:13:09 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/22 10:08:03 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,10 @@ void    Server::listenSocket()
 
 	this->_listen_socket = socket(this->_server_infos.sin_family, SOCK_STREAM, 0);
 	if (this->_listen_socket == -1)
-	{
-		std::cerr << "Error "<< std::endl;
-		return ;
-	}    
+		throw std::runtime_error("Error : socket");
 	status = bind(this->_listen_socket, (struct sockaddr *)&(this->_server_infos), sizeof this->_server_infos);
 	if (status != 0)
-	{
-		std::cerr << "Error TBD"<< std::endl;
-		return ;
-	}
+		throw std::runtime_error("Error : bind socket");
 	status = listen(this->_listen_socket, log);
 	if (status != 0)
 	{
