@@ -4,13 +4,6 @@ Channel::Channel()
 {
 }
 
-Channel::Channel(const std::string& topic, Client& creator, Server* serv):_channel_topic(topic), _server(serv), _password(""), _user_limit(0), _invite_mode(0), _topic_op_mode(0)
-{
-	int socket = creator.getSocket();
-	_clients[socket] = creator.getUsername();
-	_operators[socket] = creator.getUsername();
-}
-
 Channel::Channel(const Channel& src)
 {
 	*this = src;
@@ -43,19 +36,7 @@ void	Channel::addClientToCh(Client* client)
 
 void	Channel::delClient(std::string nickname)
 {
-	int socket = _server->getClientFdByUsername(nickname);
-	if(socket == -1)
-	{
-		std::cout << "User " << nickname << " not found" << std::endl;
-		return ;
-	}
-	if (_clients.find(socket) != _clients.end())
-		_clients.erase(socket);
-	if (_operators.find(socket) != _operators.end())
-		_operators.erase(socket);
-	if (_clients.size() == 0)
-		delChannel();
-	std::cout << "Kicking " << nickname << std::endl;
+
 }
 
 void	Channel::delChannel()
