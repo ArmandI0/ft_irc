@@ -23,11 +23,17 @@ void	Channel::addClientToCh(Client* client)
 	if(!client)
 		return ;
 	std::string nickname = client->getNick();
-	if (_clients.find(nickname) == _clients.end())
+	for (std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 	{
-		std::cout << "Adding new client to the map." << std::endl;
-		_clients[nickname] = client;
+		// Check if the nickname matches any key in the map
+		if (it->first == nickname)
+		{
+			std::cout << "Client with nickname " << nickname << " is already in the map." << std::endl;
+			return ;
+		}
 	}
+	std::cout << "Adding new client to the map." << std::endl;
+	_clients.insert(std::make_pair(nickname, client));
 	std::cout << "Client added" << std::endl;
 }
 
@@ -176,11 +182,13 @@ std::string Channel::getName()
 
 bool	Channel::hasUser(std::string nickname)
 {
+	std::cout << nickname << std::endl;
 	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		std::cout << "hasUser" << std::endl;
+		std::cout << "Map it->first" << it->first << std::endl;
 		if(it->first == nickname)
 			return (true);
 	}
+	std::cout << "false" << std::endl;
 	return (false);
 }
