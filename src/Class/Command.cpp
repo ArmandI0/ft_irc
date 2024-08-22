@@ -67,12 +67,12 @@ void	Command::execJoin()
 		if(channel->hasUser(_client_requester->getNick()) == true)
 			sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), this->_command[1]));
 		else
-			channel->addNewClient(this->_client_requester);
+			channel->addClientToCh(this->_client_requester);
 	}
 	else
 	{
 		createChannel(this->_command[1], *this->_client_requester, this->_server);
-		channel->addNewClient(this->_client_requester);
+		channel->addClientToCh(this->_client_requester);
 	}
 }
 

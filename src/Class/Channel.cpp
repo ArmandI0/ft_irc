@@ -20,7 +20,7 @@ Channel::~Channel()
 {
 }
 
-void	Channel::addNewClient(Client* client)
+void	Channel::addClientToCh(Client* client)
 {
 	if(!client)
 		return ;

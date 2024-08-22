@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/22 12:29:57 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/22 12:45:33 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,8 +209,8 @@ void	Server::addUserToChannel(const std::string& channel_name, Client* user)
 	std::map<std::string, Channel>::iterator it = this->_channels.find(channel_name);
 	if(it != _channels.end())
 	{
-		it->second.addNewClient(user);
-		std::cout << "Welcome : " << user->getNick() << "!" << std::endl; 
+		it->second.addClientToCh(user);
+		std::cout << "Welcome : " << user->getNick() << "!" << std::endl;
 	}
 	else	
 	{
