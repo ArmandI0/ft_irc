@@ -100,6 +100,7 @@ void	Command::execJoin(std::vector<std::string> & command)
 	Channel* channel = this->_server->getChannel(command[1]);
 	if(channel)
 	{
+		std::cout << "if channel" << std::endl;
 		if(channel->hasUser(_client_requester->getNick()) == true)
 			sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), command[1]));
 		else

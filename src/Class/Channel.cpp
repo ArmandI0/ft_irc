@@ -178,6 +178,7 @@ bool	Channel::hasUser(std::string nickname)
 {
 	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
+		std::cout << "hasUser" << std::endl;
 		if(it->first == nickname)
 			return (true);
 	}
