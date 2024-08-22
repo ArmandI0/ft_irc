@@ -73,17 +73,7 @@ void	Channel::removeOperatorPrivilege(std::string username)
 
 void	Channel::addOperatorPrivilege(std::string username)
 {
-	std::map<int,std::string>::iterator it = _operators.begin();
-	std::map<int,std::string>::iterator ite = _operators.end();
-	for(; it != ite; it++)
-	{
-		if (it->second == username)
-			return;
-	}
-
-	int user_socket =_server->getClientFdByUsername(username);
-	if (user_socket != -1)
-		_operators[user_socket] = username;
+	
 }
 
 std::map<int,std::string>	Channel::getClientsList()
