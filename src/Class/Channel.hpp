@@ -11,7 +11,7 @@ class Channel
 {
 	public:
 		Channel();
-		Channel(const std::string& topic, Client& creator, Server* serv);
+		Channel(const std::string& topic, Client* creator, Server* serv);
 		Channel(const Channel& src);
 		Channel& operator=(const Channel& src);
 		~Channel();
@@ -20,8 +20,6 @@ class Channel
 		void					delClient(std::string nickname);
 		void					delChannel();
 
-		std::map<int,std::string>	getOperatorsList();
-		std::map<int,std::string>	getClientsList();
 		std::string					getPassword();
 		size_t						getUserLimit();
 		std::string 				getName();
@@ -43,7 +41,7 @@ class Channel
 		void					removeOperatorPrivilege(std::string username);
 		void					addOperatorPrivilege(std::string username);
 		
-		std::map<int, std::string>	_clients;
+		std::map<std::string, Client *>	_clients;
 		std::map<int, std::string>	_operators;
 		std::string				_channel_topic;
 		std::string				_name;

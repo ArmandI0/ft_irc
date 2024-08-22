@@ -1,5 +1,10 @@
 #include "Channel.hpp"
 
+Channel::Channel(const std::string& topic, Client* creator, Server* serv):_channel_topic(topic), _server(serv), _password(""), _user_limit(0), _topic_op_mode(0)
+{
+	(void)creator;
+}
+
 Channel::Channel()
 {
 }
@@ -17,20 +22,12 @@ void	Channel::addClientToCh(Client* client)
 {
 	if(!client)
 		return ;
-	int	socket = client->getSocket();
-	std::cout << "Socket : " << socket << std::endl;
 	std::string nickname = client->getNick();
-	if(nickname.empty())
+	if (_clients.find(nickname) == _clients.end())
 	{
-		std::cout << "No Nickname" << std::endl;
-		return ;
+		std::cout << "Adding new client to the map." << std::endl;
+		_clients[nickname] = client;
 	}
-	std::cout << "Nickname : " << nickname << std::endl;
-	//  if (_clients.find(socket) == _clients.end())
-	// {
-	// 	std::cout << "Adding new client to the map." << std::endl;
-	// 	_clients[socket] = nickname;
-	// }
 	std::cout << "Client added" << std::endl;
 }
 
@@ -76,16 +73,6 @@ void	Channel::addOperatorPrivilege(std::string username)
 	(void)username;
 }
 
-std::map<int,std::string>	Channel::getClientsList()
-{
-	return (_clients);
-}
-
-std::map<int,std::string>	Channel::getOperatorsList()
-{
-	return (_operators);
-}
-
 // std::string				Channel::getChannelTopic()
 // {
 // 	return (_channel_topic);
@@ -104,16 +91,7 @@ bool					Channel::isModeOn(char mode)
 	case 'i':
 		r_value = _invite_mode;
 		break;
-	case 't':
-		r_value = _topic_op_mode;
-		break;
-	case 'k':
-		if (_password != "")
-			r_value = 1;
-		break;
-	case 'l':
-		if (_user_limit != 0)
-			r_value = 1;
+	case 't':const 
 		break;		
 	default:
 		break;
@@ -189,9 +167,10 @@ std::string Channel::getName()
 
 bool	Channel::hasUser(std::string nickname)
 {
-	for(std::map<int,std::string>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		if(it->second == nickname)
+		std::cout << "hasUser" << std::endl;
+		if(it->first == nickname)
 			return (true);
 	}
 	return (false);
