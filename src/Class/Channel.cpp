@@ -6,9 +6,7 @@ Channel::Channel()
 
 Channel::Channel(const std::string& topic, Client& creator, Server* serv):_channel_topic(topic), _server(serv), _password(""), _user_limit(0), _invite_mode(0), _topic_op_mode(0)
 {
-	int socket = creator.getSocket();
-	_clients[socket] = creator.getUsername();
-	_operators[socket] = creator.getUsername();
+	(void)creator;
 }
 
 Channel::Channel(const Channel& src)
@@ -22,8 +20,22 @@ Channel::~Channel()
 
 void	Channel::addNewClient(Client* client)
 {
-	(void)client;
-	// _clients[client->getSocket()] = client->getUsername();
+	if(!client)
+		return ;
+	int	socket = client->getSocket();
+	std::cout << "Socket : " << socket << std::endl;
+	std::string nickname = client->getNick();
+	if(nickname.empty())
+	{
+		std::cout << "No Nickname" << std::endl;
+		return ;
+	}
+	std::cout << "Nickname : " << nickname << std::endl;
+	 if (_clients.find(socket) == _clients.end())
+	{
+		std::cout << "Adding new client to the map." << std::endl;
+		_clients[socket] = nickname;
+	}
 	std::cout << "Client added" << std::endl;
 }
 
@@ -202,11 +214,12 @@ std::string Channel::getName()
 	return this->_name;
 }
 
-// Client*	Channel::findUser(std::string client_name)
-// {
-// 	std::map<int, Client>::iterator it  = this->_clients.find(client_name);
-// 	if(it != _clients.end())
-// 		return (&it->second);
-// 	std::cout << "The channel : " << _clients << " does not exist" << std::endl;
-// 	return(NULL);
-// }
+bool	Channel::hasUser(std::string nickname)
+{
+	for(std::map<int,std::string>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		if(it->second == nickname)
+			return (true);
+	}
+	return (false);
+}

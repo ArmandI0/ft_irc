@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/21 15:26:08 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/21 22:14:26 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ Client::Client()
 
 Client::Client(int socket) : _socket(socket), _auth(0), _pass(0)
 {
-    this->_nickname = "";
     this->_username = "";
 }
 
@@ -40,16 +39,14 @@ Client& Client::operator=(const Client& src)
 	return (*this);
 }
 
-Client::~Client()
-{
-}
+Client::~Client(){};
 
 /*		Getters		*/
-int										Client::getSocket() 	const{return this->_socket;}
-bool 									Client::getAuth() 		const{return this->_auth;}
-bool									Client::getPass() 		const{return this->_pass;}
-std::string								Client::getNick() 		const{return this->_nickname;}
-std::string 							Client::getUsername() 	const{return (_username);}
+int										Client::getSocket() 	{return this->_socket;}
+bool 									Client::getAuth() 		{return this->_auth;}
+bool									Client::getPass() 		{return this->_pass;}
+std::string								Client::getNick() 		{return this->_nickname;}
+std::string 							Client::getUsername() 	{return (_username);}
 const std::map<std::string, Channel*>	Client::getChannelsIn()	{return this->_channels_in;}
 std::string								&Client::getEntry() 	{return this->_entry;}
 
