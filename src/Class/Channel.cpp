@@ -1,5 +1,10 @@
 #include "Channel.hpp"
 
+Channel::Channel(const std::string& topic, Client* creator, Server* serv):_channel_topic(topic), _server(serv), _password(""), _user_limit(0), _topic_op_mode(0)
+{
+	(void)creator;
+}
+
 Channel::Channel()
 {
 }
@@ -17,26 +22,18 @@ void	Channel::addClientToCh(Client* client)
 {
 	if(!client)
 		return ;
-	int	socket = client->getSocket();
-	std::cout << "Socket : " << socket << std::endl;
 	std::string nickname = client->getNick();
-	if(nickname.empty())
+	if (_clients.find(nickname) == _clients.end())
 	{
-		std::cout << "No Nickname" << std::endl;
-		return ;
+		std::cout << "Adding new client to the map." << std::endl;
+		_clients[nickname] = client;
 	}
-	std::cout << "Nickname : " << nickname << std::endl;
-	//  if (_clients.find(socket) == _clients.end())
-	// {
-	// 	std::cout << "Adding new client to the map." << std::endl;
-	// 	_clients[socket] = nickname;
-	// }
 	std::cout << "Client added" << std::endl;
 }
 
 void	Channel::delClient(std::string nickname)
 {
-
+	(void)nickname;
 }
 
 void	Channel::delChannel()
@@ -73,17 +70,7 @@ void	Channel::removeOperatorPrivilege(std::string username)
 
 void	Channel::addOperatorPrivilege(std::string username)
 {
-	
-}
-
-std::map<int,std::string>	Channel::getClientsList()
-{
-	return (_clients);
-}
-
-std::map<int,std::string>	Channel::getOperatorsList()
-{
-	return (_operators);
+	(void)username;
 }
 
 // std::string				Channel::getChannelTopic()
@@ -189,9 +176,9 @@ std::string Channel::getName()
 
 bool	Channel::hasUser(std::string nickname)
 {
-	for(std::map<int,std::string>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		if(it->second == nickname)
+		if(it->first == nickname)
 			return (true);
 	}
 	return (false);
