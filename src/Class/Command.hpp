@@ -34,6 +34,7 @@ class Command
 		// void		exec_pass();
 		void		execJoin();
 		void		execNick();
+		void		execKick();
 		// int		parsing();
 		// int		exec();
 		void		server_msg();

@@ -52,8 +52,8 @@ void	Command::createChannel(std::string& channel_name, Client& client_creator, S
 		Channel new_channel(channel_name, client_creator, server);
 		server->setChannel(new_channel, channel_name);
 		// Commande who
-		// std::string msg = "331 " + client_creator.getNick() + " " + channel_name + ":No topic is set\r\n";
-		std::string msg = "WHO " + channel_name + "\r\n";
+		std::string msg = "331 " + client_creator.getNick() + " " + channel_name + ":No topic is set\r\n";
+		// std::string msg = "WHO " + channel_name + "\r\n";
 		sendMessageToClient(this->_client_requester->getSocket(), msg);
 		// sendMessageToClient(server.)
 		std::cout << "Channel : " << channel_name << " created" << std::endl;
@@ -63,9 +63,17 @@ void	Command::execJoin()
 {
 	Channel* channel = this->_server->hasChannel(this->_command[1]);
 	if(channel)
-		channel->addNewClient(this->_client_requester);
+	{
+		if(channel->hasUser(_client_requester->getNick()) == true)
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), this->_command[1]));
+		else
+			channel->addNewClient(this->_client_requester);
+	}
 	else
+	{
 		createChannel(this->_command[1], *this->_client_requester, this->_server);
+		channel->addNewClient(this->_client_requester);
+	}
 }
 
 void	Command::execNick()
@@ -90,53 +98,27 @@ void	Command::execNick()
 	this->_client_requester->setNick(this->_command[1]);
 }
 
+void	Command::execKick()
+{
+	Channel* channel = this->_server->hasChannel(this->_command[1]);
+	if(channel)
+		channel->delClient(this->_command[2]);
+}
+
 void Command::server_msg()
 {
-
 	std::istringstream iss(this->_input);
 	std::string content;
 
-	std::cout << "Input :" << this->_input << std::endl;
 	while (iss >> content)
-	{
 		this->_command.push_back(content);
-		std::cout << "Content : " << content << std::endl;
-	}
-	std::cout << "Command[0] : " << this->_command[0] << std::endl;
-	std::cout << "Command[1] : " << this->_command[1] << std::endl;
-
-	if (this->_command[0] == "QUIT" && this->_command[1].empty()){}; // function to exit the irc server and free the socket
 
 	if (this->_command[0] == "JOIN" && !this->_command[1].empty())
 		execJoin();
-
 	if (this->_command[0] == "NICK" && !this->_command[1].empty() && this->_command[2].empty()) // OK
 		execNick();
-	// // if(input[0] == ':')
-	// // 	nickname_change(channels);
-	// if(operators == 1)
-	// {
-	// 	// if (input.compare(0, 6, "/KICK ") == 0)
-	// 	// {
-	// 	// 	kick_command(channels);
-	// 	// }
-	// 	if(command == "/INVITE")
-	// 	{
-	// 		std::cout << "/INVITE" << std::endl;
-	// 	}
-	// 	if(command == "/TOPIC")
-	// 	{
-	// 		std::cout << "/TOPIC" << std::endl;
-	// 	}
-	// 	if (command == "MODE ") // Need to be exactly like : MODE #channel +mode target_user / Example :Carol!carol@irc.example.com MODE #chatroom +v Dave
-	// 	{
-	// 		mode_command(channels);
-	// 		//go in function to see sub div mode
-	// 	}
-	// 	if(input == "EXIT")
-	// 		exit(0);
-	// }
-
+	if (checkAndComp(_command, 0, "KICK") && !this->_command[1].empty() && !this->_command[2].empty() && this->_command[3].empty())
+		execKick();
 }
 
 
@@ -145,7 +127,7 @@ void Command::server_msg()
 
 int	Command::serverAuth()
 {
-	size_t pos = 0;    
+	size_t pos = 0;
 	std::string delimiter = "\r\n";
 
 	while ((pos = this->_input.find(delimiter)) != std::string::npos)

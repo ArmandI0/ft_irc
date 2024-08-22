@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/22 10:08:03 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/22 11:38:04 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ epoll_event	Server::addNewClient(int new_client_fd)
 	new_ev.events = EPOLLIN;
 	new_ev.data.fd = new_client_fd;
 	this->_users.insert(std::make_pair(new_client_fd, new_client));
+	new_client.setSocket(new_client_fd);
 	return (new_ev);
 }
 
@@ -115,11 +116,11 @@ void	Server::execServer()
 						std::cout << "connexion etablie fd =" << new_client_fd << std::endl;
 
 						epoll_event new_ev = this->addNewClient(new_client_fd);
-                        if(epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, new_client_fd, &new_ev) == -1)
-                        {
-                            std::cerr << "Error TBD"<< std::endl;
-                            exit(EXIT_FAILURE);
-                        }
+						if(epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, new_client_fd, &new_ev) == -1)
+						{
+							std::cerr << "Error TBD"<< std::endl;
+							exit(EXIT_FAILURE);
+						}
                     }
                 }
                 else
@@ -157,9 +158,7 @@ void	Server::execCommand(Client & client)
 
 int		Server::getClientFdByUsername(std::string username)
 {
-	std::map<int,Client>::iterator it = _users.begin();
-	std::map<int,Client>::iterator ite = _users.end();
-	for(; it != ite; it++)
+	for(std::map<int,Client>::iterator it = _users.begin(); it != _users.end(); it++)
 	{
 		if ((it->second).getUsername() == username)
 			return it->first;
@@ -196,7 +195,7 @@ std::string Server::readSocket(int fd)
     }
 }
 
-Channel*	Server::hasChannel(std::string& channel_name)
+Channel*	Server:: hasChannel(std::string& channel_name)
 {
 	std::map<std::string,Channel>::iterator it  = this->_channels.find(channel_name);
 	if(it != _channels.end())
