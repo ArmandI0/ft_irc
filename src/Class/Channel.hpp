@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Channel.hpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
+/*   Updated: 2024/08/22 21:42:01 by dboire           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef Channel_hpp
 # define Channel_hpp
 
@@ -11,7 +23,7 @@ class Channel
 {
 	public:
 		Channel();
-		Channel(const std::string& topic, Client* creator, Server* serv);
+		Channel(const std::string& name, Client* creator, Server* serv);
 		Channel(const Channel& src);
 		Channel& operator=(const Channel& src);
 		~Channel();

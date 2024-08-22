@@ -1,8 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Channel.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
+/*   Updated: 2024/08/22 21:44:24 by dboire           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Channel.hpp"
 
-Channel::Channel(const std::string& topic, Client* creator, Server* serv):_channel_topic(topic), _server(serv), _password(""), _user_limit(0), _topic_op_mode(0)
+Channel::Channel(const std::string& name, Client* creator, Server* serv): _server(serv), _password(""), _user_limit(0), _topic_op_mode(0)
 {
-	(void)creator;
+	_name = name;
+	addClientToCh(creator);
 }
 
 Channel::Channel()
@@ -20,8 +33,6 @@ Channel::~Channel()
 
 void	Channel::addClientToCh(Client* client)
 {
-	if(!client)
-		return ;
 	std::string nickname = client->getNick();
 	for (std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 	{
