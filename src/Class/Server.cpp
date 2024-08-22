@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/22 16:04:22 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/22 17:14:25 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,10 @@ void    Server::listenSocket()
 		throw std::runtime_error("Error : socket");
 	status = bind(this->_listen_socket, (struct sockaddr *)&(this->_server_infos), sizeof this->_server_infos);
 	if (status != 0)
-		throw std::runtime_error("Error : bind socket");
+		throw std::runtime_error("Error : socket already use");
 	status = listen(this->_listen_socket, log);
 	if (status != 0)
-	{
-		std::cerr << "Error TBD"<< std::endl;
-		return ;
-	}
+		throw std::runtime_error("Error : socket");
 }
 
 epoll_event	Server::addNewClient(int new_client_fd)
@@ -63,19 +60,20 @@ epoll_event	Server::addNewClient(int new_client_fd)
 
 void	Server::delClient(int client_fd)
 {
+	Client to_delete = getClientByFd(client_fd);
 	std::cout << (this->_users[client_fd]).getUsername() << " left the channel." << std::endl;
+	this->delClientByNickname(to_delete.getNick());
+	this->delClientByUsername(to_delete.getUsername());
 	this->_users.erase(client_fd);
 }
 
 void	Server::execServer()
 {
 	struct epoll_event ev;
-	ev.events = EPOLLIN;  // Par exemple, surveiller les événements de lecture (EPOLLIN)
+	ev.events = EPOLLIN;
 	ev.data.fd = this->_listen_socket;
-	
     std::signal(SIGINT, handle_sigint);
 	
-	/* CREATION EPOLL*/
 	this->_epoll_socket = epoll_create1(0);
 	if (this->_epoll_socket == -1)
 	{

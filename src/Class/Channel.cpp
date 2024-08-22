@@ -36,7 +36,7 @@ void	Channel::addClientToCh(Client* client)
 
 void	Channel::delClient(std::string nickname)
 {
-
+	(void)nickname;
 }
 
 void	Channel::delChannel()
@@ -73,7 +73,7 @@ void	Channel::removeOperatorPrivilege(std::string username)
 
 void	Channel::addOperatorPrivilege(std::string username)
 {
-	
+	(void)username;
 }
 
 std::map<int,std::string>	Channel::getClientsList()

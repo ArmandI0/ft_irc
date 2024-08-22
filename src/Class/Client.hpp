@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/21 22:58:15 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/22 17:14:33 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ class Client
 		int										getSocket() const;
 		bool 									getAuth() const;
 		bool									getPass() const;
-		std::string								getNick() const;
-		std::string								getUsername() const;
+		std::string								&getNick();
+		std::string								&getUsername();
 		std::string								&getEntry();
 		const std::map<std::string, Channel*>	getChannelsIn();
 		
