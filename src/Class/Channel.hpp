@@ -44,7 +44,6 @@ class Channel
 		void					addOperatorPrivilege(std::string username);
 		
 		std::map<int, std::string>	_clients;
-		
 		std::map<int, std::string>	_operators;
 		std::string				_channel_topic;
 		std::string				_name;

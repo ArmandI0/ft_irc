@@ -31,28 +31,26 @@ class Command
 		Command& operator=(const Command& src);
 		~Command();
 
-		// void		exec_pass();
-		void		execJoin();
-		void		execNick();
-		void		execKick();
-		// int		parsing();
-		// int		exec();
-		void		server_msg();
+		/*	MANAGEMENT COMMAND	*/
+		int			parsingCommand();
+		void		execCommand(std::string cmd);
 
-		/* COMMANDE D'AUTHENTIFICATION */
-		int			serverAuth();
-		void		doCommandAuth(std::string cmd);
+
+		/*	COMMANDES SERVER	*/
+		void		execJoin(std::vector<std::string> & command);
+		void		execKick(std::vector<std::string> & command);
+		void		createChannel(std::string & channel_name, Client & client_creator, Server* server);
+
+		/*	COMMANDE D'AUTHENTIFICATION		*/
 		int			passCommand(std::vector<std::string> & password);
 		void		userCommand(std::vector<std::string> & username);
 		int			nickCommand(std::vector<std::string> & nickname);
-		void		createChannel(std::string& channel_name, Client& client_creator, Server* server);
 
 		// void	response(std::string str_response, std::vector<Client> clients);
 	private :	
 		std::string					_input;
 		Client*						_client_requester;
 		Server*						_server;
-		std::vector<std::string>	_command;
 };
 
 bool	checkAndComp(std::vector<std::string> & entry, size_t i, const char* toComp);

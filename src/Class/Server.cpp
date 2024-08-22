@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/22 12:45:33 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/22 14:05:34 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,10 +147,7 @@ void	Server::execCommand(Client & client)
 				Command	new_command(client.getEntry(), &client, &*this);
 				client.eraseEntry();
 				std::cout << "Buffer read :\n" GREEN << buffer  << RESET "Buffer read :" << std::endl;
-				if(client.getAuth() == false)
-					new_command.serverAuth();
-				else
-					new_command.server_msg();
+				new_command.parsingCommand();
 			}
 		}
 	}

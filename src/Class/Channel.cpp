@@ -33,11 +33,11 @@ void	Channel::addClientToCh(Client* client)
 		return ;
 	}
 	std::cout << "Nickname : " << nickname << std::endl;
-	 if (_clients.find(socket) == _clients.end())
-	{
-		std::cout << "Adding new client to the map." << std::endl;
-		_clients[socket] = nickname;
-	}
+	//  if (_clients.find(socket) == _clients.end())
+	// {
+	// 	std::cout << "Adding new client to the map." << std::endl;
+	// 	_clients[socket] = nickname;
+	// }
 	std::cout << "Client added" << std::endl;
 }
 
