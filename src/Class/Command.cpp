@@ -31,6 +31,7 @@ Command::Command(const Command& src)
 
 Command& Command::operator=(const Command& src)
 {
+	this->_server =src._server;
 	this->_client_requester = src._client_requester;
 	this->_input = src._input; 
 	return(*this);
@@ -38,107 +39,24 @@ Command& Command::operator=(const Command& src)
 
 Command::~Command()
 {
-}
 
-
-void error_message(std::string error)
-{
-	std::cout << "Syntax error : " << error << std::endl;
 }
 	
-void	Command::createChannel(std::string& channel_name, Client& client_creator, Server* server)
+int	Command::parsingCommand()
 {
-		// Modifying operator
-		Channel new_channel(channel_name, client_creator, server);
-		server->setChannel(new_channel, channel_name);
-		// Commande who
-		std::string msg = "331 " + client_creator.getNick() + " " + channel_name + ":No topic is set\r\n";
-		// std::string msg = "WHO " + channel_name + "\r\n";
-		sendMessageToClient(this->_client_requester->getSocket(), msg);
-		// sendMessageToClient(server.)
-		std::cout << "Channel : " << channel_name << " created" << std::endl;
-}
-
-void	Command::execJoin()
-{
-	Channel* channel = this->_server->hasChannel(this->_command[1]);
-	if(channel)
-	{
-		if(channel->hasUser(_client_requester->getNick()) == true)
-			sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), this->_command[1]));
-		else
-			channel->addClientToCh(this->_client_requester);
-	}
-	else
-	{
-		createChannel(this->_command[1], *this->_client_requester, this->_server);
-		channel->addClientToCh(this->_client_requester);
-	}
-}
-
-void	Command::execNick()
-{
-	std::string authorized_first_character = "-^~";
-	std::string invalid_chars = ",:!@.";
-	if(!isalpha(this->_command[1][0]) || (authorized_first_character.find(this->_command[1][0]) == std::string::npos))
-	{
-		std::cout << "First letter of the Nick must be a letter or - ^ ~" << std::endl;
-		return ;
-	}
-	for(char c : this->_command[1])
-	{
-		if(invalid_chars.find(c) != std::string::npos)
-		{
-			std::cout << "You have placed a forbidden character '" << c << "' in your Nickname" << std::endl;
-			return ;
-		}
-	}
-	//4. Nickname Change Notification TO DO
-		//Description: When a user changes their nickname, the IRC server broadcasts this change to all other users in the channels where the user is present.
-	this->_client_requester->setNick(this->_command[1]);
-}
-
-void	Command::execKick()
-{
-	Channel* channel = this->_server->hasChannel(this->_command[1]);
-	if(channel)
-		channel->delClient(this->_command[2]);
-}
-
-void Command::server_msg()
-{
-	std::istringstream iss(this->_input);
-	std::string content;
-
-	while (iss >> content)
-		this->_command.push_back(content);
-
-	if (this->_command[0] == "JOIN" && !this->_command[1].empty())
-		execJoin();
-	if (this->_command[0] == "NICK" && !this->_command[1].empty() && this->_command[2].empty()) // OK
-		execNick();
-	if (checkAndComp(_command, 0, "KICK") && !this->_command[1].empty() && !this->_command[2].empty() && this->_command[3].empty())
-		execKick();
-}
-
-
-
-/* AUTHENTIFICATION */
-
-int	Command::serverAuth()
-{
-	size_t pos = 0;
+	size_t 		pos = 0;
 	std::string delimiter = "\r\n";
 
 	while ((pos = this->_input.find(delimiter)) != std::string::npos)
 	{
         std::string command = this->_input.substr(0, pos);
         this->_input.erase(0, pos + delimiter.length());
-		this->doCommandAuth(command);
+		this->execCommand(command);
     }
 	return (0);
 }
-void	Command::doCommandAuth(std::string cmd)
+
+void	Command::execCommand(std::string cmd)
 {
 	std::istringstream 			iss(cmd);
 	std::vector<std::string>	command;
@@ -152,12 +70,58 @@ void	Command::doCommandAuth(std::string cmd)
 		this->nickCommand(command);
 	else if (checkAndComp(command, 0, "USER"))
 		this->userCommand(command);
+	else if (checkAndComp(command, 0, "JOIN"))
+		this->execJoin(command);
+	else if (checkAndComp(command, 0, "KICK"))
+		this->execKick(command);
 	if (this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
 	{
 		this->_client_requester->setAuth();
 		sendMessageToClient(this->_client_requester->getSocket(), "Welcome " + this->_client_requester->getNick() + "\r\n");
 	}
 }
+
+void	Command::createChannel(std::string& channel_name, Client& client_creator, Server* server)
+{
+		// Modifying operator
+		Channel new_channel(channel_name, client_creator, server);
+		server->setChannel(new_channel, channel_name);
+		// Commande who
+		std::string msg = "331 " + client_creator.getNick() + " " + channel_name + ":No topic is set\r\n";
+		// std::string msg = "WHO " + channel_name + "\r\n";
+		sendMessageToClient(this->_client_requester->getSocket(), msg);
+		// sendMessageToClient(server.)
+		std::cout << "Channel : " << channel_name << " created" << std::endl;
+}
+
+void	Command::execJoin(std::vector<std::string> & command)
+{
+	Channel* channel = this->_server->hasChannel(command[1]);
+	if(channel)
+	{
+		if(channel->hasUser(_client_requester->getNick()) == true)
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), command[1]));
+		else
+			channel->addClientToCh(this->_client_requester);
+	}
+	else
+	{
+		createChannel(command[1], *this->_client_requester, this->_server);
+		channel->addClientToCh(this->_client_requester);
+	}
+}
+
+void	Command::execKick(std::vector<std::string> & command)
+{
+	/* && !command[1].empty() && !command[2].empty() && command[3].empty()*/
+	Channel* channel = this->_server->hasChannel(command[1]);
+	if(channel)
+		channel->delClient(command[2]);
+}
+
+
+
+/* AUTHENTIFICATION */
 
 int	Command::passCommand(std::vector<std::string> & password)
 {
