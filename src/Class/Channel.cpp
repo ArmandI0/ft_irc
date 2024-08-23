@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/23 15:49:37 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/23 16:45:07 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ void	Channel::printUsersInChannel(Client* client, std::string& channel_name)
 	std::string msg;
 	
 	sendMessageToClient(client->getSocket(), RPL_NAMREPLY(client->getNick(),channel_name));
-	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 	{
 		msg = it->first + " ";
 		sendMessageToClient(client->getSocket(), msg);
@@ -202,12 +202,10 @@ void	Channel::printUsersInChannel(Client* client, std::string& channel_name)
 bool	Channel::hasUser(std::string nickname)
 {
 	std::cout << nickname << std::endl;
-	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 	{
-		std::cout << "Map it->first" << it->first << std::endl;
 		if(it->first == nickname)
 			return (true);
 	}
-	std::cout << "false" << std::endl;
 	return (false);
 }

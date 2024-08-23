@@ -94,6 +94,8 @@ Channel*	Command::createChannel(std::string& channel_name, Client* client_creato
 
 void	Command::execJoin(std::vector<std::string> & command)
 {
+	// if (this->_client_requester == NULL)
+	// 	throw std::runtime_error("BLABLA");
 	if(command[1][0] != '#' && command[1][0] != '&')
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[1]));
 	Channel* channel = this->_server->getChannel(command[1]);
@@ -105,7 +107,7 @@ void	Command::execJoin(std::vector<std::string> & command)
 			channel->addClientToCh(this->_client_requester);
 	}
 	else
-		channel = createChannel(command[1], _client_requester, this->_server);
+		createChannel(command[1], _client_requester, this->_server);
 }
 
 /*			KICK COMMAND		*/
