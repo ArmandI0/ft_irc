@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/23 15:28:56 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/23 15:50:50 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,9 @@ Server::~Server()
 	if (this->_epoll_socket != -1)
 		close(this->_epoll_socket);
 	this->closeClientsFd();
+	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+		delete it->second; // Delete all dynamically allocated Channels
+	}
 }
 
 void    Server::listenSocket()
@@ -211,30 +214,30 @@ Client&		Server::getClientByFd(int socket)
 	return (ref);
 }
 
-void Server::setChannel(Channel & channel, std::string & channel_name)
+void Server::setChannel(Channel * channel, std::string & channel_name)
 {
 	this->_channels[channel_name] = channel;
 }
 
 void	Server::delChannel(std::string& channel_name)
 {
-	std::map<std::string, Channel>::iterator it = _channels.find(channel_name);
+	std::map<std::string, Channel*>::iterator it = _channels.find(channel_name);
 	if(it != _channels.end())
 	_channels.erase(it);
 }
 
 Channel*	Server:: getChannel(std::string& channel_name)
 {
-	std::map<std::string,Channel>::iterator it  = this->_channels.find(channel_name);
+	std::map<std::string,Channel *>::iterator it  = this->_channels.find(channel_name);
 	if(it != _channels.end())
-		return (&it->second);
+		return (it->second);
 	std::cout << "The channel : " << channel_name << " does not exist" << std::endl;
 	return(NULL);
 }
 
 void	Server::printChannels()
 {
-	std::map<std::string, Channel>::iterator it;
+	std::map<std::string, Channel*>::iterator it;
 	for (it = _channels.begin(); it != _channels.end(); it++)
 		std::cout << it->first << std::endl;
 }

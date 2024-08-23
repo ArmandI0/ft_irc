@@ -1,34 +1,45 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Channel.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
+/*   Updated: 2024/08/23 15:49:37 by aranger          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Channel.hpp"
 
-Channel::Channel(const std::string& topic, Client* creator, Server* serv):_channel_topic(topic), _server(serv), _password(""), _user_limit(0), _topic_op_mode(0)
+Channel::Channel(){};
+Channel::Channel(const Channel& src){*this = src;};
+Channel::~Channel(){};
+
+Channel::Channel(const std::string& name, Client* creator, Server* serv): _name(name), _server(serv), _key(""), _limit_user(-1), _invite_only(false), _topic_protection(false), _channel_topic("")
 {
-	(void)creator;
+	sendMessageToClient(creator->getSocket(), ERR_NOTOPIC(creator->getNick(), this->getName()));
+	addClientToCh(creator);
+	addClientToOp(creator);
 }
 
-Channel::Channel()
+void	Channel::addClientToOp(Client* client)
 {
-}
-
-Channel::Channel(const Channel& src)
-{
-	*this = src;
-}
-
-Channel::~Channel()
-{
+	_operator.insert(std::make_pair(client->getNick(), client));
 }
 
 void	Channel::addClientToCh(Client* client)
 {
-	if(!client)
-		return ;
-	std::string nickname = client->getNick();
-	if (_clients.find(nickname) == _clients.end())
-	{
-		std::cout << "Adding new client to the map." << std::endl;
-		_clients[nickname] = client;
-	}
-	std::cout << "Client added" << std::endl;
+	_clients.insert(std::make_pair(client->getNick(), client));
+	printUsersInChannel(client, this->_name);
+	if(_clients.size() > 1)
+		notifyJoin(client->getNick());
+}
+
+void	Channel::notifyJoin(std::string nickname)
+{
+	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+		sendMessageToClient(it->second->getSocket(), MSG_WELCOME(nickname, this->getName()));
 }
 
 void	Channel::delClient(std::string nickname)
@@ -47,10 +58,10 @@ Channel& Channel::operator=(const Channel& src)
 	_clients = src._clients;
 	_operators = src._operators;
 	_server = src._server;
-	_password = src._password;
-	_user_limit = src._user_limit;
-	_topic_op_mode = src._topic_op_mode;
-	_invite_mode = src._invite_mode;
+	_key = src._key;
+	_limit_user = src._limit_user;
+	_topic_protection = src._topic_protection;
+	_invite_only = src._invite_only;
 	return (*this);
 }
 
@@ -80,7 +91,7 @@ void	Channel::addOperatorPrivilege(std::string username)
 
 std::string				Channel::getPassword()
 {
-	return (_password);
+	return (_key);
 }
 
 bool					Channel::isModeOn(char mode)
@@ -89,9 +100,18 @@ bool					Channel::isModeOn(char mode)
 	switch (mode)
 	{
 	case 'i':
-		r_value = _invite_mode;
+		r_value = _invite_only;
 		break;
 	case 't':
+		r_value = _topic_protection;
+		break;
+	case 'k':
+		if (_key != "")
+			r_value = 1;
+		break;
+	case 'l':
+		if (_limit_user != 0)
+			r_value = 1;
 		break;		
 	default:
 		break;
@@ -113,28 +133,28 @@ bool 1 : on
 */
 void	Channel::setUnsetInviteMode(bool on_off)
 {
-	_invite_mode = on_off;
+	_invite_only = on_off;
 }
 
 void	Channel::setUnsetTopicRestr(bool on_off)
 {
-	_topic_op_mode = on_off;
+	_topic_protection = on_off;
 }
 
 void	Channel::setUnsetPassword(bool on_off, std::string password)
 {
 	if (on_off)
-		_password = password;
+		_key = password;
 	else
-		_password = "";
+		_key = "";
 }
 
 void	Channel::setUnsetUserLimit(bool on_off, size_t user_limit)
 {
 	if (on_off)
-		_user_limit = user_limit;
+		_limit_user = user_limit;
 	else
-		_user_limit = 0;
+		_limit_user = 0;
 }
 
 void	Channel::setUnsetOpPrivilege(bool on_off, std::string username)
@@ -152,7 +172,7 @@ void	Channel::setTopicName(std::string new_topic_name)
 
 size_t	Channel::getUserLimit()
 {
-	return (_user_limit);
+	return (_limit_user);
 }
 
 void	Channel::setName(std::string name)
@@ -165,13 +185,29 @@ std::string Channel::getName()
 	return this->_name;
 }
 
-bool	Channel::hasUser(std::string nickname)
+void	Channel::printUsersInChannel(Client* client, std::string& channel_name)
 {
+	std::string msg;
+	
+	sendMessageToClient(client->getSocket(), RPL_NAMREPLY(client->getNick(),channel_name));
 	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		std::cout << "hasUser" << std::endl;
+		msg = it->first + " ";
+		sendMessageToClient(client->getSocket(), msg);
+	}
+	sendMessageToClient(client->getSocket(), "\n");
+	sendMessageToClient(client->getSocket(), ERR_ENDOFNAMES(client->getNick(), channel_name));
+}
+
+bool	Channel::hasUser(std::string nickname)
+{
+	std::cout << nickname << std::endl;
+	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		std::cout << "Map it->first" << it->first << std::endl;
 		if(it->first == nickname)
 			return (true);
 	}
+	std::cout << "false" << std::endl;
 	return (false);
 }

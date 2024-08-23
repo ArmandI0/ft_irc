@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/22 17:14:33 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/23 15:49:26 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ class Command;
 class Client
 {
 	private :
-		int	_socket;
-
+		int		_socket;
 		bool	_auth;
 		bool	_pass;
 	
@@ -32,7 +31,7 @@ class Client
 		std::string	_second_choice;
 		std::string	_third_choice;
 		std::string	_entry;
-		std::map<std::string, Channel*> _channels_in;
+		std::map<std::string, Channel*> _channels_in; // Vraiment besoin ? 
 		
 	public:
 		Client();

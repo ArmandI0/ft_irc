@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/23 15:25:58 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/23 15:47:48 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class Server
 		void								delClient(int client_fd);
 		
 		/*		Channels managements	*/
-		void								setChannel(Channel & channel, std::string& channel_name);
+		void								setChannel(Channel * channel, std::string& channel_name);
 		void								delChannel(std::string & channel_name);
 		Channel*							getChannel(std::string & channel_name);
 		void								printChannels();
@@ -54,7 +54,7 @@ class Server
 		std::map<int,Client>				_users;
 		std::map<std::string, Client*>		_nicknames;
 		std::map<std::string, Client*>		_usernames;
-		std::map<std::string, Channel>		_channels;
+		std::map<std::string, Channel*>		_channels;
 		std::string							_password;
 
 		int									_epoll_socket;
