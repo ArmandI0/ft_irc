@@ -35,7 +35,6 @@ class Command
 		int			parsingCommand();
 		void		execCommand(std::string cmd);
 
-
 		/*	COMMANDES SERVER	*/
 		void		execJoin(std::vector<std::string> & command);
 		void		execKick(std::vector<std::string> & command);
