@@ -6,13 +6,13 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/23 13:49:57 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/23 13:54:58 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
-Channel::Channel(const std::string& name, Client* creator, Server* serv): _server(serv), _key(""), _limit_user(-1), _topic_protection(-1), _name(name)
+Channel::Channel(const std::string& name, Client* creator, Server* serv): _name(name), _server(serv), _key(""), _limit_user(-1), _invite_only(false), _topic_protection(false), _channel_topic("")
 {
 	addClientToCh(creator);
 }

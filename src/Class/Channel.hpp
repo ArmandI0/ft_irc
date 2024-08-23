@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/23 13:46:08 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/23 13:54:47 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,9 @@ class Channel
 		void					addOperatorPrivilege(std::string username);
 		
 		std::map<std::string, Client *>	_clients;
+		std::map<std::string, Client *>	_operator; // +o
 		std::string						_name;
 		Server*							_server;
-		bool							_operator; // +o
 		std::string						_key; // +k
 		size_t							_limit_user; // +l
 		bool							_invite_only; // +i
