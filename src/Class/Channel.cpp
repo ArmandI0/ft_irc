@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/23 14:35:57 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/23 14:48:45 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,12 +186,12 @@ std::string Channel::getName()
 
 void	Channel::printUsersInChannel(Client* client, std::string& channel_name)
 {
-	std::cout << "Users in the channel : ";
-	std::string msg = "Users in " + channel_name + " :";
-	sendMessageToClient(client->getSocket(), msg);
+	std::string msg;
+	
+	sendMessageToClient(client->getSocket(), RPL_NAMREPLY(client->getNick(),channel_name));
 	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
 	{
-		msg = it->first + "\n";
+		msg = it->first + " ";
 		sendMessageToClient(client->getSocket(), msg);
 	}
 	sendMessageToClient(client->getSocket(), ERR_ENDOFNAMES(client->getNick(), channel_name));

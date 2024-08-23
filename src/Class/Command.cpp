@@ -83,10 +83,10 @@ void	Command::execCommand(std::string cmd)
 
 Channel*	Command::createChannel(std::string& channel_name, Client* client_creator, Server* server)
 {
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOTOPIC(client_creator->getNick(), channel_name));
 		Channel* new_channel = new Channel(channel_name, client_creator, server);
 		
 		server->setChannel(new_channel, channel_name);
-		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOTOPIC(client_creator->getNick(), channel_name));
 		return(new_channel);
 }
 
