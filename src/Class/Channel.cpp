@@ -6,34 +6,39 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/23 13:54:58 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/23 14:35:57 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
+Channel::Channel(){};
+Channel::Channel(const Channel& src){*this = src;};
+Channel::~Channel(){};
+
 Channel::Channel(const std::string& name, Client* creator, Server* serv): _name(name), _server(serv), _key(""), _limit_user(-1), _invite_only(false), _topic_protection(false), _channel_topic("")
 {
 	addClientToCh(creator);
+	addClientToOp(creator);
 }
 
-Channel::Channel()
+void	Channel::addClientToOp(Client* client)
 {
-}
-
-Channel::Channel(const Channel& src)
-{
-	*this = src;
-}
-
-Channel::~Channel()
-{
+	_operator.insert(std::make_pair(client->getNick(), client));
 }
 
 void	Channel::addClientToCh(Client* client)
 {
 	_clients.insert(std::make_pair(client->getNick(), client));
 	printUsersInChannel(client, this->_name);
+	if(_clients.size() > 1)
+		notifyJoin(client->getNick());
+}
+
+void	Channel::notifyJoin(std::string nickname)
+{
+	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+		sendMessageToClient(it->second->getSocket(), MSG_WELCOME(nickname, this->getName()));
 }
 
 void	Channel::delClient(std::string nickname)
@@ -189,6 +194,7 @@ void	Channel::printUsersInChannel(Client* client, std::string& channel_name)
 		msg = it->first + "\n";
 		sendMessageToClient(client->getSocket(), msg);
 	}
+	sendMessageToClient(client->getSocket(), ERR_ENDOFNAMES(client->getNick(), channel_name));
 }
 
 bool	Channel::hasUser(std::string nickname)

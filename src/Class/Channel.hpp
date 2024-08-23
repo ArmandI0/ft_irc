@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/23 13:54:47 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/23 14:28:27 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,12 @@ class Channel
 		Channel& operator=(const Channel& src);
 		~Channel();
 		
-		void					addClientToCh(Client* client);
+		void					addClientToCh(Client * client);
+		void					addClientToOp(Client * client);
 		void					delClient(std::string nickname);
 		void					delChannel();
+		
+		void					notifyJoin(std::string nickname);
 
 		std::string					getPassword();
 		size_t						getUserLimit();

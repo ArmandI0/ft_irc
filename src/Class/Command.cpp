@@ -83,15 +83,10 @@ void	Command::execCommand(std::string cmd)
 
 Channel*	Command::createChannel(std::string& channel_name, Client* client_creator, Server* server)
 {
-		// Modifying operator
 		Channel* new_channel = new Channel(channel_name, client_creator, server);
+		
 		server->setChannel(new_channel, channel_name);
-		// Commande who
-		std::string msg = "331 " + client_creator->getNick() + " " + channel_name + ":No topic is set\r\n";
-		// std::string msg = "WHO " + channel_name + "\r\n";
-		sendMessageToClient(this->_client_requester->getSocket(), msg);
-		// sendMessageToClient(server.)
-		std::cout << "Channel : " << channel_name << " created" << std::endl;
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOTOPIC(client_creator->getNick(), channel_name));
 		return(new_channel);
 }
 
@@ -118,7 +113,6 @@ void	Command::execJoin(std::vector<std::string> & command)
 
 void	Command::execKick(std::vector<std::string> & command)
 {
-	/* && !command[1].empty() && !command[2].empty() && command[3].empty()*/
 	Channel* channel = this->_server->getChannel(command[1]);
 	if(channel)
 		channel->delClient(command[2]);

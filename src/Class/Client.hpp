@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/23 13:55:55 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/23 14:10:12 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ class Client
 {
 	private :
 		int	_socket;
-		bool _operator;
 		bool	_auth;
 		bool	_pass;
 	
@@ -32,7 +31,7 @@ class Client
 		std::string	_second_choice;
 		std::string	_third_choice;
 		std::string	_entry;
-		std::map<std::string, Channel*> _channels_in;
+		std::map<std::string, Channel*> _channels_in; // Vraiment besoin ? 
 		
 	public:
 		Client();

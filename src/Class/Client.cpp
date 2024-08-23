@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/23 13:56:46 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/23 14:10:20 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ Client::Client()
 
 Client::Client(int socket) : _socket(socket), _auth(0), _pass(0)
 {
-	_operator = false;
     this->_nickname = "";
     this->_username = "";
 }
