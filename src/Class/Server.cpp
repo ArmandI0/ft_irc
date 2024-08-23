@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/22 16:04:22 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/22 23:15:43 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ Server::Server(std::string port, std::string password) :  _password(password)
 
 Server::~Server()
 {
-
+	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+		delete it->second; // Delete all dynamically allocated Channels
+	}
 }
 
 void    Server::listenSocket()
@@ -231,30 +233,30 @@ void	Server::delClientByUsername(std::string & username)
 	this->_usernames.erase(it);
 }
 
-void Server::setChannel(Channel & channel, std::string & channel_name)
+void Server::setChannel(Channel * channel, std::string & channel_name)
 {
 	this->_channels[channel_name] = channel;
 }
 
 void	Server::delChannel(std::string& channel_name)
 {
-	std::map<std::string, Channel>::iterator it = _channels.find(channel_name);
+	std::map<std::string, Channel*>::iterator it = _channels.find(channel_name);
 	if(it != _channels.end())
 	_channels.erase(it);
 }
 
 Channel*	Server:: getChannel(std::string& channel_name)
 {
-	std::map<std::string,Channel>::iterator it  = this->_channels.find(channel_name);
+	std::map<std::string,Channel *>::iterator it  = this->_channels.find(channel_name);
 	if(it != _channels.end())
-		return (&it->second);
+		return (it->second);
 	std::cout << "The channel : " << channel_name << " does not exist" << std::endl;
 	return(NULL);
 }
 
 void	Server::printChannels()
 {
-	std::map<std::string, Channel>::iterator it;
+	std::map<std::string, Channel*>::iterator it;
 	for (it = _channels.begin(); it != _channels.end(); it++)
 		std::cout << it->first << std::endl;
 }

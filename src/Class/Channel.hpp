@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/22 21:42:01 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/22 22:54:22 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ class Channel
 		void					setUnsetOpPrivilege(bool on_off, std::string username);
 		void					setTopicName(std::string topic_name);
 		void					setName(std::string name);
+		void					printUsersInChannel(Client* client, std::string& channel_name);
 
 	private :	
 		void					removeOperatorPrivilege(std::string username);

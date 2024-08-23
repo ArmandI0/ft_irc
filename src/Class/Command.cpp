@@ -81,10 +81,10 @@ void	Command::execCommand(std::string cmd)
 	}
 }
 
-Channel	Command::createChannel(std::string& channel_name, Client* client_creator, Server* server)
+Channel*	Command::createChannel(std::string& channel_name, Client* client_creator, Server* server)
 {
 		// Modifying operator
-		Channel new_channel(channel_name, client_creator, server);
+		Channel* new_channel = new Channel(channel_name, client_creator, server);
 		server->setChannel(new_channel, channel_name);
 		// Commande who
 		std::string msg = "331 " + client_creator->getNick() + " " + channel_name + ":No topic is set\r\n";
@@ -95,12 +95,16 @@ Channel	Command::createChannel(std::string& channel_name, Client* client_creator
 		return(new_channel);
 }
 
+
+/*			JOIN COMMAND		*/
+
 void	Command::execJoin(std::vector<std::string> & command)
 {
+
+	
 	Channel* channel = this->_server->getChannel(command[1]);
 	if(channel)
 	{
-		std::cout << "if channel" << std::endl;
 		if(channel->hasUser(_client_requester->getNick()) == true)
 			sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), command[1]));
 		else
@@ -108,11 +112,22 @@ void	Command::execJoin(std::vector<std::string> & command)
 	}
 	else
 	{
-		Channel new_channel;
+		Channel* new_channel;
 		new_channel = createChannel(command[1], _client_requester, this->_server);
-		new_channel.addClientToCh(this->_client_requester);
 	}
 }
+
+int	Command::parsingJoin(std::vector<std::string> & command)
+{
+	if(command[1][0] != '#' && command[1][0] != '&')
+	{
+		std::string msg = "403" + this->_client_requester->getSocket() + 32 + command[1] + ":No such channel\r\n";
+		sendMessageToClient(this->_client_requester->getSocket(), msg);
+	}
+}
+
+
+/*			KICK COMMAND		*/
 
 void	Command::execKick(std::vector<std::string> & command)
 {

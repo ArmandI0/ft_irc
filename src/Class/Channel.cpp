@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/22 21:44:24 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/23 13:27:58 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,8 @@ Channel::~Channel()
 
 void	Channel::addClientToCh(Client* client)
 {
-	std::string nickname = client->getNick();
-	for (std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-	{
-		// Check if the nickname matches any key in the map
-		if (it->first == nickname)
-		{
-			std::cout << "Client with nickname " << nickname << " is already in the map." << std::endl;
-			return ;
-		}
-	}
-	std::cout << "Adding new client to the map." << std::endl;
-	_clients.insert(std::make_pair(nickname, client));
-	std::cout << "Client added" << std::endl;
+	_clients.insert(std::make_pair(client->getNick(), client));
+	printUsersInChannel(client, this->_name);
 }
 
 void	Channel::delClient(std::string nickname)
@@ -189,6 +178,18 @@ void	Channel::setName(std::string name)
 std::string Channel::getName()
 {
 	return this->_name;
+}
+
+void	Channel::printUsersInChannel(Client* client, std::string& channel_name)
+{
+	std::cout << "Users in the channel : ";
+	std::string msg = "Users in " + channel_name + " :";
+	sendMessageToClient(client->getSocket(), msg);
+	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	{
+		msg = it->first + "\n";
+		sendMessageToClient(client->getSocket(), msg);
+	}
 }
 
 bool	Channel::hasUser(std::string nickname)
