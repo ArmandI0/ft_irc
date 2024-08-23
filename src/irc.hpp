@@ -33,7 +33,8 @@
 #define ERR_NICKNAMEINUSE(nickname) RED "433 " + nickname + " :Nickname is already in use\r\n" RESET
 #define ERR_NEEDMOREPARAMS(command) RED "461 " #command " :Not enough parameters\r\n" RESET
 #define ERR_ALREADYREGISTRED RED "462 :You may not reregister\r\n" RESET
-#define ERR_USERONCHANNEL(nickname, channel_name) "443 " + nickname + " :is already on channel" + channel_name + "\r\n"
+#define ERR_USERONCHANNEL(nickname, channel_name) "443 " + nickname + " :is already on channel: " + channel_name + "\r\n"
+#define ERR_NOSUCHCHANNEL(nickname, channel_name) "403" + nickname + " " + channel_name + " :No such channel\r\n"
 
 
 #endif
