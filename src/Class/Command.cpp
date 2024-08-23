@@ -155,7 +155,7 @@ int	Command::nickCommand(std::vector<std::string> & nickname)
 	else if (nickname.size() == 2)
 	{
 		this->_client_requester->setNick(nickname[1]);
-		this->_server->addNewNickname(nickname[1], &*(_client_requester));
+		this->_server->addNewNickname(nickname[1], _client_requester);
 	}
 	return 0;
 }
@@ -170,7 +170,7 @@ void Command::userCommand(std::vector<std::string> & username)
 	else if (username.size() == 5)
 	{
 		this->_client_requester->setUser(username[1]);
-		this->_server->addNewUsername(username[1], &*(_client_requester));
+		this->_server->addNewUsername(username[1], _client_requester);
 	}
 }
 

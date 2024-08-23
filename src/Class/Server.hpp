@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/22 16:03:04 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/23 10:15:55 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class Server
 		std::string							readSocket(int fd);
 		void								execCommand(Client & client);
 		std::string							getPassword();
+		void								closeClientsFd();
 		
 		/*		Clients managements		*/
 		epoll_event							addNewClient(int new_client_fd);

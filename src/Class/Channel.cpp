@@ -69,7 +69,7 @@ void	Channel::removeOperatorPrivilege(std::string username)
 }
 
 void	Channel::addOperatorPrivilege(std::string username)
-{
+{ 
 	(void)username;
 }
 
@@ -91,7 +91,7 @@ bool					Channel::isModeOn(char mode)
 	case 'i':
 		r_value = _invite_mode;
 		break;
-	case 't':const 
+	case 't':
 		break;		
 	default:
 		break;
