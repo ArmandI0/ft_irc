@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/23 14:48:45 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/23 15:28:29 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ Channel::~Channel(){};
 
 Channel::Channel(const std::string& name, Client* creator, Server* serv): _name(name), _server(serv), _key(""), _limit_user(-1), _invite_only(false), _topic_protection(false), _channel_topic("")
 {
+	sendMessageToClient(creator->getSocket(), ERR_NOTOPIC(creator->getNick(), this->getName()));
 	addClientToCh(creator);
 	addClientToOp(creator);
 }
@@ -194,6 +195,7 @@ void	Channel::printUsersInChannel(Client* client, std::string& channel_name)
 		msg = it->first + " ";
 		sendMessageToClient(client->getSocket(), msg);
 	}
+	sendMessageToClient(client->getSocket(), "\n");
 	sendMessageToClient(client->getSocket(), ERR_ENDOFNAMES(client->getNick(), channel_name));
 }
 

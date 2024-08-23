@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/23 14:10:12 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/23 15:24:43 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ class Command;
 class Client
 {
 	private :
-		int	_socket;
+		int		_socket;
 		bool	_auth;
 		bool	_pass;
 	
