@@ -38,6 +38,7 @@ class Command
 		/*	COMMANDES SERVER	*/
 		void			execJoin(std::vector<std::string> & command);
 		void			execKick(std::vector<std::string> & command);
+		void			execMode(std::vector<std::string> & command);
 		Channel*		createChannel(std::string& channel_name, Client* client_creator, Server* server);
 
 		/*	COMMANDE D'AUTHENTIFICATION		*/

@@ -74,6 +74,8 @@ void	Command::execCommand(std::string cmd)
 		this->execJoin(command);
 	else if (checkAndComp(command, 0, "KICK"))
 		this->execKick(command);
+	else if (checkAndComp(command, 0, "MODE"))
+		this->execMode(command);
 	if (this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
 	{
 		this->_client_requester->setAuth();
@@ -97,6 +99,13 @@ Channel*	Command::createChannel(std::string& channel_name, Client* client_creato
 		
 		server->setChannel(new_channel, channel_name);
 		return(new_channel);
+}
+
+/*			MODE COMMAND		*/
+void	Command::execMode(std::vector<std::string> & command)
+{
+	if(command[1].empty())
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 }
 
 
@@ -132,9 +141,7 @@ void	Command::execKick(std::vector<std::string> & command)
 			if(channel->hasUser(command[2]) == false)
 				sendMessageToClient(this->_client_requester->getSocket(), ERR_USERNOTINCHANNEL(_client_requester->getNick(), command[2], command[1]));
 			else
-			{
 				channel->kickClient(this->_client_requester, command[2], command[3]);
-			}
 		}
 	}
 	else
@@ -152,7 +159,7 @@ int	Command::passCommand(std::vector<std::string> & password)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_ALREADYREGISTRED);
 	else if (password.size() == 1)
 	{
-		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS("PASS"));
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick() ,"PASS"));
 	}
 	else if(password[1].compare(this->_server->getPassword()) == 0 && password.size() == 2)
 	{
@@ -183,7 +190,7 @@ void Command::userCommand(std::vector<std::string> & username)
 {
 	std::cout << "USER" << std::endl;
 	if (username.size() < 5)
-		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS("USER"));
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), "USER"));
 	else if (username.size() == 5 && this->_server->findUserByUsername(username[1]) != NULL)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_ALREADYREGISTRED);
 	else if (username.size() == 5)
