@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/23 16:45:07 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/23 22:21:37 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,35 @@ void	Channel::addClientToCh(Client* client)
 
 void	Channel::notifyJoin(std::string nickname)
 {
-	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++)
+	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 		sendMessageToClient(it->second->getSocket(), MSG_WELCOME(nickname, this->getName()));
 }
 
-void	Channel::delClient(std::string nickname)
+void	Channel::sendMessageToAllClient(std::string error)
 {
-	(void)nickname;
+	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+		sendMessageToClient(it->second->getSocket(), error);
+}
+
+void	Channel::kickClient(Client* client, std::string target, std::string reason)
+{
+	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+	{
+		if(it->first == target)
+		{
+			_clients.erase(it);
+			break ;
+		}
+	}
+	for(std::map<std::string, Client *>::iterator it = _operator.begin(); it != _operator.end(); ++it)
+	{
+		if(it->first == target)
+		{
+			_clients.erase(it);
+			break ;
+		}
+	}
+	sendMessageToAllClient(MSG_KICK(client->getNick(), client->getUsername(), target, this->getName(), reason));
 }
 
 void	Channel::delChannel()

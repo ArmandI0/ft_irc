@@ -77,8 +77,18 @@ void	Command::execCommand(std::string cmd)
 	if (this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
 	{
 		this->_client_requester->setAuth();
-		sendMessageToClient(this->_client_requester->getSocket(), "Welcome " + this->_client_requester->getNick() + "\r\n");
+		// sendMessageToClient(this->_client_requester->getSocket(), "Welcome " + this->_client_requester->getNick() + "\r\n");
 	}
+}
+
+bool		Channel::checkIfOp(Client * client)
+{
+	for(std::map<std::string, Client *>::iterator it = _operator.begin(); it != _operator.end(); ++it)
+	{
+		if(it->first == client->getNick())
+			return (true);
+	}
+	return (false);
 }
 
 Channel*	Command::createChannel(std::string& channel_name, Client* client_creator, Server* server)
@@ -94,8 +104,6 @@ Channel*	Command::createChannel(std::string& channel_name, Client* client_creato
 
 void	Command::execJoin(std::vector<std::string> & command)
 {
-	// if (this->_client_requester == NULL)
-	// 	throw std::runtime_error("BLABLA");
 	if(command[1][0] != '#' && command[1][0] != '&')
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[1]));
 	Channel* channel = this->_server->getChannel(command[1]);
@@ -117,9 +125,20 @@ void	Command::execKick(std::vector<std::string> & command)
 	Channel* channel = this->_server->getChannel(command[1]);
 	if(channel)
 	{
-		
-		channel->delClient(command[2]);
+		if(channel->checkIfOp(this->_client_requester) == false)
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), command[1]));
+		else
+		{
+			if(channel->hasUser(command[2]) == false)
+				sendMessageToClient(this->_client_requester->getSocket(), ERR_USERNOTINCHANNEL(_client_requester->getNick(), command[2], command[1]));
+			else
+			{
+				channel->kickClient(this->_client_requester, command[2], command[3]);
+			}
+		}
 	}
+	else
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(_client_requester->getNick(), channel->getName()));
 }
 
 
