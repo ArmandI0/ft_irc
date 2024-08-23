@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/22 11:38:24 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/23 15:49:21 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ Client::~Client()
 int										Client::getSocket() 	const{return this->_socket;}
 bool 									Client::getAuth() 		const{return this->_auth;}
 bool									Client::getPass() 		const{return this->_pass;}
-std::string								Client::getNick() 		const{return this->_nickname;}
-std::string 							Client::getUsername() 	const{return (_username);}
+std::string						        &Client::getNick() 		{return this->_nickname;}
+std::string 							&Client::getUsername() 	{return this->_username;}
 const std::map<std::string, Channel*>	Client::getChannelsIn()	{return this->_channels_in;}
 std::string								&Client::getEntry() 	{return this->_entry;}
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/21 22:58:15 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/23 15:49:26 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ class Command;
 class Client
 {
 	private :
-		int	_socket;
-
+		int		_socket;
 		bool	_auth;
 		bool	_pass;
 	
@@ -32,7 +31,7 @@ class Client
 		std::string	_second_choice;
 		std::string	_third_choice;
 		std::string	_entry;
-		std::map<std::string, Channel*> _channels_in;
+		std::map<std::string, Channel*> _channels_in; // Vraiment besoin ? 
 		
 	public:
 		Client();
@@ -44,8 +43,8 @@ class Client
 		int										getSocket() const;
 		bool 									getAuth() const;
 		bool									getPass() const;
-		std::string								getNick() const;
-		std::string								getUsername() const;
+		std::string								&getNick();
+		std::string								&getUsername();
 		std::string								&getEntry();
 		const std::map<std::string, Channel*>	getChannelsIn();
 		

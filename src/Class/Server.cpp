@@ -6,28 +6,39 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/22 16:04:22 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/23 16:25:25 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
+int sig = 1;
 
-void handle_sigint(int sig)
+void handle_sigint(int s)
 {
-	(void)sig;
+	(void)s;
+	sig = 0;
 }
 
-Server::Server(std::string port, std::string password) :  _password(password)
+Server::Server(unsigned long port, std::string password) :  _password(password)
 {
-	this->_server_infos.sin_port = htons(std::atoi(port.c_str()));
+	this->_listen_socket = -1;
+	this->_epoll_socket = -1;
+	this->_server_infos.sin_port = htons(port);
 	this->_server_infos.sin_family = AF_INET;
 	this->_server_infos.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 }
 
 Server::~Server()
 {
-
+	if (this->_listen_socket != -1)
+		close(this->_listen_socket);
+	if (this->_epoll_socket != -1)
+		close(this->_epoll_socket);
+	this->closeClientsFd();
+	for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+		delete it->second; // Delete all dynamically allocated Channels
+	}
 }
 
 void    Server::listenSocket()
@@ -40,13 +51,10 @@ void    Server::listenSocket()
 		throw std::runtime_error("Error : socket");
 	status = bind(this->_listen_socket, (struct sockaddr *)&(this->_server_infos), sizeof this->_server_infos);
 	if (status != 0)
-		throw std::runtime_error("Error : bind socket");
+		throw std::runtime_error("Error : socket already use");
 	status = listen(this->_listen_socket, log);
 	if (status != 0)
-	{
-		std::cerr << "Error TBD"<< std::endl;
-		return ;
-	}
+		throw std::runtime_error("Error : listen socket fail");
 }
 
 epoll_event	Server::addNewClient(int new_client_fd)
@@ -63,44 +71,45 @@ epoll_event	Server::addNewClient(int new_client_fd)
 
 void	Server::delClient(int client_fd)
 {
-	std::cout << (this->_users[client_fd]).getUsername() << " left the channel." << std::endl;
+	Client to_delete = getClientByFd(client_fd);
+
+	std::map<std::string,Client*>::iterator it = this->_nicknames.find(to_delete.getNick());
+	if (it != _nicknames.end())
+		this->_nicknames.erase(it);
+
+	it = this->_usernames.find(to_delete.getUsername());
+	if (it != _usernames.end())
+		this->_usernames.erase(it);
+
 	this->_users.erase(client_fd);
+
+	std::cout << "Client : " << client_fd << " left the server." << std::endl;
 }
 
 void	Server::execServer()
 {
 	struct epoll_event ev;
-	ev.events = EPOLLIN;  // Par exemple, surveiller les événements de lecture (EPOLLIN)
-	ev.data.fd = this->_listen_socket;
-	
-    std::signal(SIGINT, handle_sigint);
-	
-	/* CREATION EPOLL*/
-	this->_epoll_socket = epoll_create1(0);
-	if (this->_epoll_socket == -1)
-	{
-		std::cerr << "Error TBD"<< std::endl;
-		exit(EXIT_FAILURE); 
-	}
-
-	/* AJOUT FD A SURVEILLER TO EPOLL */
-	if (epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, this->_listen_socket, &ev) == -1)
-	{
-		std::cerr << "Error TBD"<< std::endl;
-		exit(EXIT_FAILURE);
-	}
-
-	std::cout << "Waiting connection..." << std::endl;
 	struct epoll_event evs[10];
 	int ret;
-	while(1)
+
+	ev.events = EPOLLIN;
+	ev.data.fd = this->_listen_socket;
+    std::signal(SIGINT, handle_sigint);
+	std::signal(SIGQUIT, handle_sigint);
+	this->_epoll_socket = epoll_create1(0);
+	if (this->_epoll_socket == -1)
+		throw std::runtime_error("Error : epoll_create fail.");
+	if (epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, this->_listen_socket, &ev) == -1)
+		throw std::runtime_error("Error : epoll_ctl fail.");
+	std::cout << MAGENTA "Server run" RESET << std::endl;
+	while(sig)
 	{
 		ret = epoll_wait(this->_epoll_socket, evs, 10, -1);
 		if (ret == -1)
 		{
-			close(this->_epoll_socket);
-    		close(this->_listen_socket);
-			exit(EXIT_FAILURE);
+			if (sig == 0)
+				return ;
+			throw std::runtime_error("Error : epoll_wait fail.");
 		}
 		for (int i = 0; i < ret; i++)
 		{
@@ -110,28 +119,16 @@ void	Server::execServer()
 				{
 					int new_client_fd = accept(this->_listen_socket, NULL, NULL);
 					if (new_client_fd == -1)
-						std::cerr << "Error TBD" << std::endl;
-					else
-					{
-						std::cout << "connexion etablie fd =" << new_client_fd << std::endl;
-
-						epoll_event new_ev = this->addNewClient(new_client_fd);
-						if(epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, new_client_fd, &new_ev) == -1)
-						{
-							std::cerr << "Error TBD"<< std::endl;
-							exit(EXIT_FAILURE);
-						}
-                    }
+						throw std::runtime_error("Error : accept new fd.");
+					epoll_event new_ev = this->addNewClient(new_client_fd);
+					if(epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, new_client_fd, &new_ev) == -1)
+						throw std::runtime_error("Error : epoll_ctl fail.");
                 }
                 else
-                {
 					execCommand(this->_users[evs[i].data.fd]);	
-				}
 			}
 		}
 	}
-	close(this->_epoll_socket);
-    close(this->_listen_socket);
 }
 
 void	Server::execCommand(Client & client)
@@ -146,14 +143,12 @@ void	Server::execCommand(Client & client)
 			{
 				Command	new_command(client.getEntry(), &client, &*this);
 				client.eraseEntry();
-				std::cout << "Buffer read :\n" RED << buffer  << RESET "Buffer read :" << std::endl;
+				std::cout << YELLOW << buffer  << RESET << std::endl;
 				new_command.parsingCommand();
 			}
 		}
 	}
 }
-
-
 
 std::string	Server::getPassword()
 {
@@ -179,7 +174,7 @@ std::string Server::readSocket(int fd)
     }
     else
     {
-        std::cerr << "Erreur lors de la réception de données du fd " << fd << std::endl;
+        std::cerr << "Error : message" << fd << std::endl;
         return "";
     }
 }
@@ -191,6 +186,11 @@ void Server::addNewNickname(std::string & nick, Client * client)
 	this->_nicknames.insert(std::make_pair(nick, client));
 }
 
+void	Server::addNewUsername(std::string & username, Client * client)
+{
+	this->_usernames.insert(std::make_pair(username, client));
+}
+
 Client*	Server::findUserByNickname(std::string & nickname)
 {
 	std::map<std::string,Client*>::iterator it = this->_nicknames.find(nickname);
@@ -199,10 +199,6 @@ Client*	Server::findUserByNickname(std::string & nickname)
 	return it->second;
 }
 
-void	Server::addNewUsername(std::string & username, Client * client)
-{
-	this->_usernames.insert(std::make_pair(username, client));
-}
 
 Client*	Server::findUserByUsername(std::string & username)
 {
@@ -218,43 +214,38 @@ Client&		Server::getClientByFd(int socket)
 	return (ref);
 }
 
-
-void	Server::delClientByNickname(std::string & nickname)
-{
-	std::map<std::string,Client*>::iterator it = this->_usernames.find(nickname);
-	this->_nicknames.erase(it);
-}
-
-void	Server::delClientByUsername(std::string & username)
-{
-	std::map<std::string,Client*>::iterator it = this->_usernames.find(username);
-	this->_usernames.erase(it);
-}
-
-void Server::setChannel(Channel & channel, std::string & channel_name)
+void Server::setChannel(Channel * channel, std::string & channel_name)
 {
 	this->_channels[channel_name] = channel;
 }
 
 void	Server::delChannel(std::string& channel_name)
 {
-	std::map<std::string, Channel>::iterator it = _channels.find(channel_name);
+	std::map<std::string, Channel*>::iterator it = _channels.find(channel_name);
 	if(it != _channels.end())
 	_channels.erase(it);
 }
 
 Channel*	Server:: getChannel(std::string& channel_name)
 {
-	std::map<std::string,Channel>::iterator it  = this->_channels.find(channel_name);
+	std::map<std::string,Channel *>::iterator it  = this->_channels.find(channel_name);
 	if(it != _channels.end())
-		return (&it->second);
+		return (it->second);
 	std::cout << "The channel : " << channel_name << " does not exist" << std::endl;
 	return(NULL);
 }
 
 void	Server::printChannels()
 {
-	std::map<std::string, Channel>::iterator it;
+	std::map<std::string, Channel*>::iterator it;
 	for (it = _channels.begin(); it != _channels.end(); it++)
 		std::cout << it->first << std::endl;
+}
+
+void	Server::closeClientsFd()
+{
+	for (std::map<int, Client>::iterator it = this->_users.begin(); it != this->_users.end(); ++it)
+	{
+		close(it->first);
+	}
 }

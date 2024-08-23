@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Connexion à localhost sur le port 4243 avec netcat
+{
+    echo "PASS abc"
+    echo "NICK aranger"
+    echo "USER aranger 0 0 0"
+    echo "JOIN #home"
+} | nc -C localhost 4244
+

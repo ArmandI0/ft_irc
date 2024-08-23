@@ -81,21 +81,23 @@ void	Command::execCommand(std::string cmd)
 	}
 }
 
-void	Command::createChannel(std::string& channel_name, Client& client_creator, Server* server)
+Channel*	Command::createChannel(std::string& channel_name, Client* client_creator, Server* server)
 {
-		// Modifying operator
-		Channel new_channel(channel_name, client_creator, server);
+		Channel* new_channel = new Channel(channel_name, client_creator, server);
+		
 		server->setChannel(new_channel, channel_name);
-		// Commande who
-		std::string msg = "331 " + client_creator.getNick() + " " + channel_name + ":No topic is set\r\n";
-		// std::string msg = "WHO " + channel_name + "\r\n";
-		sendMessageToClient(this->_client_requester->getSocket(), msg);
-		// sendMessageToClient(server.)
-		std::cout << "Channel : " << channel_name << " created" << std::endl;
+		return(new_channel);
 }
+
+
+/*			JOIN COMMAND		*/
 
 void	Command::execJoin(std::vector<std::string> & command)
 {
+	// if (this->_client_requester == NULL)
+	// 	throw std::runtime_error("BLABLA");
+	if(command[1][0] != '#' && command[1][0] != '&')
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[1]));
 	Channel* channel = this->_server->getChannel(command[1]);
 	if(channel)
 	{
@@ -105,18 +107,19 @@ void	Command::execJoin(std::vector<std::string> & command)
 			channel->addClientToCh(this->_client_requester);
 	}
 	else
-	{
-		createChannel(command[1], *this->_client_requester, this->_server);
-		channel->addClientToCh(this->_client_requester);
-	}
+		createChannel(command[1], _client_requester, this->_server);
 }
+
+/*			KICK COMMAND		*/
 
 void	Command::execKick(std::vector<std::string> & command)
 {
-	/* && !command[1].empty() && !command[2].empty() && command[3].empty()*/
 	Channel* channel = this->_server->getChannel(command[1]);
 	if(channel)
+	{
+		
 		channel->delClient(command[2]);
+	}
 }
 
 
@@ -152,7 +155,7 @@ int	Command::nickCommand(std::vector<std::string> & nickname)
 	else if (nickname.size() == 2)
 	{
 		this->_client_requester->setNick(nickname[1]);
-		this->_server->addNewNickname(nickname[1], &*(_client_requester));
+		this->_server->addNewNickname(nickname[1], _client_requester);
 	}
 	return 0;
 }
@@ -167,7 +170,7 @@ void Command::userCommand(std::vector<std::string> & username)
 	else if (username.size() == 5)
 	{
 		this->_client_requester->setUser(username[1]);
-		this->_server->addNewUsername(username[1], &*(_client_requester));
+		this->_server->addNewUsername(username[1], _client_requester);
 	}
 }
 
