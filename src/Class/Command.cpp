@@ -305,7 +305,7 @@ void	Command::execKick(std::vector<std::string> & command)
 		if(channel)
 		{
 			if(channel->checkIfOp(this->_client_requester->getNick()) == false)
-				sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), command[1]));
+				sendMessageToClient(this->_client_requester->getSocket(), ERR_CHANOPRIVSNEEDED(_client_requester->getNick(), command[1]));
 			else
 			{
 				if(channel->hasUser(command[2]) == false)
