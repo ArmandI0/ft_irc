@@ -93,10 +93,11 @@ bool		Channel::checkIfOp(std::string name)
 	return (false);
 }
 
-Channel*	Command::createChannel(std::string& channel_name, Client* client_creator, Server* server)
+Channel*	Command::createChannel(std::string & channel_name, Client* client_creator, Server* server)
 {
 		Channel* new_channel = new Channel(channel_name, client_creator, server);
 		
+		std::cout << "ici\n" << std::endl;
 		server->setChannel(new_channel, channel_name);
 		return(new_channel);
 }
@@ -105,7 +106,7 @@ Channel*	Command::createChannel(std::string& channel_name, Client* client_creato
 
 void	Command::execOpMode(Channel * channel, Client * client, int remove)
 {
-	if(remove == 0)
+	if(remove == false)
 	{
 		channel->addClientToOp(client);
 		channel->sendMessageToAllClient(MSG_NEWEOPERONCHANNEL(this->_client_requester->getNick(), channel->getName()));
@@ -119,7 +120,7 @@ void	Command::execOpMode(Channel * channel, Client * client, int remove)
 
 void	Command::execKeyMode(Channel * channel, std::string key, int remove)
 {
-	if(remove == 0)
+	if(remove == false)
 	{
 		channel->setKey(key);
 		channel->sendMessageToAllClient(MSG_KEYONCHANNEL(channel->getName(), "+"));
@@ -133,16 +134,34 @@ void	Command::execKeyMode(Channel * channel, std::string key, int remove)
 
 void	Command::execLimitMode(Channel * channel, std::string limit, int remove)
 {
-
+	if(remove == false)
+	{
+		channel->setLimit(limit);
+		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "+l"));
+	}
+	else
+	{
+		channel->setLimit("-1");
+		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "-l"));
+	}
 }
 
 void	Command::execTopicMode(Channel * channel, int remove)
 {
-
+	channel->setTopic(remove);
+	if(remove == true)
+		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "-t"));
+	else
+		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "+t"));
 }
 
 void	Command::execInviteMode(Channel * channel, int remove)
 {
+	channel->setInvite(remove);
+	if(remove == true)
+		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "-l"));
+	else
+		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "+l"));
 
 }
 
@@ -184,10 +203,7 @@ void	Command::execMode(std::vector<std::string> & command)
 										execLimitMode(channel, command[3], 0);
 								}
 								else if(command[2][1] == 't')
-								{
-									if(i != 1)
-										execTopicMode(channel, 0);
-								}
+									sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[2]));
 								else if(command[2][1] == 'i')
 									sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[2]));
 								else
@@ -204,19 +220,21 @@ void	Command::execMode(std::vector<std::string> & command)
 				{
 					if(command[2][0] == '-' || command[2][0] == '+')
 					{
+						int i = 0;
+						if(command[2][0] == '-')
+							i++;
 						if(command[2][1] == 'o')
 							sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[2]));
 						else if(command[2][1] == 'k')
-						{
-								execKeyMode(channel, "", 1);
-								sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[2]));
-						}
+								execKeyMode(channel, "", i);
 						else if(command[2][1] == 'l')
-							execLimitMode(channel, command[3], 1);
+							execLimitMode(channel, "", i);
 						else if(command[2][1] == 't')
-							execTopicMode(channel, 1);
+							execTopicMode(channel, i);
 						else if(command[2][1] == 'i')
-							execInviteMode(channel, 1);
+							execInviteMode(channel, i);
+						else
+							sendMessageToClient(this->_client_requester->getSocket(), ERR_UMODEUNKNOWNFLAG(this->_client_requester->getNick(), command[2]));
 					}
 				}
 			}
@@ -242,7 +260,7 @@ void	Command::execMode(std::vector<std::string> & command)
 
 void	Command::execJoin(std::vector<std::string> & command)
 {
-	if(command[1].empty())
+	if(command.size() < 2)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
 	{
@@ -259,7 +277,10 @@ void	Command::execJoin(std::vector<std::string> & command)
 					channel->addClientToCh(this->_client_requester);
 			}
 			else
+			{
+				std::cout << "ah\n" << std::endl;
 				createChannel(command[1], _client_requester, this->_server);
+			}
 		}
 	
 	}

@@ -46,12 +46,12 @@
 #define ERR_CHANOPRIVSNEEDED(nickname, channel_name) "482 " + nickname + " " + channel_name + " :You're not channel operator\r\n" RESET
 #define ERR_UMODEUNKNOWNFLAG(nickname, mode) "501 " + nickname + " :Unknown " + mode + " flag\r\n" RESET
 
-
-#define MSG_NEWEOPERONCHANNEL(nickname, channel_name) nickname + ": Has been promoted to operator on " + channel_name + " Congratulations !\r\n"RESET
+#define MSG_MODECHANGE(channel_name, mode) "MODE " + channel_name + " " + mode + "\r\n"
+#define MSG_NEWEOPERONCHANNEL(nickname, channel_name) nickname + ": Has been promoted to operator on " + channel_name + " Congratulations !\r\n" RESET
 #define MSG_KEYONCHANNEL(channel_name, add_remove) "MODE " + channel_name + " " + add_remove "k\r\n" RESET 
 #define MSG_REMOVEOP(nickname, t_nickname, channel_name) "User :" + t_nickname + " has been removed Operator rights in " + channel_name + " from " + nickname + "\r\n" RESET
 #define MSG_WELCOME(nickname, channel_name) "Welcome " + nickname + " in " + channel_name + " !\r\n" RESET
 
-#define MSG_KICK(nickname, username, t_nickname, channel_name, reason) nickname + "!" + username + "@ft_irc KICK " + channel_name + " " + t_nickname + " :" + reason + "\r\n"RESET
+#define MSG_KICK(nickname, username, t_nickname, channel_name, reason) nickname + "!" + username + "@ft_irc KICK " + channel_name + " " + t_nickname + " :" + reason + "\r\n" RESET
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/24 11:20:25 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/24 15:40:39 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,9 @@ class Channel
 		std::string					getKey();
 		
 		void						setKey(std::string key);
+		void						setLimit(std::string limit);
+		void						setTopic(int remove);
+		void						setInvite(int remove);
 
 		bool					isModeOn(char mode);
 		bool					isOperator(int socket_user);

@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/24 12:09:36 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/24 15:29:36 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,16 @@ Channel::~Channel(){};
 
 Channel::Channel(const std::string& name, Client* creator, Server* serv): _name(name), _server(serv), _key(NULL), _limit_user(-1), _invite_only(false), _topic_protection(false), _channel_topic("")
 {
+	std::cout << "la1\n" << std::endl;
 	sendMessageToClient(creator->getSocket(), ERR_NOTOPIC(creator->getNick(), this->getName()));
+	std::cout << "la2\n" << std::endl;
+
 	addClientToCh(creator);
+	std::cout << "la3\n" << std::endl;
+
 	addClientToOp(creator);
+	std::cout << "la4\n" << std::endl;
+
 }
 
 void	Channel::addClientToOp(Client* client)
@@ -247,4 +254,28 @@ bool	Channel::hasUser(std::string nickname)
 void	Channel::setKey(std::string key)
 {
 	this->_key = key;
+}
+
+void	Channel::setLimit(std::string limit)
+{
+	std::stringstream ss(limit);
+	size_t limit_value;
+	ss >> limit_value;
+	this->_limit_user = limit_value;
+}
+
+void	Channel::setTopic(int remove)
+{
+	if(remove == true)
+		this->_topic_protection = false;
+	else
+		this->_topic_protection = true;
+}
+
+void	Channel::setInvite(int remove)
+{
+	if(remove == true)
+		this->_invite_only = false;
+	else
+		this->_invite_only = true;
 }
