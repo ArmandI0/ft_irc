@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/24 15:40:39 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/24 18:21:10 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class Channel
 {
 	public:
 		Channel();
-		Channel(const std::string& name, Client* creator, Server* serv);
+		Channel(std::string & name, Client* creator, Server* serv);
 		Channel(const Channel& src);
 		Channel& operator=(const Channel& src);
 		~Channel();
@@ -35,6 +35,9 @@ class Channel
 		void					kickClient(Client* client, std::string target, std::string reason);
 		void					delChannel();
 		
+		bool					checkLimitUser();
+		bool					checkInvite(std::string name);
+		
 		bool					checkIfOp(std::string name);
 		
 		void					notifyJoin(std::string nickname);
@@ -44,6 +47,8 @@ class Channel
 		size_t						getUserLimit();
 		std::string 				getName();
 		std::string					getKey();
+		size_t						getLimitUser();
+		bool						getInvite();
 		
 		void						setKey(std::string key);
 		void						setLimit(std::string limit);
@@ -70,6 +75,7 @@ class Channel
 		
 		std::map<std::string, Client *>	_clients;
 		std::map<std::string, Client *>	_operator; // +o
+		std::vector<std::string>		_invite_name;
 		std::string						_name;
 		Server*							_server;
 		std::string						_key; // +k

@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/24 15:29:36 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/24 18:49:02 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,17 @@ Channel::Channel(){};
 Channel::Channel(const Channel& src){*this = src;};
 Channel::~Channel(){};
 
-Channel::Channel(const std::string& name, Client* creator, Server* serv): _name(name), _server(serv), _key(NULL), _limit_user(-1), _invite_only(false), _topic_protection(false), _channel_topic("")
+Channel::Channel(std::string & name, Client* creator, Server* serv):  _name(name), _server(serv), _key(""), _limit_user(-1), _invite_only(false), _topic_protection(false), _channel_topic("")
 {
-	std::cout << "la1\n" << std::endl;
 	sendMessageToClient(creator->getSocket(), ERR_NOTOPIC(creator->getNick(), this->getName()));
-	std::cout << "la2\n" << std::endl;
-
 	addClientToCh(creator);
-	std::cout << "la3\n" << std::endl;
-
 	addClientToOp(creator);
-	std::cout << "la4\n" << std::endl;
-
 }
 
 void	Channel::addClientToOp(Client* client)
 {
+	if(checkIfOp(client->getNick()) == true)
+		return ;
 	_operator.insert(std::make_pair(client->getNick(), client));
 }
 
@@ -45,6 +40,34 @@ void	Channel::delClientToOp(Client* client)
 			break ;
 		}
 	}
+}
+
+bool	Channel::checkLimitUser()
+{
+	size_t i = 0;
+	if(this->getLimitUser() > 0)
+	{
+		for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+			i++;
+		if(i < this->getLimitUser())
+			return(false);
+		else
+			return (true);
+	}
+	return(false);
+}
+
+bool	Channel::checkInvite(std::string name)
+{
+	if(this->_invite_only == true)
+	{
+		for(std::vector<std::string>::iterator it = _invite_name.begin(); it != _invite_name.end(); ++it)
+		{
+			if(*it == name)
+				return (true);	
+		}
+	}
+	return (false);
 }
 
 void	Channel::addClientToCh(Client* client)
@@ -224,6 +247,16 @@ void	Channel::setName(std::string name)
 std::string Channel::getName()
 {
 	return this->_name;
+}
+
+size_t	Channel::getLimitUser()
+{
+	return (this->_limit_user);
+}
+
+bool	Channel::getInvite()
+{
+	return(this->_invite_only);
 }
 
 void	Channel::printUsersInChannel(Client* client, std::string& channel_name)
