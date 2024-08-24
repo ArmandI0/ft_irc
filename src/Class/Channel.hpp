@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/23 21:40:32 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/24 18:21:10 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,26 +23,37 @@ class Channel
 {
 	public:
 		Channel();
-		Channel(const std::string& name, Client* creator, Server* serv);
+		Channel(std::string & name, Client* creator, Server* serv);
 		Channel(const Channel& src);
 		Channel& operator=(const Channel& src);
 		~Channel();
 
 		void					addClientToCh(Client * client);
 		void					addClientToOp(Client * client);
+		void					delClientToOp(Client* client);
 		
 		void					kickClient(Client* client, std::string target, std::string reason);
 		void					delChannel();
 		
-		bool					checkIfOp(Client * client);
+		bool					checkLimitUser();
+		bool					checkInvite(std::string name);
+		
+		bool					checkIfOp(std::string name);
 		
 		void					notifyJoin(std::string nickname);
 		
 		void					sendMessageToAllClient(std::string error);
 
-		std::string					getPassword();
 		size_t						getUserLimit();
 		std::string 				getName();
+		std::string					getKey();
+		size_t						getLimitUser();
+		bool						getInvite();
+		
+		void						setKey(std::string key);
+		void						setLimit(std::string limit);
+		void						setTopic(int remove);
+		void						setInvite(int remove);
 
 		bool					isModeOn(char mode);
 		bool					isOperator(int socket_user);
@@ -64,6 +75,7 @@ class Channel
 		
 		std::map<std::string, Client *>	_clients;
 		std::map<std::string, Client *>	_operator; // +o
+		std::vector<std::string>		_invite_name;
 		std::string						_name;
 		Server*							_server;
 		std::string						_key; // +k
