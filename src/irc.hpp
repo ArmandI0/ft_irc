@@ -35,7 +35,7 @@
 #define RPL_NAMREPLY(nickname, channel_name) "353 " + nickname + " = " + channel_name + " : " RESET						 // Pas de \r\n
 #define ERR_ENDOFNAMES(nickname, channel_name) "366 " + nickname + " " + channel_name + " :End of /NAMES list\r\n" RESET
 #define	ERR_NOSUCHNICK(nickname, t_nickname) "401 " + nickname + " " + t_nickname + " :No such nick\r\n" RESET
-#define ERR_NOSUCHCHANNEL(nickname, channel_name) "403" + nickname + " " + channel_name + " :No such channel\r\n" RESET
+#define ERR_NOSUCHCHANNEL(nickname, channel_name) "403 " + nickname + " " + channel_name + " :No such channel\r\n" RESET
 #define ERR_NONICKNAMEGIVEN RED "431 :No nickname given\r\n" RESET
 #define ERR_ERRONEUSNICKNAME(nickname) RED "432 " + nickname + " :Erroneus nickname\r\n" RESET
 #define ERR_NICKNAMEINUSE(nickname) RED "433 " + nickname + " :Nickname is already in use\r\n" RESET
@@ -48,6 +48,12 @@
 #define ERR_CHANOPRIVSNEEDED(nickname, channel_name) "482 " + nickname + " " + channel_name + " :You're not channel operator\r\n" RESET
 #define ERR_UMODEUNKNOWNFLAG(nickname, mode) "501 " + nickname + " :Unknown " + mode + " flag\r\n" RESET
 
+#define ERR_NORECIPIENT(command) RED "411 :No recipient given " command " \r\n" RESET
+#define ERR_NOTEXTTOSEND RED "412 :No text to send\r\n" RESET
+#define ERR_CANNOTSENDTOCHAN(channel_name) RED "404 " + channel_name + ":Cannot send to channel\r\n" RESET
+#define ERR_TOOMANYTARGETS RED "407 :Too many recipients\r\n" RESET
+
+
 #define MSG_MODECHANGE(channel_name, mode) "MODE " + channel_name + " " + mode + "\r\n" RESET
 #define MSG_NEWEOPERONCHANNEL(nickname, channel_name) nickname + ": Has been promoted to operator on " + channel_name + " Congratulations !\r\n" RESET
 #define MSG_KEYONCHANNEL(channel_name, add_remove) "MODE " + channel_name + " " + add_remove "k\r\n" RESET 
@@ -55,5 +61,7 @@
 #define MSG_WELCOME(nickname, channel_name) "Welcome " + nickname + " in " + channel_name + " !\r\n" RESET
 
 #define MSG_KICK(nickname, username, t_nickname, channel_name, reason) nickname + "!" + username + "@ft_irc KICK " + channel_name + " " + t_nickname + " :" + reason + "\r\n" RESET
+
+#define ERR_NOTREGISTER RED "TU ES PAS CONNECTE CONNARD ! METS LE PUTAIN DE MOT DE PASSE\r\n" RESET 
 
 #endif
