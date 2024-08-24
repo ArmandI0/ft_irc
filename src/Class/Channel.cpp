@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/24 18:49:02 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/24 18:59:11 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,8 @@ bool	Channel::checkLimitUser()
 	{
 		for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 			i++;
-		if(i < this->getLimitUser())
-			return(false);
-		else
-			return (true);
+		if(i > this->getLimitUser())
+			return(true);
 	}
 	return(false);
 }

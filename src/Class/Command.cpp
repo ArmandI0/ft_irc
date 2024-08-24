@@ -276,11 +276,11 @@ void	Command::execJoin(std::vector<std::string> & command)
 				else
 				{
 					if(channel->checkLimitUser() == true)
-						;
-					if(channel->checkInvite(_client_requester->getNick()) == true)
-						channel->addClientToCh(this->_client_requester);
-					else
 						sendMessageToClient(this->_client_requester->getSocket(), ERR_CHANNELISFULL(_client_requester->getNick(), channel->getName()));
+					if(channel->checkInvite(_client_requester->getNick()) == true)
+						;
+					else
+						channel->addClientToCh(this->_client_requester);
 				}
 			}
 			else
