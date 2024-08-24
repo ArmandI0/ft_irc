@@ -7,3 +7,4 @@
     echo "USER dboire 12 0 0"
     echo "JOIN #home"
 } | nc -C localhost 4244
+
