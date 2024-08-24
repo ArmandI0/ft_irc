@@ -76,6 +76,8 @@ void	Command::execCommand(std::string cmd)
 		this->execKick(command);
 	else if (checkAndComp(command, 0, "MODE"))
 		this->execMode(command);
+	else if (checkAndComp(command, 0, "INVITE"))
+		this->execInvite(command);
 	if (this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
 	{
 		this->_client_requester->setAuth();
@@ -163,6 +165,13 @@ void	Command::execInviteMode(Channel * channel, int remove)
 		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "+i"));
 
 }
+
+
+
+
+
+
+/*	MODE COMMAND		*/
 
 void	Command::execMode(std::vector<std::string> & command)
 {
@@ -255,6 +264,35 @@ void	Command::execMode(std::vector<std::string> & command)
 
 
 
+
+/*	INVITE COMMAND		*/
+void	Command::execInvite(std::vector<std::string> & command)
+{
+	if(command.size() == 3)
+	{
+		Client * client = this->_server->findUserByNickname(command[2]);
+		if(client)
+		{
+			Channel* channel = this->_server->getChannel(command[1]);
+			if(channel)
+			{
+				if(channel->hasUser(client->getNick()) == false)
+					channel->addClientToInvite(this->_client_requester, client);
+				else
+					sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), command[1]));
+			}
+			else
+				sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[2]));
+		}
+		else
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(this->_client_requester->getNick(), command[2]));
+	}
+	else
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
+}
+
+
+
 /*			JOIN COMMAND		*/
 
 void	Command::execJoin(std::vector<std::string> & command)
@@ -297,7 +335,7 @@ void	Command::execJoin(std::vector<std::string> & command)
 
 void	Command::execKick(std::vector<std::string> & command)
 {
-	if(command[1].empty() || command[2].empty())
+	if((command[1].empty() || command[2].empty()) || command.size() > 4)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
 	{
@@ -310,6 +348,8 @@ void	Command::execKick(std::vector<std::string> & command)
 			{
 				if(channel->hasUser(command[2]) == false)
 					sendMessageToClient(this->_client_requester->getSocket(), ERR_USERNOTINCHANNEL(_client_requester->getNick(), command[2], command[1]));
+				else if (command.size() == 3)
+					channel->kickClient(this->_client_requester, command[2], "");
 				else
 					channel->kickClient(this->_client_requester, command[2], command[3]);
 			}

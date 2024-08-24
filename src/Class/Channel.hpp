@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/24 18:21:10 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/24 20:51:35 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class Channel
 
 		void					addClientToCh(Client * client);
 		void					addClientToOp(Client * client);
+		void					addClientToInvite(Client * client, Client * t_client);
 		void					delClientToOp(Client* client);
 		
 		void					kickClient(Client* client, std::string target, std::string reason);

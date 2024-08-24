@@ -53,6 +53,8 @@
 #define MSG_KEYONCHANNEL(channel_name, add_remove) "MODE " + channel_name + " " + add_remove "k\r\n" RESET 
 #define MSG_REMOVEOP(nickname, t_nickname, channel_name) "User :" + t_nickname + " has been removed Operator rights in " + channel_name + " from " + nickname + "\r\n" RESET
 #define MSG_WELCOME(nickname, channel_name) "Welcome " + nickname + " in " + channel_name + " !\r\n" RESET
+#define	MSG_INVITER(nickname, t_nickname, channel_name) "341 " + nickname + " " + t_nickname + " " + channel_name + "\r\n" RESET
+#define	MSG_INVITEE(nickname, t_nickname, channel_name) ":" + nickname + " INVITE " + t_nickname + " :" + channel_name + "\r\n" RESET
 
 #define MSG_KICK(nickname, username, t_nickname, channel_name, reason) nickname + "!" + username + "@ft_irc KICK " + channel_name + " " + t_nickname + " :" + reason + "\r\n" RESET
 

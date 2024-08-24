@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/24 19:13:40 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/24 21:30:24 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ void	Channel::sendMessageToAllClient(std::string error)
 
 void	Channel::kickClient(Client* client, std::string target, std::string reason)
 {
+	sendMessageToAllClient(MSG_KICK(client->getNick(), client->getUsername(), target, this->getName(), reason));
 	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 	{
 		if(it->first == target)
@@ -107,7 +108,6 @@ void	Channel::kickClient(Client* client, std::string target, std::string reason)
 			break ;
 		}
 	}
-	sendMessageToAllClient(MSG_KICK(client->getNick(), client->getUsername(), target, this->getName(), reason));
 }
 
 void	Channel::delChannel()
@@ -190,10 +190,18 @@ bool					Channel::isOperator(int socket_user)
 		return false;
 }
 
-/*
-bool 0 : off
-bool 1 : on
-*/
+void	Channel::addClientToInvite(Client * client, Client * t_client)
+{
+	for(std::vector<std::string>::iterator it = _invite_name.begin(); it != _invite_name.end(); ++it)
+	{
+		if(*it == t_client->getNick())
+			return;
+	}
+	_invite_name.push_back(t_client->getNick());
+	sendMessageToClient(t_client->getSocket(), MSG_INVITEE(client->getNick(), t_client->getNick(), this->getName()));
+	sendMessageToClient(client->getSocket(), MSG_INVITER(client->getNick(), t_client->getNick(), this->getName()));
+}
+
 void	Channel::setUnsetInviteMode(bool on_off)
 {
 	_invite_only = on_off;
