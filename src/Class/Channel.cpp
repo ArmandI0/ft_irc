@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/24 18:59:11 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/24 19:13:40 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,9 @@ bool	Channel::checkInvite(std::string name)
 			if(*it == name)
 				return (true);	
 		}
+		return (false);
 	}
-	return (false);
+	return (true);
 }
 
 void	Channel::addClientToCh(Client* client)

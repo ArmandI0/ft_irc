@@ -43,11 +43,12 @@
 #define ERR_USERONCHANNEL(nickname, channel_name) "443 " + nickname + " :is already on channel: " + channel_name + "\r\n" RESET
 #define ERR_NEEDMOREPARAMS(nickname, command) RED "461 " + nickname + " " + command + " :Not enough parameters\r\n" RESET
 #define ERR_ALREADYREGISTRED RED "462 :You may not reregister\r\n" RESET
-#define ERR_CHANNELISFULL(nickname, channel_name) "471 "
+#define ERR_CHANNELISFULL(nickname, channel_name) "471 " + nickname + " " + channel_name + " :Cannot join channel (channel is full)\r\n" RESET
+#define ERR_INVITEONLYCHAN(nickname, channel_name) "473 " + nickname + " " + channel_name + " :Cannot join channel (+i)\r\n" RESET
 #define ERR_CHANOPRIVSNEEDED(nickname, channel_name) "482 " + nickname + " " + channel_name + " :You're not channel operator\r\n" RESET
 #define ERR_UMODEUNKNOWNFLAG(nickname, mode) "501 " + nickname + " :Unknown " + mode + " flag\r\n" RESET
 
-#define MSG_MODECHANGE(channel_name, mode) "MODE " + channel_name + " " + mode + "\r\n"
+#define MSG_MODECHANGE(channel_name, mode) "MODE " + channel_name + " " + mode + "\r\n" RESET
 #define MSG_NEWEOPERONCHANNEL(nickname, channel_name) nickname + ": Has been promoted to operator on " + channel_name + " Congratulations !\r\n" RESET
 #define MSG_KEYONCHANNEL(channel_name, add_remove) "MODE " + channel_name + " " + add_remove "k\r\n" RESET 
 #define MSG_REMOVEOP(nickname, t_nickname, channel_name) "User :" + t_nickname + " has been removed Operator rights in " + channel_name + " from " + nickname + "\r\n" RESET
