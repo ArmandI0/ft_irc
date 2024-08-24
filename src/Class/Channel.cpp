@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/23 22:55:25 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/24 12:09:36 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ Channel::Channel(){};
 Channel::Channel(const Channel& src){*this = src;};
 Channel::~Channel(){};
 
-Channel::Channel(const std::string& name, Client* creator, Server* serv): _name(name), _server(serv), _key(""), _limit_user(-1), _invite_only(false), _topic_protection(false), _channel_topic("")
+Channel::Channel(const std::string& name, Client* creator, Server* serv): _name(name), _server(serv), _key(NULL), _limit_user(-1), _invite_only(false), _topic_protection(false), _channel_topic("")
 {
 	sendMessageToClient(creator->getSocket(), ERR_NOTOPIC(creator->getNick(), this->getName()));
 	addClientToCh(creator);
@@ -26,6 +26,18 @@ Channel::Channel(const std::string& name, Client* creator, Server* serv): _name(
 void	Channel::addClientToOp(Client* client)
 {
 	_operator.insert(std::make_pair(client->getNick(), client));
+}
+
+void	Channel::delClientToOp(Client* client)
+{
+	for(std::map<std::string, Client *>::iterator it = _operator.begin(); it != _operator.end(); ++it)
+	{
+		if(it->first == client->getNick())
+		{
+			_clients.erase(it);
+			break ;
+		}
+	}
 }
 
 void	Channel::addClientToCh(Client* client)
@@ -111,7 +123,7 @@ void	Channel::addOperatorPrivilege(std::string username)
 // 	return (_channel_topic);
 // }
 
-std::string				Channel::getPassword()
+std::string				Channel::getKey()
 {
 	return (_key);
 }
@@ -230,4 +242,9 @@ bool	Channel::hasUser(std::string nickname)
 			return (true);
 	}
 	return (false);
+}
+
+void	Channel::setKey(std::string key)
+{
+	this->_key = key;
 }

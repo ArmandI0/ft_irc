@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/23 21:40:32 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/24 11:20:25 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,19 +30,22 @@ class Channel
 
 		void					addClientToCh(Client * client);
 		void					addClientToOp(Client * client);
+		void					delClientToOp(Client* client);
 		
 		void					kickClient(Client* client, std::string target, std::string reason);
 		void					delChannel();
 		
-		bool					checkIfOp(Client * client);
+		bool					checkIfOp(std::string name);
 		
 		void					notifyJoin(std::string nickname);
 		
 		void					sendMessageToAllClient(std::string error);
 
-		std::string					getPassword();
 		size_t						getUserLimit();
 		std::string 				getName();
+		std::string					getKey();
+		
+		void						setKey(std::string key);
 
 		bool					isModeOn(char mode);
 		bool					isOperator(int socket_user);

@@ -83,11 +83,11 @@ void	Command::execCommand(std::string cmd)
 	}
 }
 
-bool		Channel::checkIfOp(Client * client)
+bool		Channel::checkIfOp(std::string name)
 {
 	for(std::map<std::string, Client *>::iterator it = _operator.begin(); it != _operator.end(); ++it)
 	{
-		if(it->first == client->getNick())
+		if(it->first ==name)
 			return (true);
 	}
 	return (false);
@@ -102,50 +102,193 @@ Channel*	Command::createChannel(std::string& channel_name, Client* client_creato
 }
 
 /*			MODE COMMAND		*/
+
+void	Command::execOpMode(Channel * channel, Client * client, int remove)
+{
+	if(remove == 0)
+	{
+		channel->addClientToOp(client);
+		channel->sendMessageToAllClient(MSG_NEWEOPERONCHANNEL(this->_client_requester->getNick(), channel->getName()));
+	}
+	else
+	{
+		channel->delClientToOp(client);
+		channel->sendMessageToAllClient(MSG_REMOVEOP(this->_client_requester->getNick(), client->getNick(),  channel->getName()));
+	}
+}
+
+void	Command::execKeyMode(Channel * channel, std::string key, int remove)
+{
+	if(remove == 0)
+	{
+		channel->setKey(key);
+		channel->sendMessageToAllClient(MSG_KEYONCHANNEL(channel->getName(), "+"));
+	}
+	else
+	{
+		channel->setKey("");
+		channel->sendMessageToAllClient(MSG_KEYONCHANNEL(channel->getName(), "-"));
+	}
+}
+
+void	Command::execLimitMode(Channel * channel, std::string limit, int remove)
+{
+
+}
+
+void	Command::execTopicMode(Channel * channel, int remove)
+{
+
+}
+
+void	Command::execInviteMode(Channel * channel, int remove)
+{
+
+}
+
 void	Command::execMode(std::vector<std::string> & command)
 {
-	if(command[1].empty())
+	if(command[1].empty() || command[2].empty())
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
+	else
+	{
+		if(command[1][0] == '#' || command[1][0] == '&')
+		{
+			Channel* channel = this->_server->getChannel(command[1]);
+			if(channel)
+			{
+				if(!command[3].empty())
+				{
+					Client * client = this->_server->findUserByNickname(command[3]);
+					if(client)
+					{
+						if(channel->checkIfOp(client->getNick()) == true)
+						{
+							if(command[2][0] == '+' || command[2][0] == '-')
+							{
+								int i = 0;
+								if(command[2][0] == '-')
+									i++;
+								if(command[2][1] == 'o')
+									execOpMode(channel, client, i);
+								else if(command[2][1] == 'k')
+								{
+									if(i != 1)
+										execKeyMode(channel, command[3], 0);
+									else
+										sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[2]));
+								}
+								else if(command[2][1] == 'l')
+								{
+									if(i != 1)
+										execLimitMode(channel, command[3], 0);
+								}
+								else if(command[2][1] == 't')
+								{
+									if(i != 1)
+										execTopicMode(channel, 0);
+								}
+								else if(command[2][1] == 'i')
+									sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[2]));
+								else
+									sendMessageToClient(this->_client_requester->getSocket(), ERR_UMODEUNKNOWNFLAG(this->_client_requester->getNick(), command[3]));
+							}
+							else
+								sendMessageToClient(this->_client_requester->getSocket(), ERR_UMODEUNKNOWNFLAG(this->_client_requester->getNick(), command[3]));
+						}
+						else
+							sendMessageToClient(this->_client_requester->getSocket(), ERR_CHANOPRIVSNEEDED(this->_client_requester->getNick(), command[1]));
+					}
+				}
+				else
+				{
+					if(command[2][0] == '-' || command[2][0] == '+')
+					{
+						if(command[2][1] == 'o')
+							sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[2]));
+						else if(command[2][1] == 'k')
+						{
+								execKeyMode(channel, "", 1);
+								sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[2]));
+						}
+						else if(command[2][1] == 'l')
+							execLimitMode(channel, command[3], 1);
+						else if(command[2][1] == 't')
+							execTopicMode(channel, 1);
+						else if(command[2][1] == 'i')
+							execInviteMode(channel, 1);
+					}
+				}
+			}
+			else
+				sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[1]));
+		}
+		else
+		{
+			Client * client = this->_server->findUserByNickname(command[1]);
+			if(client)
+			{
+				
+			}
+			else
+				sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(this->_client_requester->getNick(), command[1]));
+		}
+	}
 }
+
 
 
 /*			JOIN COMMAND		*/
 
 void	Command::execJoin(std::vector<std::string> & command)
 {
-	if(command[1][0] != '#' && command[1][0] != '&')
-		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[1]));
-	Channel* channel = this->_server->getChannel(command[1]);
-	if(channel)
-	{
-		if(channel->hasUser(_client_requester->getNick()) == true)
-			sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), command[1]));
-		else
-			channel->addClientToCh(this->_client_requester);
-	}
+	if(command[1].empty())
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
-		createChannel(command[1], _client_requester, this->_server);
+	{
+		if(command[1][0] != '#' && command[1][0] != '&')
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[1]));
+		else
+		{
+			Channel* channel = this->_server->getChannel(command[1]);
+			if(channel)
+			{
+				if(channel->hasUser(_client_requester->getNick()) == true)
+					sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), command[1]));
+				else
+					channel->addClientToCh(this->_client_requester);
+			}
+			else
+				createChannel(command[1], _client_requester, this->_server);
+		}
+	
+	}
 }
 
 /*			KICK COMMAND		*/
 
 void	Command::execKick(std::vector<std::string> & command)
 {
-	Channel* channel = this->_server->getChannel(command[1]);
-	if(channel)
-	{
-		if(channel->checkIfOp(this->_client_requester) == false)
-			sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), command[1]));
-		else
-		{
-			if(channel->hasUser(command[2]) == false)
-				sendMessageToClient(this->_client_requester->getSocket(), ERR_USERNOTINCHANNEL(_client_requester->getNick(), command[2], command[1]));
-			else
-				channel->kickClient(this->_client_requester, command[2], command[3]);
-		}
-	}
+	if(command[1].empty() || command[2].empty())
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
-		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(_client_requester->getNick(), channel->getName()));
+	{
+		Channel* channel = this->_server->getChannel(command[1]);
+		if(channel)
+		{
+			if(channel->checkIfOp(this->_client_requester->getNick()) == false)
+				sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), command[1]));
+			else
+			{
+				if(channel->hasUser(command[2]) == false)
+					sendMessageToClient(this->_client_requester->getSocket(), ERR_USERNOTINCHANNEL(_client_requester->getNick(), command[2], command[1]));
+				else
+					channel->kickClient(this->_client_requester, command[2], command[3]);
+			}
+		}
+		else
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(_client_requester->getNick(), channel->getName()));
+	}
 }
 
 
