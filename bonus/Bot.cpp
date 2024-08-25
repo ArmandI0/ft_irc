@@ -16,20 +16,29 @@ Bot::Bot(char* ip, char* pass, char *port): _server_ip(ip), _server_pass(pass), 
 {
 }
 
+std::string Bot::strToLower(std::string& str)
+{
+	std::string str_to_lower = str;
+	std::string::iterator it = str_to_lower.begin();
+	std::string::iterator ite = str_to_lower.end();
+
+	for (; it != ite; it++)
+		*it = tolower(*it);
+	return str_to_lower;
+}
+
 void	Bot::getInsults()
 {
 	std::ifstream file;
 	std::string line;
 
 	file.open(INSULTS);
-	std::cout << INSULTS << std::endl;
 	if (file.is_open())
 	{
 		while (std::getline(file, line))
 		{
-			std::cout<<line<<std::endl;
 			if (!file.eof())
-				_insults.push_back(line);
+				_insults.push_back(strToLower(line));
 		}
 		file.close();
 	}
@@ -80,6 +89,7 @@ void	Bot::connectBot()
 	createBotChannel();
 }
 
+
 void	Bot::loopBot()
 {
 	struct epoll_event 	event;
@@ -113,11 +123,15 @@ void Bot::waitingEvents()
 			if (events[i].events & EPOLLIN)
 			{
 				buffer = readSocket(events[i].data.fd);
-				std::cout << "server '" << buffer << "'" << std::endl;
+				response = buffer;
+				//std::cout << "server '" << buffer << "'" << std::endl;
 				if (response.find('\n') == std::string::npos)
 					response += buffer;
 				else
+				{
 					botResponse(response);
+					response = "";
+				}
 			}
 		}		
 	}
@@ -149,24 +163,67 @@ std::string Bot::readSocket(int fd)
 void 	Bot::	authentification()
 {
 	size_t bytes_sent = 0;
-	std::string auth_pass = std::string("PASS ") + _server_pass + "\r\n";
-	std::string auth_nick = std::string("NICK ") + BOT + "\r\n";
-	std::string auth_user = std::string("USER ") + BOT + " 0 * :realname " + "\r\n";
-    bytes_sent = send(_server_socket, auth_pass.c_str(), auth_pass.size(), 0);
-	if (bytes_sent != auth_pass.size())
-		throw std::runtime_error("send() PASS failed with error: " + std::string(strerror(errno)));
-	bytes_sent = send(_server_socket, auth_nick.c_str(), auth_nick.size(), 0);
-	if (bytes_sent != auth_nick.size())
-		throw std::runtime_error("send() NICK failed with error: " + std::string(strerror(errno)));	
-	bytes_sent = send(_server_socket, auth_user.c_str(), auth_user.size(), 0);
-	if (bytes_sent != auth_user.size())
-		throw std::runtime_error("send() USER failed with error: " + std::string(strerror(errno)));	
+	std::vector<std::string> auth_bot_cmds;
+	auth_bot_cmds.push_back(std::string("PASS ") + _server_pass + "\r\n");
+	auth_bot_cmds.push_back(std::string("NICK ") + BOT + "\r\n");
+	auth_bot_cmds.push_back(std::string("USER ") + BOT + " 0 * :realname " + "\r\n");
+
+	for (int i = 0; i < 3; i++)
+	{
+		bytes_sent = send(_server_socket, auth_bot_cmds[i].c_str(), auth_bot_cmds[i].size(), 0);
+		if (bytes_sent != auth_bot_cmds[i].size())
+			throw std::runtime_error("send() " + auth_bot_cmds[i].substr(0,4)+ " failed with error: " + std::string(strerror(errno)));
+	}
 }
 
 void	Bot::botResponse(std::string& request)
 {
-	(void)request;
-	std::cout << "response BOTTTTT" << std::endl;	
+	std::vector<std::string> elements;
+	std::istringstream str_stream(request);
+	std::string element;
+	std::string	author = "";
+	std::string response = "";
+
+	while (std::getline(str_stream, element, ' '))
+		elements.push_back(element);
+
+	author = elements[0];
+	if (author[0] == ':')
+		author.erase(0,1);
+
+	if (elements[1] == "PRIVMSG" && elements[2] == BOT)
+	{
+		if (checkIfMean(request))
+			response = std::string("PRIVMSG ") + author + " You're mean !";
+		else
+			response = std::string("PRIVMSG ") + author + " You're nice !";
+	}
+	else if (elements[1] == "PRIVMSG" && elements[2] == "#politesse")
+	{
+		if (checkIfMean(request))
+			response = std::string("KICK #politesse ") + author +" \r\n";
+		else
+			return;
+	}
+	else
+		return;
+	size_t bytes_sent = 0;
+	bytes_sent = send(_server_socket, response.c_str(), response.size(), 0);
+	if (bytes_sent != response.size())
+		throw std::runtime_error("send() " + response.substr(0,4)+ " failed with error: " + std::string(strerror(errno)));		
+}
+
+bool Bot::checkIfMean(std::string& str)
+{
+	std::string str_to_lower = strToLower(str);
+	std::vector<std::string>::iterator it = _insults.begin();
+	std::vector<std::string>::iterator ite = _insults.end();
+	for (; it != ite; it++)
+	{
+		if (str_to_lower.find(*it) != std::string::npos)
+			return (1);
+	}
+	return (0);
 }
 
 void	Bot::createBotChannel()
@@ -176,5 +233,5 @@ void	Bot::createBotChannel()
 
     bytes_sent = send(_server_socket, create_channel.c_str(), create_channel.size(), 0);
 	if (bytes_sent != create_channel.size())
-		throw std::runtime_error("send() PASS failed with error: " + std::string(strerror(errno)));	
+		throw std::runtime_error("send() JOIN #politesse failed with error: " + std::string(strerror(errno)));	
 }
