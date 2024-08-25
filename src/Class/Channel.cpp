@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/25 14:25:47 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/25 15:41:29 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,11 +101,12 @@ void	Channel::sendMessageToAllClient(std::string sender, std::string message)
 
 void	Channel::kickClient(Client* client, std::string target, std::string reason)
 {
-	sendMessageToAllClient(MSG_KICK(client->getNick(), client->getUsername(), target, this->getName(), reason));
+	(void)reason;
 	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 	{
 		if(it->first == target)
 		{
+			sendMessageToClient(it->second->getSocket(),":" + client->getNick() + " KICK " + this->getName() + " " + target + " :" + client->getNick() + "\r\n");
 			_clients.erase(it);
 			break ;
 		}
