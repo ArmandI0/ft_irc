@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/25 10:59:55 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/25 11:46:37 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ bool	Channel::checkInvite(std::string name)
 void	Channel::addClientToCh(Client* client)
 {
 	_clients.insert(std::make_pair(client->getNick(), client));
+	sendMessageToClient(client->getSocket(),":" + client->getNick() + " JOIN " + this->getName() + "\r\n");
 	printUsersInChannel(client, this->_name);
 	if(_clients.size() > 1)
 		notifyJoin(client->getNick());
@@ -281,8 +282,8 @@ void	Channel::printUsersInChannel(Client* client, std::string& channel_name)
 		msg = it->first + " ";
 		sendMessageToClient(client->getSocket(), msg);
 	}
-	sendMessageToClient(client->getSocket(), "\n");
-	sendMessageToClient(client->getSocket(), ERR_ENDOFNAMES(client->getNick(), channel_name));
+	// sendMessageToClient(client->getSocket(), "\n");
+	// sendMessageToClient(client->getSocket(), ERR_ENDOFNAMES(client->getNick(), channel_name));
 }
 
 bool	Channel::hasUser(std::string nickname)

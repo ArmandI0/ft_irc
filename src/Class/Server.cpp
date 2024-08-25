@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/24 15:26:13 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/25 13:31:28 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	Server::execServer()
 		throw std::runtime_error("Error : epoll_create fail.");
 	if (epoll_ctl(this->_epoll_socket, EPOLL_CTL_ADD, this->_listen_socket, &ev) == -1)
 		throw std::runtime_error("Error : epoll_ctl fail.");
-	std::cout << MAGENTA "Server run" RESET << std::endl;
+	std::cout << "Server run"  << std::endl;
 	while(sig)
 	{
 		ret = epoll_wait(this->_epoll_socket, evs, 10, -1);
@@ -143,7 +143,7 @@ void	Server::execCommand(Client & client)
 			{
 				Command	new_command(client.getEntry(), &client, &*this);
 				client.eraseEntry();
-				std::cout << YELLOW << buffer  << RESET << std::endl;
+				std::cout << buffer << std::endl;
 				new_command.parsingCommand();
 			}
 		}

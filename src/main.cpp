@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/23 15:24:08 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/25 11:54:01 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int main(int ac, char** av)
 {
     if(ac != 3)
     {
-        std::cout << RED "Error : socket and password are required." RESET << std::endl;
+        std::cout <<  "Error : socket and password are requi."  << std::endl;
         return 0;
     }
     try
@@ -42,7 +42,7 @@ int main(int ac, char** av)
     }
     catch(const std::exception& e)
     {
-        std::cerr << RED << e.what() << RESET << std::endl;
+        std::cerr  << e.what() << std::endl;
     }
     return 0;
 }
