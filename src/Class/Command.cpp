@@ -188,7 +188,6 @@ void Command::sendPrivateMessageToCh(std::string & channel, std::string & messag
 
 void Command::execQuit()
 {
-
 	std::map<std::string, Channel*> channels = this->_client_requester->getChannelsIn();
 
 	if (this->_client_requester->getAuth())
@@ -467,7 +466,7 @@ void	Command::execJoin(std::vector<std::string> & command)
 
 void	Command::execKick(std::vector<std::string> & command)
 {
-	if(command.size() != 3)
+	if(command.size() != 3 && command.size() != 4)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
 	{
