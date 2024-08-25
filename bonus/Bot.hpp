@@ -25,8 +25,8 @@
 # include <fstream>
 # include <unistd.h>
 # include <sstream>
+# include <algorithm>
 # include <string.h>
-# define PORT 4243
 # define BOT "Best_Bot"
 # define INSULTS "insults.txt"
 
@@ -47,6 +47,8 @@ class Bot
 		void				authentification();
 		void				createBotChannel();
 		void				botResponse(std::string& request);
+		bool 				checkIfMean(std::string& str);
+		std::string 		strToLower(std::string& str);
 
 
 		struct sockaddr_in	_bot_infos;
