@@ -305,7 +305,7 @@ void	Command::execTopic(std::vector<std::string> & command)
 
 void	Command::execMode(std::vector<std::string> & command)
 {
-	if(command.size() < 2)
+	if(command.size() <= 2 || command.size() >= 5)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
 	{
@@ -428,7 +428,7 @@ void	Command::execInvite(std::vector<std::string> & command)
 void	Command::execJoin(std::vector<std::string> & command)
 {
 	std::cout << command[1] << std::endl;
-	if(command.size() < 2)
+	if(command.size() < 2 || command.size() > 3)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else if(!command[1].empty())
 	{
@@ -465,7 +465,7 @@ void	Command::execJoin(std::vector<std::string> & command)
 
 void	Command::execKick(std::vector<std::string> & command)
 {
-	if((command[1].empty() || command[2].empty()) || command.size() > 4)
+	if(command.size() != 3)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
 	{
