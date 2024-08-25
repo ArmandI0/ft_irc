@@ -167,7 +167,7 @@ void Command::sendPrivateMessage(std::string & recv, std::string & message)
 	Client * receiver = this->_server->findUserByNickname(recv);
 	if (receiver && receiver->getAuth())
 	{
-		sendMessageToClient(receiver->getSocket(), this->_client_requester->getNick() + " " + message);
+		sendMessageToClient(receiver->getSocket(), this->_client_requester->getNick() + " " + message + "\r\n");
 		std::cout << this->_client_requester->getNick() << " send private msg to " << recv << " " << message << std::endl;
 	}
 	else
@@ -180,8 +180,8 @@ void Command::sendPrivateMessageToCh(std::string & channel, std::string & messag
 
 	if (ch && ch->hasUser(this->_client_requester->getNick()))
 	{
-		ch->sendMessageToAllClient(channel + " " + message);
-		std::cout << this->_client_requester->getNick() << " send to channel " << channel << " " << message << std::endl;
+		std::cout << "mes couilles en ski " << std::endl;
+		ch->sendMessageToAllClient(this->_client_requester->getNick() ,":" +this->_client_requester->getNick() + " PRIVMSG " + channel + " " + message + "\r\n");
 	}
 	else
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), channel));
@@ -195,7 +195,6 @@ void Command::execQuit(std::vector<std::string> & command)
 	{
 		//del le user dans chaque chanel
 	}
-	this->_server->delClient(this->_client_requester->getSocket());
 }
 
 /*			MODE COMMAND		*/

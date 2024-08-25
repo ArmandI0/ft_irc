@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/25 11:46:37 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/25 14:07:09 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,15 @@ void	Channel::sendMessageToAllClient(std::string error)
 {
 	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 		sendMessageToClient(it->second->getSocket(), error);
+}
+
+void	Channel::sendMessageToAllClient(std::string sender, std::string message)
+{
+	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+	{
+		if (it->first != sender)
+			sendMessageToClient(it->second->getSocket(), message);
+	}
 }
 
 void	Channel::kickClient(Client* client, std::string target, std::string reason)

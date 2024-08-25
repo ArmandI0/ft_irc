@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/25 10:59:29 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/25 14:04:01 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ class Channel
 		void					notifyJoin(std::string nickname);
 		
 		void					sendMessageToAllClient(std::string error);
+		void					sendMessageToAllClient(std::string sender, std::string message);
 
 		size_t						getUserLimit();
 		std::string 				getName();
