@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/24 18:21:10 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/25 14:28:30 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,11 @@ class Channel
 
 		void					addClientToCh(Client * client);
 		void					addClientToOp(Client * client);
+		void					addClientToInvite(Client * client, Client * t_client);
 		void					delClientToOp(Client* client);
 		
 		void					kickClient(Client* client, std::string target, std::string reason);
+		void					delClient(std::string client);
 		void					delChannel();
 		
 		bool					checkLimitUser();
@@ -43,14 +45,18 @@ class Channel
 		void					notifyJoin(std::string nickname);
 		
 		void					sendMessageToAllClient(std::string error);
+		void					sendMessageToAllClient(std::string sender, std::string message);
 
 		size_t						getUserLimit();
 		std::string 				getName();
 		std::string					getKey();
 		size_t						getLimitUser();
 		bool						getInvite();
+		bool						getTopicProtection();
+		std::string 				getTopic();
 		
 		void						setKey(std::string key);
+		void						setTopicMsg(std::string topic);
 		void						setLimit(std::string limit);
 		void						setTopic(int remove);
 		void						setInvite(int remove);
@@ -65,7 +71,6 @@ class Channel
 		void 					setUnsetPassword(bool on_off, std::string password);
 		void 					setUnsetUserLimit(bool on_off, size_t user_limit);
 		void					setUnsetOpPrivilege(bool on_off, std::string username);
-		void					setTopicName(std::string topic_name);
 		void					setName(std::string name);
 		void					printUsersInChannel(Client* client, std::string& channel_name);
 

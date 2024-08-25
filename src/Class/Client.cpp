@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/23 15:49:21 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/25 14:30:16 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ bool 									Client::getAuth() 		const{return this->_auth;}
 bool									Client::getPass() 		const{return this->_pass;}
 std::string						        &Client::getNick() 		{return this->_nickname;}
 std::string 							&Client::getUsername() 	{return this->_username;}
-const std::map<std::string, Channel*>	Client::getChannelsIn()	{return this->_channels_in;}
+const std::map<std::string, Channel*>	&Client::getChannelsIn()	{return this->_channels_in;}
 std::string								&Client::getEntry() 	{return this->_entry;}
 
 /*      Setters     */

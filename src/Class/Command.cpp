@@ -46,11 +46,12 @@ int	Command::parsingCommand()
 {
 	size_t 		pos = 0;
 	std::string delimiter = "\r\n";
+	std::string tmp = this->_input;
 
-	while ((pos = this->_input.find(delimiter)) != std::string::npos)
+	while ((pos = tmp.find(delimiter)) != std::string::npos)
 	{
-        std::string command = this->_input.substr(0, pos);
-        this->_input.erase(0, pos + delimiter.length());
+        std::string command = tmp.substr(0, pos);
+        tmp.erase(0, pos + delimiter.length());
 		this->execCommand(command);
     }
 	return (0);
@@ -70,20 +71,35 @@ void	Command::execCommand(std::string cmd)
 		this->nickCommand(command);
 	else if (checkAndComp(command, 0, "USER"))
 		this->userCommand(command);
-	else if (checkAndComp(command, 0, "JOIN"))
-		this->execJoin(command);
-	else if (checkAndComp(command, 0, "KICK"))
-		this->execKick(command);
-	else if (checkAndComp(command, 0, "MODE"))
-		this->execMode(command);
-	if (this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
+	else if (checkAndComp(command, 0, "QUIT"))
+		this->execQuit(command);
+	else if (this->_client_requester->getAuth())
+	{
+		if (checkAndComp(command, 0, "JOIN"))
+			this->execJoin(command);
+		else if (checkAndComp(command, 0, "KICK"))
+			this->execKick(command);
+		else if (checkAndComp(command, 0, "MODE"))
+			this->execMode(command);
+		else if (checkAndComp(command, 0, "PRIVMSG"))
+			this->privMsg(command);
+		else if (checkAndComp(command, 0, "INVITE"))
+			this->execInvite(command);
+		else if (checkAndComp(command, 0, "TOPIC"))
+			this->execTopic(command);
+	}
+	else
+	{
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOTREGISTER);
+	}
+	if (this->_client_requester->getAuth() == false && this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
 	{
 		this->_client_requester->setAuth();
-		// sendMessageToClient(this->_client_requester->getSocket(), "Welcome " + this->_client_requester->getNick() + "\r\n");
+		sendMessageToClient(this->_client_requester->getSocket(), "Welcome " + this->_client_requester->getNick() + "\r\n");
 	}
 }
 
-bool		Channel::checkIfOp(std::string name)
+bool	Channel::checkIfOp(std::string name)
 {
 	for(std::map<std::string, Client *>::iterator it = _operator.begin(); it != _operator.end(); ++it)
 	{
@@ -99,6 +115,88 @@ Channel*	Command::createChannel(std::string & channel_name, Client* client_creat
 		
 		server->setChannel(new_channel, channel_name);
 		return(new_channel);
+}
+
+void Command::privMsg(std::vector<std::string> & command)
+{
+	std::vector<std::string>	clients;
+	std::vector<std::string>	channels;
+	std::string					message;
+
+	if (command.size() < 2)
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NORECIPIENT("PRIVMSG"));
+	else
+	{
+		std::vector<std::string>::iterator it = command.begin() + 1;
+		for (; it != command.end(); ++it)
+		{
+			if(it->find(":") == 0)
+				break;
+			if(it->find("#") == 0)
+				channels.push_back(*it);
+			else
+				clients.push_back(*it);
+		}
+		if (clients.size() != 0 && channels.size() != 0)
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_TOOMANYTARGETS);
+		size_t i = 0;
+		for(; i < this->_input.size(); i++)
+		{
+			if (this->_input[i] == ':')
+				break;
+		}
+		message = this->_input.substr(i, this->_input.size());
+		std::cout << i << " mes = " << this->_input.substr(i, this->_input.size()) << std::endl;
+		if (message.empty())
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOTEXTTOSEND);
+		for (std::vector<std::string>::iterator i = clients.begin() ; i != clients.end(); ++i)
+		{
+			std::cout << "clients" << std::endl;
+			this->sendPrivateMessage(*i, message);
+		}
+		for (std::vector<std::string>::iterator i = channels.begin() ; i != channels.end(); ++i)
+		{
+			this->sendPrivateMessageToCh(*i, message);
+			std::cout << "channels" << std::endl;
+		}
+	}
+}
+
+void Command::sendPrivateMessage(std::string & recv, std::string & message)
+{
+	Client * receiver = this->_server->findUserByNickname(recv);
+	if (receiver && receiver->getAuth())
+	{
+		sendMessageToClient(receiver->getSocket(), this->_client_requester->getNick() + " " + message + "\r\n");
+		std::cout << this->_client_requester->getNick() << " send private msg to " << recv << " " << message << std::endl;
+	}
+	else
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(recv, ""));
+}
+
+void Command::sendPrivateMessageToCh(std::string & channel, std::string & message)
+{
+	Channel * ch = this->_server->getChannel(channel);
+
+	if (ch && ch->hasUser(this->_client_requester->getNick()))
+	{
+		ch->sendMessageToAllClient(this->_client_requester->getNick() ,":" +this->_client_requester->getNick() + " PRIVMSG " + channel + " " + message + "\r\n");
+	}
+	else
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), channel));
+}
+
+void Command::execQuit(std::vector<std::string> & command)
+{
+	std::map<std::string, Channel*> channels = this->_client_requester->getChannelsIn();
+
+	if (this->_client_requester->getAuth())
+	{
+		for (std::map<std::string, Channel*>::iterator it = channels.begin(); it != channels.end(); ++it)
+		{
+			it->second->delClient(this->_client_requester->getNick());
+		}
+	}
 }
 
 /*			MODE COMMAND		*/
@@ -161,12 +259,54 @@ void	Command::execInviteMode(Channel * channel, int remove)
 		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "-i"));
 	else
 		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "+i"));
-
 }
+
+/*	TOPIC COMMAND		*/
+
+void	Command::execTopic(std::vector<std::string> & command)
+{
+	if(command.size() == 2)
+	{
+		Channel* channel = this->_server->getChannel(command[1]);
+		if(channel)
+			sendMessageToClient(this->_client_requester->getSocket(), RPL_TOPIC(this->_client_requester->getNick(), channel->getName(), channel->getTopic()));
+		else
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[1]));
+	}
+	else if(command.size() == 3)
+	{
+		Channel* channel = this->_server->getChannel(command[1]);
+		if(channel)
+		{
+			if(channel->getTopicProtection() == true)
+			{
+				if(channel->checkIfOp(this->_client_requester->getNick()) == true)
+				{
+					channel->setTopicMsg(command[2]); // Input += command[1] ??
+					channel->sendMessageToAllClient(RPL_TOPIC(this->_client_requester->getNick(), channel->getName(), channel->getTopic()));
+				}
+				else
+					sendMessageToClient(this->_client_requester->getSocket(), ERR_CHANOPRIVSNEEDED(this->_client_requester->getNick(), command[1]));
+			}
+			else
+			{
+				channel->setTopicMsg(command[2]); // Input += command[1] ??
+				channel->sendMessageToAllClient(RPL_TOPIC(this->_client_requester->getNick(), channel->getName(), channel->getTopic()));
+			}
+		}
+		else
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[1]));
+	}
+	else
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
+}
+
+
+/*	MODE COMMAND		*/
 
 void	Command::execMode(std::vector<std::string> & command)
 {
-	if(command.size() < 2)
+	if(command.size() <= 2 || command.size() >= 5)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
 	{
@@ -255,12 +395,41 @@ void	Command::execMode(std::vector<std::string> & command)
 
 
 
+
+/*	INVITE COMMAND		*/
+void	Command::execInvite(std::vector<std::string> & command)
+{
+	if(command.size() == 3)
+	{
+		Client * client = this->_server->findUserByNickname(command[2]);
+		if(client)
+		{
+			Channel* channel = this->_server->getChannel(command[1]);
+			if(channel)
+			{
+				if(channel->hasUser(client->getNick()) == false)
+					channel->addClientToInvite(this->_client_requester, client);
+				else
+					sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), command[1]));
+			}
+			else
+				sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[2]));
+		}
+		else
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(this->_client_requester->getNick(), command[2]));
+	}
+	else
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
+}
+
+
+
 /*			JOIN COMMAND		*/
 
 void	Command::execJoin(std::vector<std::string> & command)
 {
 	std::cout << command[1] << std::endl;
-	if(command.size() < 2)
+	if(command.size() < 2 || command.size() > 3)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else if(!command[1].empty())
 	{
@@ -297,7 +466,7 @@ void	Command::execJoin(std::vector<std::string> & command)
 
 void	Command::execKick(std::vector<std::string> & command)
 {
-	if(command[1].empty() || command[2].empty())
+	if(command.size() != 3)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
 	{
@@ -310,6 +479,8 @@ void	Command::execKick(std::vector<std::string> & command)
 			{
 				if(channel->hasUser(command[2]) == false)
 					sendMessageToClient(this->_client_requester->getSocket(), ERR_USERNOTINCHANNEL(_client_requester->getNick(), command[2], command[1]));
+				else if (command.size() == 3)
+					channel->kickClient(this->_client_requester, command[2], "");
 				else
 					channel->kickClient(this->_client_requester, command[2], command[3]);
 			}
@@ -327,7 +498,7 @@ int	Command::passCommand(std::vector<std::string> & password)
 {
 	std::cout << "PASS" << std::endl;
 	if (this->_client_requester->getPass() == true)
-		sendMessageToClient(this->_client_requester->getSocket(), ERR_ALREADYREGISTRED);
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_ALREADYREGIST);
 	else if (password.size() == 1)
 	{
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick() ,"PASS"));
@@ -343,6 +514,7 @@ int	Command::passCommand(std::vector<std::string> & password)
 int	Command::nickCommand(std::vector<std::string> & nickname)
 {
 	std::cout << "NICK" << std::endl;
+
 	if (nickname.size() == 1)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NONICKNAMEGIVEN);
 	else if (nickname.size() == 2 && nickname[1].find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_") != std::string::npos)
@@ -363,7 +535,7 @@ void Command::userCommand(std::vector<std::string> & username)
 	if (username.size() < 5)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), "USER"));
 	else if (username.size() == 5 && this->_server->findUserByUsername(username[1]) != NULL)
-		sendMessageToClient(this->_client_requester->getSocket(), ERR_ALREADYREGISTRED);
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_ALREADYREGIST);
 	else if (username.size() == 5)
 	{
 		this->_client_requester->setUser(username[1]);
@@ -390,4 +562,6 @@ void sendMessageToClient(int fd, std::string error)
 	if (send < 0)
 		std::cerr << "Message error" << std::endl; 
 }
+
+
 
