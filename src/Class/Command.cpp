@@ -180,7 +180,6 @@ void Command::sendPrivateMessageToCh(std::string & channel, std::string & messag
 
 	if (ch && ch->hasUser(this->_client_requester->getNick()))
 	{
-		std::cout << "mes couilles en ski " << std::endl;
 		ch->sendMessageToAllClient(this->_client_requester->getNick() ,":" +this->_client_requester->getNick() + " PRIVMSG " + channel + " " + message + "\r\n");
 	}
 	else
@@ -189,11 +188,14 @@ void Command::sendPrivateMessageToCh(std::string & channel, std::string & messag
 
 void Command::execQuit(std::vector<std::string> & command)
 {
-	(void)command;
+	std::map<std::string, Channel*> channels = this->_client_requester->getChannelsIn();
 
 	if (this->_client_requester->getAuth())
 	{
-		//del le user dans chaque chanel
+		for (std::map<std::string, Channel*>::iterator it = channels.begin(); it != channels.end(); ++it)
+		{
+			it->second->delClient(this->_client_requester->getNick());
+		}
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/25 14:07:09 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/25 14:25:47 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,11 @@ void	Channel::kickClient(Client* client, std::string target, std::string reason)
 			break ;
 		}
 	}
+}
+
+void	Channel::delClient(std::string client)
+{
+	this->_clients.erase(client);
 }
 
 void	Channel::delChannel()

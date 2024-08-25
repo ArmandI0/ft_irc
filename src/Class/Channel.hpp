@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/25 14:04:01 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/25 14:28:30 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class Channel
 		void					delClientToOp(Client* client);
 		
 		void					kickClient(Client* client, std::string target, std::string reason);
+		void					delClient(std::string client);
 		void					delChannel();
 		
 		bool					checkLimitUser();

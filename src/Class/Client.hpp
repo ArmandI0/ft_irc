@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/23 15:49:26 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/25 14:30:06 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ class Client
 		std::string								&getNick();
 		std::string								&getUsername();
 		std::string								&getEntry();
-		const std::map<std::string, Channel*>	getChannelsIn();
+		const std::map<std::string, Channel*>	&getChannelsIn();
 		
 		void									setUsername(std::string username);
 		void									setEntry(const std::string & str);
