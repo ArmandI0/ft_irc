@@ -171,10 +171,11 @@ void Command::sendPrivateMessage(std::string & recv, std::string & message)
 void Command::sendPrivateMessageToCh(std::string & channel, std::string & message)
 {
 	Channel * ch = this->_server->getChannel(channel);
-	if (ch && ch->isOperator(this->_client_requester->getSocket()))
+
+	if (ch && ch->hasUser(this->_client_requester->getNick()))
 	{
-		ch->sendMessageToAllClient(message);
-		std::cout << GREEN << this->_client_requester->getNick() << " send to channel" << channel << " " << message << RESET << std::endl;
+		ch->sendMessageToAllClient(channel + " " + message);
+		std::cout << GREEN << this->_client_requester->getNick() << " send to channel " << channel << " " << message << RESET << std::endl;
 	}
 	else
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), channel));
