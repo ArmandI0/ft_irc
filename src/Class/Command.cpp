@@ -195,6 +195,7 @@ void Command::execQuit()
 		for (std::map<std::string, Channel*>::iterator it = channels.begin(); it != channels.end(); ++it)
 		{
 			it->second->delClient(this->_client_requester->getNick());
+			
 		}
 	}
 }
