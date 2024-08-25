@@ -72,7 +72,7 @@ void	Command::execCommand(std::string cmd)
 	else if (checkAndComp(command, 0, "USER"))
 		this->userCommand(command);
 	else if (checkAndComp(command, 0, "QUIT"))
-		this->execQuit(command);
+		this->execQuit();
 	else if (this->_client_requester->getAuth())
 	{
 		if (checkAndComp(command, 0, "JOIN"))
@@ -186,9 +186,8 @@ void Command::sendPrivateMessageToCh(std::string & channel, std::string & messag
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), channel));
 }
 
-void Command::execQuit(std::vector<std::string> & command)
+void Command::execQuit()
 {
-	(void)command;
 	std::map<std::string, Channel*> channels = this->_client_requester->getChannelsIn();
 
 	if (this->_client_requester->getAuth())
