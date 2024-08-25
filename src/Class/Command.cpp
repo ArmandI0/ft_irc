@@ -78,6 +78,8 @@ void	Command::execCommand(std::string cmd)
 		this->execMode(command);
 	else if (checkAndComp(command, 0, "INVITE"))
 		this->execInvite(command);
+	else if (checkAndComp(command, 0, "TOPIC"))
+		this->execTopic(command);
 	if (this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
 	{
 		this->_client_requester->setAuth();
@@ -163,12 +165,47 @@ void	Command::execInviteMode(Channel * channel, int remove)
 		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "-i"));
 	else
 		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "+i"));
-
 }
 
+/*	TOPIC COMMAND		*/
 
-
-
+void	Command::execTopic(std::vector<std::string> & command)
+{
+	if(command.size() == 2)
+	{
+		Channel* channel = this->_server->getChannel(command[1]);
+		if(channel)
+			sendMessageToClient(this->_client_requester->getSocket(), RPL_TOPIC(this->_client_requester->getNick(), channel->getName(), channel->getTopic()));
+		else
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[1]));
+	}
+	else if(command.size() == 3)
+	{
+		Channel* channel = this->_server->getChannel(command[1]);
+		if(channel)
+		{
+			if(channel->getTopicProtection() == true)
+			{
+				if(channel->checkIfOp(this->_client_requester->getNick()) == true)
+				{
+					channel->setTopicMsg(command[2]); // Input += command[1] ??
+					channel->sendMessageToAllClient(RPL_TOPIC(this->_client_requester->getNick(), channel->getName(), channel->getTopic()));
+				}
+				else
+					sendMessageToClient(this->_client_requester->getSocket(), ERR_CHANOPRIVSNEEDED(this->_client_requester->getNick(), command[1]));
+			}
+			else
+			{
+				channel->setTopicMsg(command[2]); // Input += command[1] ??
+				channel->sendMessageToAllClient(RPL_TOPIC(this->_client_requester->getNick(), channel->getName(), channel->getTopic()));
+			}
+		}
+		else
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[1]));
+	}
+	else
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
+}
 
 
 /*	MODE COMMAND		*/

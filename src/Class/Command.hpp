@@ -40,6 +40,7 @@ class Command
 		void			execKick(std::vector<std::string> & command);
 		void			execMode(std::vector<std::string> & command);
 		void			execInvite(std::vector<std::string> & command);
+		void			execTopic(std::vector<std::string> & command);
 		Channel*		createChannel(std::string & channel_name, Client* client_creator, Server* server);
 		
 		/*	MODE			*/

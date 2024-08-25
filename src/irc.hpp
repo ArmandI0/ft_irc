@@ -32,6 +32,7 @@
 /* AUTH ERROR */
 
 #define ERR_NOTOPIC(nickname, channel_name) "331 " + nickname + " " + channel_name + ":No topic is set\r\n" RESET
+#define RPL_TOPIC(nickname, channel_name, topic) "332 " + nickname + " " + channel_name + " :" + topic + "\r\n" RESET
 #define RPL_NAMREPLY(nickname, channel_name) "353 " + nickname + " = " + channel_name + " : " RESET						 // Pas de \r\n
 #define ERR_ENDOFNAMES(nickname, channel_name) "366 " + nickname + " " + channel_name + " :End of /NAMES list\r\n" RESET
 #define	ERR_NOSUCHNICK(nickname, t_nickname) "401 " + nickname + " " + t_nickname + " :No such nick\r\n" RESET
