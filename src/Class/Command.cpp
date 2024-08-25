@@ -71,6 +71,8 @@ void	Command::execCommand(std::string cmd)
 		this->nickCommand(command);
 	else if (checkAndComp(command, 0, "USER"))
 		this->userCommand(command);
+	else if (checkAndComp(command, 0, "QUIT"))
+		this->execQuit(command);
 	else if (this->_client_requester->getAuth())
 	{
 		if (checkAndComp(command, 0, "JOIN"))
@@ -90,7 +92,7 @@ void	Command::execCommand(std::string cmd)
 	{
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOTREGISTER);
 	}
-	if (this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
+	if (this->_client_requester->getAuth() == false && this->_client_requester->getPass() && !this->_client_requester->getNick().empty() && !this->_client_requester->getUsername().empty())
 	{
 		this->_client_requester->setAuth();
 		sendMessageToClient(this->_client_requester->getSocket(), "Welcome " + this->_client_requester->getNick() + "\r\n");
@@ -166,7 +168,7 @@ void Command::sendPrivateMessage(std::string & recv, std::string & message)
 	if (receiver && receiver->getAuth())
 	{
 		sendMessageToClient(receiver->getSocket(), this->_client_requester->getNick() + " " + message);
-		std::cout << GREEN << this->_client_requester->getNick() << " send private msg to " << recv << " " << message << RESET << std::endl;
+		std::cout << this->_client_requester->getNick() << " send private msg to " << recv << " " << message << std::endl;
 	}
 	else
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(recv, ""));
@@ -179,12 +181,22 @@ void Command::sendPrivateMessageToCh(std::string & channel, std::string & messag
 	if (ch && ch->hasUser(this->_client_requester->getNick()))
 	{
 		ch->sendMessageToAllClient(channel + " " + message);
-		std::cout << GREEN << this->_client_requester->getNick() << " send to channel " << channel << " " << message << RESET << std::endl;
+		std::cout << this->_client_requester->getNick() << " send to channel " << channel << " " << message << std::endl;
 	}
 	else
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), channel));
 }
 
+void Command::execQuit(std::vector<std::string> & command)
+{
+	(void)command;
+
+	if (this->_client_requester->getAuth())
+	{
+		//del le user dans chaque chanel
+	}
+	this->_server->delClient(this->_client_requester->getSocket());
+}
 
 /*			MODE COMMAND		*/
 
@@ -485,7 +497,7 @@ int	Command::passCommand(std::vector<std::string> & password)
 {
 	std::cout << "PASS" << std::endl;
 	if (this->_client_requester->getPass() == true)
-		sendMessageToClient(this->_client_requester->getSocket(), ERR_ALREADYREGISTRED);
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_ALREADYREGIST);
 	else if (password.size() == 1)
 	{
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick() ,"PASS"));
@@ -522,7 +534,7 @@ void Command::userCommand(std::vector<std::string> & username)
 	if (username.size() < 5)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), "USER"));
 	else if (username.size() == 5 && this->_server->findUserByUsername(username[1]) != NULL)
-		sendMessageToClient(this->_client_requester->getSocket(), ERR_ALREADYREGISTRED);
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_ALREADYREGIST);
 	else if (username.size() == 5)
 	{
 		this->_client_requester->setUser(username[1]);

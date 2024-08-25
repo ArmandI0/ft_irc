@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/23 15:47:48 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/25 13:31:35 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class Server
     public:
 		Server(unsigned long port, std::string password);
 		~Server();
+		
 
 		/*		Server					*/
 		void								listenSocket();

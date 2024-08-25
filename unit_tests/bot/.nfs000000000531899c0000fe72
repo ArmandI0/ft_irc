@@ -22,7 +22,7 @@
                         "enum": ["celsius", "fahrenheit"]
                     }
                 },
-                "required": ["location", "days"]
+                "requi": ["location", "days"]
             }
         }
     ],

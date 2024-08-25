@@ -2,13 +2,6 @@
 #ifndef irc_hpp
 # define irc_hpp
 
-#define RED "\033[31m"
-#define GREEN "\033[32m"
-#define CYAN    "\033[36m"
-#define MAGENTA "\033[35m"
-#define YELLOW  "\033[33m"
-#define RESET "\033[0m"
-
 # include <iostream>
 # include <string>
 # include <sys/types.h>
@@ -31,40 +24,40 @@
 
 /* AUTH ERROR */
 
-#define ERR_NOTOPIC(nickname, channel_name) "331 " + nickname + " " + channel_name + ":No topic is set\r\n" RESET
-#define RPL_TOPIC(nickname, channel_name, topic) "332 " + nickname + " " + channel_name + " :" + topic + "\r\n" RESET
-#define RPL_NAMREPLY(nickname, channel_name) "353 " + nickname + " = " + channel_name + " : " RESET						 // Pas de \r\n
-#define ERR_ENDOFNAMES(nickname, channel_name) "366 " + nickname + " " + channel_name + " :End of /NAMES list\r\n" RESET
-#define	ERR_NOSUCHNICK(nickname, t_nickname) "401 " + nickname + " " + t_nickname + " :No such nick\r\n" RESET
-#define ERR_NOSUCHCHANNEL(nickname, channel_name) "403 " + nickname + " " + channel_name + " :No such channel\r\n" RESET
-#define ERR_NONICKNAMEGIVEN RED "431 :No nickname given\r\n" RESET
-#define ERR_ERRONEUSNICKNAME(nickname) RED "432 " + nickname + " :Erroneus nickname\r\n" RESET
-#define ERR_NICKNAMEINUSE(nickname) RED "433 " + nickname + " :Nickname is already in use\r\n" RESET
-#define ERR_USERNOTINCHANNEL(nickname, t_nick, channel_name) "441 " + nickname + " " + channel_name  + " " + t_nick + " :They aren't on that channel\r\n" RESET
-#define ERR_USERONCHANNEL(nickname, channel_name) "443 " + nickname + " :is already on channel: " + channel_name + "\r\n" RESET
-#define ERR_NEEDMOREPARAMS(nickname, command) RED "461 " + nickname + " " + command + " :Not enough parameters\r\n" RESET
-#define ERR_ALREADYREGISTRED RED "462 :You may not reregister\r\n" RESET
-#define ERR_CHANNELISFULL(nickname, channel_name) "471 " + nickname + " " + channel_name + " :Cannot join channel (channel is full)\r\n" RESET
-#define ERR_INVITEONLYCHAN(nickname, channel_name) "473 " + nickname + " " + channel_name + " :Cannot join channel (+i)\r\n" RESET
-#define ERR_CHANOPRIVSNEEDED(nickname, channel_name) "482 " + nickname + " " + channel_name + " :You're not channel operator\r\n" RESET
-#define ERR_UMODEUNKNOWNFLAG(nickname, mode) "501 " + nickname + " :Unknown " + mode + " flag\r\n" RESET
+#define ERR_NOTOPIC(nickname, channel_name) "331 " + nickname + " " + channel_name + ":No topic is set\r\n" 
+#define RPL_TOPIC(nickname, channel_name, topic) "332 " + nickname + " " + channel_name + " :" + topic + "\r\n" 
+#define RPL_NAMREPLY(nickname, channel_name) "353 " + nickname + " = " + channel_name + " : " 						 // Pas de \r\n
+#define ERR_ENDOFNAMES(nickname, channel_name) "366 " + nickname + " " + channel_name + " :End of /NAMES list\r\n" 
+#define	ERR_NOSUCHNICK(nickname, t_nickname) "401 " + nickname + " " + t_nickname + " :No such nick\r\n" 
+#define ERR_NOSUCHCHANNEL(nickname, channel_name) "403 " + nickname + " " + channel_name + " :No such channel\r\n" 
+#define ERR_NONICKNAMEGIVEN  "431 :No nickname given\r\n" 
+#define ERR_ERRONEUSNICKNAME(nickname)  "432 " + nickname + " :Erroneus nickname\r\n" 
+#define ERR_NICKNAMEINUSE(nickname)  "433 " + nickname + " :Nickname is already in use\r\n" 
+#define ERR_USERNOTINCHANNEL(nickname, t_nick, channel_name) "441 " + nickname + " " + channel_name  + " " + t_nick + " :They aren't on that channel\r\n" 
+#define ERR_USERONCHANNEL(nickname, channel_name) "443 " + nickname + " :is already on channel: " + channel_name + "\r\n" 
+#define ERR_NEEDMOREPARAMS(nickname, command)  "461 " + nickname + " " + command + " :Not enough parameters\r\n" 
+#define ERR_ALREADYREGIST  "462 :You may not reregister\r\n" 
+#define ERR_CHANNELISFULL(nickname, channel_name) "471 " + nickname + " " + channel_name + " :Cannot join channel (channel is full)\r\n" 
+#define ERR_INVITEONLYCHAN(nickname, channel_name) "473 " + nickname + " " + channel_name + " :Cannot join channel (+i)\r\n" 
+#define ERR_CHANOPRIVSNEEDED(nickname, channel_name) "482 " + nickname + " " + channel_name + " :You're not channel operator\r\n" 
+#define ERR_UMODEUNKNOWNFLAG(nickname, mode) "501 " + nickname + " :Unknown " + mode + " flag\r\n" 
 
-#define ERR_NORECIPIENT(command) RED "411 :No recipient given " command " \r\n" RESET
-#define ERR_NOTEXTTOSEND RED "412 :No text to send\r\n" RESET
-#define ERR_CANNOTSENDTOCHAN(channel_name) RED "404 " + channel_name + ":Cannot send to channel\r\n" RESET
-#define ERR_TOOMANYTARGETS RED "407 :Too many recipients\r\n" RESET
+#define ERR_NORECIPIENT(command)  "411 :No recipient given " command " \r\n" 
+#define ERR_NOTEXTTOSEND  "412 :No text to send\r\n" 
+#define ERR_CANNOTSENDTOCHAN(channel_name)  "404 " + channel_name + ":Cannot send to channel\r\n" 
+#define ERR_TOOMANYTARGETS  "407 :Too many recipients\r\n" 
 
 
-#define MSG_MODECHANGE(channel_name, mode) "MODE " + channel_name + " " + mode + "\r\n" RESET
-#define MSG_NEWEOPERONCHANNEL(nickname, channel_name) nickname + ": Has been promoted to operator on " + channel_name + " Congratulations !\r\n" RESET
-#define MSG_KEYONCHANNEL(channel_name, add_remove) "MODE " + channel_name + " " + add_remove "k\r\n" RESET 
-#define MSG_REMOVEOP(nickname, t_nickname, channel_name) "User :" + t_nickname + " has been removed Operator rights in " + channel_name + " from " + nickname + "\r\n" RESET
-#define MSG_WELCOME(nickname, channel_name) "Welcome " + nickname + " in " + channel_name + " !\r\n" RESET
-#define	MSG_INVITER(nickname, t_nickname, channel_name) "341 " + nickname + " " + t_nickname + " " + channel_name + "\r\n" RESET
-#define	MSG_INVITEE(nickname, t_nickname, channel_name) ":" + nickname + " INVITE " + t_nickname + " :" + channel_name + "\r\n" RESET
+#define MSG_MODECHANGE(channel_name, mode) "MODE " + channel_name + " " + mode + "\r\n" 
+#define MSG_NEWEOPERONCHANNEL(nickname, channel_name) nickname + ": Has been promoted to operator on " + channel_name + " Congratulations !\r\n" 
+#define MSG_KEYONCHANNEL(channel_name, add_remove) "MODE " + channel_name + " " + add_remove "k\r\n"  
+#define MSG_REMOVEOP(nickname, t_nickname, channel_name) "User :" + t_nickname + " has been removed Operator rights in " + channel_name + " from " + nickname + "\r\n" 
+#define MSG_WELCOME(nickname, channel_name) "Welcome " + nickname + " in " + channel_name + " !\r\n" 
+#define	MSG_INVITER(nickname, t_nickname, channel_name) "341 " + nickname + " " + t_nickname + " " + channel_name + "\r\n" 
+#define	MSG_INVITEE(nickname, t_nickname, channel_name) ":" + nickname + " INVITE " + t_nickname + " :" + channel_name + "\r\n" 
 
-#define MSG_KICK(nickname, username, t_nickname, channel_name, reason) nickname + "!" + username + "@ft_irc KICK " + channel_name + " " + t_nickname + " :" + reason + "\r\n" RESET
+#define MSG_KICK(nickname, username, t_nickname, channel_name, reason) nickname + "!" + username + "@ft_irc KICK " + channel_name + " " + t_nickname + " :" + reason + "\r\n" 
 
-#define ERR_NOTREGISTER RED "TU ES PAS CONNECTE CONNARD ! METS LE PUTAIN DE MOT DE PASSE\r\n" RESET 
+#define ERR_NOTREGISTER  "TU ES PAS CONNECTE CONNARD ! METS LE PUTAIN DE MOT DE PASSE\r\n"  
 
 #endif
