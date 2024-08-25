@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/25 15:41:29 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/25 15:50:56 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,8 @@ void	Channel::kickClient(Client* client, std::string target, std::string reason)
 
 void	Channel::delClient(std::string client)
 {
+	std::map<std::string, Client *>::iterator it = this->_clients.find(client);
+	sendMessageToClient(it->second->getSocket(),":" + client + " QUIT " + this->getName() + " :" + client + "\r\n");
 	this->_clients.erase(client);
 }
 
