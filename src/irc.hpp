@@ -32,6 +32,7 @@
 /* AUTH ERROR */
 
 #define ERR_NOTOPIC(nickname, channel_name) "331 " + nickname + " " + channel_name + ":No topic is set\r\n" RESET
+#define RPL_TOPIC(nickname, channel_name, topic) "332 " + nickname + " " + channel_name + " :" + topic + "\r\n" RESET
 #define RPL_NAMREPLY(nickname, channel_name) "353 " + nickname + " = " + channel_name + " : " RESET						 // Pas de \r\n
 #define ERR_ENDOFNAMES(nickname, channel_name) "366 " + nickname + " " + channel_name + " :End of /NAMES list\r\n" RESET
 #define	ERR_NOSUCHNICK(nickname, t_nickname) "401 " + nickname + " " + t_nickname + " :No such nick\r\n" RESET
@@ -59,6 +60,8 @@
 #define MSG_KEYONCHANNEL(channel_name, add_remove) "MODE " + channel_name + " " + add_remove "k\r\n" RESET 
 #define MSG_REMOVEOP(nickname, t_nickname, channel_name) "User :" + t_nickname + " has been removed Operator rights in " + channel_name + " from " + nickname + "\r\n" RESET
 #define MSG_WELCOME(nickname, channel_name) "Welcome " + nickname + " in " + channel_name + " !\r\n" RESET
+#define	MSG_INVITER(nickname, t_nickname, channel_name) "341 " + nickname + " " + t_nickname + " " + channel_name + "\r\n" RESET
+#define	MSG_INVITEE(nickname, t_nickname, channel_name) ":" + nickname + " INVITE " + t_nickname + " :" + channel_name + "\r\n" RESET
 
 #define MSG_KICK(nickname, username, t_nickname, channel_name, reason) nickname + "!" + username + "@ft_irc KICK " + channel_name + " " + t_nickname + " :" + reason + "\r\n" RESET
 
