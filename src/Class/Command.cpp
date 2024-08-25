@@ -88,7 +88,7 @@ void	Command::execCommand(std::string cmd)
 		else if (checkAndComp(command, 0, "TOPIC"))
 			this->execTopic(command);
 	}
-	else
+	else if(!checkAndComp(command, 0, "CAP"))
 	{
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOTREGISTER);
 	}
@@ -195,7 +195,7 @@ void Command::execQuit()
 		for (std::map<std::string, Channel*>::iterator it = channels.begin(); it != channels.end(); ++it)
 		{
 			it->second->delClient(this->_client_requester->getNick());
-			
+
 		}
 	}
 }
