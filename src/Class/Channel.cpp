@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/26 15:22:16 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/26 16:12:48 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,15 @@ bool	Channel::checkIfOp(std::string & name)
 	return (false);
 }
 
+bool	Channel::checkKey(std::string key)
+{
+	if(_key.empty())
+		return (true);
+	if(_key == key)
+		return(true);
+	return(false);
+}
+
 bool	Channel::checkLimitUser()
 {
 	size_t i = 0;
@@ -88,7 +97,7 @@ void	Channel::addClientToCh(Client* client)
 {
 	_clients.insert(std::make_pair(client->getNick(), client));
 	sendMessageToClient(client->getSocket(),":" + client->getNick() + " JOIN " + this->getName() + "\r\n");
-	notifyJoin(client->getNick());
+	// notifyJoin(client->getNick());
 }
 
 void	Channel::notifyJoin(std::string nickname)

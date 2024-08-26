@@ -265,16 +265,19 @@ void	Command::execTopic(std::vector<std::string> & command)
 		else
 			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[1]));
 	}
-	else if(command.size() == 3)
+	else if(command.size() >= 3)
 	{
 		Channel* channel = this->_server->getChannel(command[1]);
 		if(channel)
 		{
+			std::string msg;
+			for(std::vector<std::string>::iterator it = command.begin() + 2; it != command.end(); ++it)
+				msg += *it + " ";
 			if(channel->getTopicProtection() == true)
 			{
 				if(channel->checkIfOp(this->_client_requester->getNick()) == true)
 				{
-					channel->setTopicMsg(command[2]); // Input += command[1] ??
+					channel->setTopicMsg(msg);
 					channel->sendMessageToAllClient(RPL_TOPIC(this->_client_requester->getNick(), channel->getName(), channel->getTopic()));
 				}
 				else
@@ -282,7 +285,7 @@ void	Command::execTopic(std::vector<std::string> & command)
 			}
 			else
 			{
-				channel->setTopicMsg(command[2]); // Input += command[1] ??
+				channel->setTopicMsg(msg);
 				channel->sendMessageToAllClient(RPL_TOPIC(this->_client_requester->getNick(), channel->getName(), channel->getTopic()));
 			}
 		}
@@ -433,10 +436,20 @@ void	Command::execJoin(std::vector<std::string> & command)
 				{
 					if(channel->checkLimitUser() == true)
 						sendMessageToClient(this->_client_requester->getSocket(), ERR_CHANNELISFULL(_client_requester->getNick(), channel->getName()));
-					if(channel->checkInvite(_client_requester->getNick()) == true)
-						channel->addClientToCh(this->_client_requester);
+					std::string key;
+					if(command.size() == 3)
+						key = command[2];
+					else if (command.size() == 2)
+						key = "";
+					if(channel->checkKey(key) == true)
+					{
+						if(channel->checkInvite(_client_requester->getNick()) == true)
+							channel->addClientToCh(this->_client_requester);
+						else
+							sendMessageToClient(this->_client_requester->getSocket(), ERR_INVITEONLYCHAN(_client_requester->getNick(), channel->getName()));
+					}
 					else
-						sendMessageToClient(this->_client_requester->getSocket(), ERR_INVITEONLYCHAN(_client_requester->getNick(), channel->getName()));
+						sendMessageToClient(this->_client_requester->getSocket(), ERR_BADCHANNELKEY(_client_requester->getNick(), channel->getName()));
 				}
 			}
 			else
@@ -466,7 +479,6 @@ void	Command::execKick(std::vector<std::string> & command)
 			{
 				if(channel->hasUser(command[2]) == false)
 					sendMessageToClient(this->_client_requester->getSocket(), ERR_USERNOTINCHANNEL(_client_requester->getNick(), command[2], command[1]));
-				
 				else if (command.size() == 3)
 					channel->kickClient(this->_client_requester, command[2], "");
 				else
