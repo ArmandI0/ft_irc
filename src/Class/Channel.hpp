@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/26 15:48:56 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/26 17:08:49 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,9 @@ class Channel
 		void					setTopic(int remove);
 		void					setInvite(int remove);
 
+		bool					isModeOn(char mode);
+		//bool					isOperator(int socket_user);
+		
 		bool					hasUser(std::string nickname);
 
 	private :	

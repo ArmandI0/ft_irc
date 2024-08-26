@@ -166,7 +166,7 @@ void 	Bot::	authentification()
 	std::vector<std::string> auth_bot_cmds;
 	auth_bot_cmds.push_back(std::string("PASS ") + _server_pass + "\r\n");
 	auth_bot_cmds.push_back(std::string("NICK ") + BOT + "\r\n");
-	auth_bot_cmds.push_back(std::string("USER ") + BOT + " 0 * :realname " + "\r\n");
+	auth_bot_cmds.push_back(std::string("USER ") + BOT + " bot * :realname " + "\r\n");
 
 	for (int i = 0; i < 3; i++)
 	{
