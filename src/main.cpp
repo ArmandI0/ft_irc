@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/25 11:54:01 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/26 15:37:17 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int main(int ac, char** av)
     }
     catch(const std::exception& e)
     {
-        std::cerr  << e.what() << std::endl;
+        std::cerr << RED << e.what() << RESET << std::endl;
     }
     return 0;
 }
