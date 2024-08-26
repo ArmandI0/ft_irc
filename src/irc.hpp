@@ -37,7 +37,7 @@
 #define ERR_ENDOFNAMES(nickname, channel_name) "366 " + nickname + " " + channel_name + " :End of /NAMES list\r\n" 
 #define	ERR_NOSUCHNICK(nickname, t_nickname) "401 " + nickname + " " + t_nickname + " :No such nick\r\n" 
 #define ERR_NOSUCHCHANNEL(nickname, channel_name) "403 " + nickname + " " + channel_name + " :No such channel\r\n" 
-#define ERR_NONICKNAMEGIVEN  "431 :No nickname given\r\n" 
+#define ERR_NONICKNAMEGIVEN  "431 :No nickname given\r\n"
 #define ERR_ERRONEUSNICKNAME(nickname)  "432 " + nickname + " :Erroneus nickname\r\n" 
 #define ERR_NICKNAMEINUSE(nickname)  "433 " + nickname + " :Nickname is already in use\r\n" 
 #define ERR_USERNOTINCHANNEL(nickname, t_nick, channel_name) "441 " + nickname + " " + channel_name  + " " + t_nick + " :They aren't on that channel\r\n" 
@@ -45,7 +45,8 @@
 #define ERR_NEEDMOREPARAMS(nickname, command)  "461 " + nickname + " " + command + " :Not enough parameters\r\n" 
 #define ERR_ALREADYREGIST  "462 :You may not reregister\r\n" 
 #define ERR_CHANNELISFULL(nickname, channel_name) "471 " + nickname + " " + channel_name + " :Cannot join channel (channel is full)\r\n" 
-#define ERR_INVITEONLYCHAN(nickname, channel_name) "473 " + nickname + " " + channel_name + " :Cannot join channel (+i)\r\n" 
+#define ERR_INVITEONLYCHAN(nickname, channel_name) "473 " + nickname + " " + channel_name + " :Cannot join channel (+i)\r\n"
+#define ERR_BADCHANNELKEY(nickname, channel_name) "475 " + nickname + " " + channel_name + " :Cannot join the channel (+k)\r\n"
 #define ERR_CHANOPRIVSNEEDED(nickname, channel_name) "482 " + nickname + " " + channel_name + " :You're not channel operator\r\n" 
 #define ERR_UMODEUNKNOWNFLAG(nickname, mode) "501 " + nickname + " :Unknown " + mode + " flag\r\n" 
 
@@ -56,8 +57,8 @@
 
 
 #define MSG_MODECHANGE(channel_name, mode) "MODE " + channel_name + " " + mode + "\r\n" 
-#define MSG_NEWEOPERONCHANNEL(nickname, channel_name) nickname + ": Has been promoted to operator on " + channel_name + " Congratulations !\r\n" 
-#define MSG_KEYONCHANNEL(channel_name, add_remove) "MODE " + channel_name + " " + add_remove "k\r\n"  
+#define MSG_NEWEOPERONCHANNEL(nickname, target, channel_name) nickname + ": " + target + " Has been promoted to operator on " + channel_name + " Congratulations !\r\n" 
+#define MSG_KEYONCHANNEL(channel_name, add_remove) "MODE " + channel_name + " " + add_remove "\r\n"  
 #define MSG_REMOVEOP(nickname, t_nickname, channel_name) "User :" + t_nickname + " has been removed Operator rights in " + channel_name + " from " + nickname + "\r\n" 
 #define MSG_WELCOME(nickname, channel_name) "Welcome " + nickname + " in " + channel_name + " !\r\n" 
 #define	MSG_INVITER(nickname, t_nickname, channel_name) "341 " + nickname + " " + t_nickname + " " + channel_name + "\r\n" 

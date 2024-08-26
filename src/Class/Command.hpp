@@ -48,7 +48,7 @@ class Command
 		void			sendPrivateMessageToCh(std::string & channel, std::string & message);
 
 		/*	MODE			*/
-		void			execOpMode(Channel * channel, Client * client, int remove);
+		void			execOpMode(Channel * channel, Client * client, int remove, std::string target);
 		void			execKeyMode(Channel * channel, std::string key, int remove);
 		void			execLimitMode(Channel * channel, std::string limit, int remove);
 		void			execTopicMode(Channel * channel, int remove);
