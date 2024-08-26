@@ -303,7 +303,7 @@ void	Command::execTopic(std::vector<std::string> & command)
 
 void	Command::execMode(std::vector<std::string> & command)
 {
-	if(command.size() <= 2 || command.size() >= 5)
+	if(command.size() < 2 || command.size() >= 5)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
 	{
@@ -439,7 +439,10 @@ void	Command::execJoin(std::vector<std::string> & command)
 				else
 				{
 					if(channel->checkLimitUser() == true)
+					{
 						sendMessageToClient(this->_client_requester->getSocket(), ERR_CHANNELISFULL(_client_requester->getNick(), channel->getName()));
+						return ;
+					}
 					std::string key;
 					if(command.size() == 3)
 						key = command[2];

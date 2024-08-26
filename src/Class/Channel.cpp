@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/26 18:15:34 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/26 18:38:04 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ Channel& Channel::operator=(const Channel& src)
 	return *this;
 }
 
-Channel::Channel(std::string & name, Client* creator, Server* serv):  _name(name), _server(serv), _key(""), _limit_user(-1), _invite_only(false), _topic_protection(false), _channel_topic("No topic is set\r\n")
+Channel::Channel(std::string & name, Client* creator, Server* serv):  _name(name), _server(serv), _key(""), _limit_user(0), _invite_only(false), _topic_protection(false), _channel_topic("No topic is set\r\n")
 {
 	sendMessageToClient(creator->getSocket(), ERR_NOTOPIC(creator->getNick(), this->getName()));
 	addClientToCh(creator);
@@ -83,12 +83,10 @@ bool	Channel::checkKey(std::string key)
 
 bool	Channel::checkLimitUser()
 {
-	size_t i = 0;
 	if(this->getLimitUser() > 0)
 	{
-		for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-			i++;
-		if(i >= this->getLimitUser())
+		std::cout << "limit :" << this->getLimitUser() << "clients size" << _clients.size() << std::endl;
+		if(_clients.size() >= this->getLimitUser())
 			return(true);
 	}
 	return(false);
@@ -181,7 +179,7 @@ void	Channel::kickClient(Client* client, std::string target, std::string reason)
 
 void	Channel::execShowMode(Client * client)
 {
-	std::string msg;
+	std::string msg = "";
 	if(this->_invite_only == true)
 		msg += "i";
 	if(!_key.empty())
