@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/25 13:31:35 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/26 14:53:36 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class Server
 		void								closeClientsFd();
 
 		/*		Clients managements		*/
+
 		epoll_event							addNewClient(int new_client_fd);
 		void								addNewNickname(std::string & nick, Client * client);
 		void								addNewUsername(std::string & username, Client * client);
