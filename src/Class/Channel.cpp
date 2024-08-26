@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/26 18:06:56 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/26 18:15:34 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,9 +113,6 @@ void	Channel::addClientToCh(Client* client)
 	_clients.insert(std::make_pair(client->getNick(), client));
 	client->setChannelIn(this->_name, this);
 	sendMessageToClient(client->getSocket(),":" + client->getNick() + " JOIN " + this->getName() + "\r\n");
-	//printUsersInChannel(client, this->_name);
-/* 	if(_clients.size() > 1)
-		notifyJoin(client->getNick()); */
 	std::string msg = ": 353 " + client->getNick() + " = " + this->getName() + " :";
 	std::map<std::string, Client *>::iterator it = _clients.begin();
 	std::map<std::string, Client *>::iterator ite = _clients.end();
@@ -180,6 +177,21 @@ void	Channel::kickClient(Client* client, std::string target, std::string reason)
 			}
 		}
 	}
+}
+
+void	Channel::execShowMode(Client * client)
+{
+	std::string msg;
+	if(this->_invite_only == true)
+		msg += "i";
+	if(!_key.empty())
+		msg += "k";
+	if(this->_topic_protection == true)
+		msg += "t";
+	if(this->_limit_user != 0)
+		msg += "l";
+	if(!msg.empty())
+		sendMessageToClient(client->getSocket(), RPL_CHANNELMODEIS(client->getNick(), this->_name, msg));
 }
 
 void	Channel::delClient(std::string client)

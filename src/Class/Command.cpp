@@ -312,7 +312,9 @@ void	Command::execMode(std::vector<std::string> & command)
 			Channel* channel = this->_server->getChannel(command[1]);
 			if(channel)
 			{
-				if(command.size() == 4)
+				if(command.size() == 2)
+					channel->execShowMode(this->_client_requester);
+				else if(command.size() == 4)
 				{
 					Client * client = this->_server->findUserByNickname(this->_client_requester->getNick());
 					if(client)

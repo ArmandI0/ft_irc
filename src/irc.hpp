@@ -31,6 +31,7 @@
 
 /* AUTH ERROR */
 
+#define RPL_CHANNELMODEIS(nickname, channel_name, msg) ": 324 " + nickname + " " + channel_name + " +" + msg + "\r\n"
 #define ERR_NOTOPIC(nickname, channel_name) "331 " + nickname + " " + channel_name + ":No topic is set\r\n" 
 #define RPL_TOPIC(nickname, channel_name, topic) "332 " + nickname + " " + channel_name + " :" + topic + "\r\n" 
 #define RPL_NAMREPLY(nickname, channel_name) "353 " + nickname + " = " + channel_name + " : " 						 // Pas de \r\n
