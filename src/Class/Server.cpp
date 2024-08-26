@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@42angouleme.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/26 16:05:49 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/26 21:34:47 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,4 +154,9 @@ void	Server::closeClientsFd()
 	{
 		close(it->first);
 	}
+}
+
+std::map<std::string, Channel*>		Server::getChannels()
+{
+	return (_channels);
 }

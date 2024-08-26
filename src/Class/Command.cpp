@@ -87,6 +87,8 @@ void	Command::execCommand(std::string cmd)
 			this->execInvite(command);
 		else if (checkAndComp(command, 0, "TOPIC"))
 			this->execTopic(command);
+		else if (checkAndComp(command, 0, "LIST"))
+			this->execList(command);
 	}
 	else if(!checkAndComp(command, 0, "CAP"))
 	{
@@ -293,6 +295,35 @@ void	Command::execTopic(std::vector<std::string> & command)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 }
 
+/*  LIST COMMAND        */
+void	Command::execList(std::vector<std::string> & command)
+{
+	(void)command;
+	std::string msg = ":localhost 322 " + _client_requester->getNick();
+	std::map<std::string, Channel*>	channels = _server->getChannels();
+
+	std::map<std::string, Channel *>::iterator it = channels.begin();
+	std::map<std::string, Channel *>::iterator ite = channels.end();
+	for (; it != ite; ++it)
+	{
+		msg += " " + it->second->getTopic() + " ";
+		msg.append(1, it->second->getClientsNb() + '0') + " : [";
+		if (it->second->isModeOn('i'))
+			msg += "i";
+		if (it->second->isModeOn('t'))
+			msg += "t";
+		if (it->second->isModeOn('k'))
+			msg += "k";
+		if (it->second->isModeOn('l'))
+			msg += "l";
+		msg += "]\r\n";	
+	}
+	std::cout << GREEN << ">> " << msg << RESET << std::endl; 	
+	sendMessageToClient(this->_client_requester->getSocket(), msg);
+	msg = ":localhost 323 " + _client_requester->getNick() + " :End of channel list\r\n";
+	std::cout << GREEN << ">> " << msg << RESET << std::endl; 	
+	sendMessageToClient(this->_client_requester->getSocket(), msg);
+}
 
 /*	MODE COMMAND		*/
 
