@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/26 17:09:57 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/26 18:06:56 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,21 @@
 Channel::Channel(){};
 Channel::Channel(const Channel& src){*this = src;};
 Channel::~Channel(){};
+
+Channel& Channel::operator=(const Channel& src)
+{
+	this->_clients = src._clients;
+	this->_operator = src._operator;
+	this->_invite_name = src._invite_name;
+	this->_name = src._name;
+	this->_server = src._server;
+	this->_key = src._key;
+	this->_limit_user = src._limit_user;
+	this->_invite_only = src._invite_only;
+	this->_topic_protection = src._topic_protection;
+	this->_channel_topic = src._channel_topic;
+	return *this;
+}
 
 Channel::Channel(std::string & name, Client* creator, Server* serv):  _name(name), _server(serv), _key(""), _limit_user(-1), _invite_only(false), _topic_protection(false), _channel_topic("No topic is set\r\n")
 {
@@ -96,6 +111,7 @@ bool	Channel::checkInvite(std::string name)
 void	Channel::addClientToCh(Client* client)
 {
 	_clients.insert(std::make_pair(client->getNick(), client));
+	client->setChannelIn(this->_name, this);
 	sendMessageToClient(client->getSocket(),":" + client->getNick() + " JOIN " + this->getName() + "\r\n");
 	//printUsersInChannel(client, this->_name);
 /* 	if(_clients.size() > 1)
@@ -174,19 +190,6 @@ void	Channel::delClient(std::string client)
 void	Channel::delChannel()
 {
 	_server->delChannel(this->_channel_topic);
-}
-
-Channel& Channel::operator=(const Channel& src)
-{
-	_channel_topic = src._channel_topic;
-	_clients = src._clients;
-	_operator = src._operator;
-	_server = src._server;
-	_key = src._key;
-	_limit_user = src._limit_user;
-	_topic_protection = src._topic_protection;
-	_invite_only = src._invite_only;
-	return (*this);
 }
 
 void	Channel::addClientToInvite(Client * client, Client * t_client)

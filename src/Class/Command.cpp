@@ -187,6 +187,7 @@ void Command::execQuit()
 		for (std::map<std::string, Channel*>::iterator it = channels.begin(); it != channels.end(); ++it)
 		{
 			it->second->delClient(this->_client_requester->getNick());
+			std::cout << RED << "erase " << this->_client_requester->getNick() << " from " << it->second->getName() << RESET << std::endl;
 		}
 	}
 	_server->delClient(this->_client_requester->getSocket());
@@ -302,7 +303,7 @@ void	Command::execTopic(std::vector<std::string> & command)
 
 void	Command::execMode(std::vector<std::string> & command)
 {
-	if(command.size() < 2 || command.size() >= 5)
+	if(command.size() <= 2 || command.size() >= 5)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
 	{

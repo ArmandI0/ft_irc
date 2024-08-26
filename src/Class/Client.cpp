@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 10:40:40 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/26 16:34:31 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/26 18:05:37 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,3 +65,5 @@ void    Client::setUsername(std::string username)	{this->_username = username;}
 
 void    Client::setEntry(const std::string & str)	{this->_entry.append(str);}
 void	Client::eraseEntry()						{this->_entry = "";}
+void	Client::setChannelIn(std::string & channel_name, Channel * ch) {this->_channels_in.insert(std::make_pair(channel_name, ch));}
+
