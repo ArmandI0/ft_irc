@@ -67,6 +67,6 @@ class Command
 };
 
 bool	checkAndComp(std::vector<std::string> & entry, size_t i, const char* toComp);
-void	sendMessageToClient(int fd, std::string error);
+void	sendMessageToClient(int fd, std::string msg);
 
 #endif

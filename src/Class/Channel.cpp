@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/25 15:53:46 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/26 16:09:09 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,28 @@ void	Channel::addClientToCh(Client* client)
 {
 	_clients.insert(std::make_pair(client->getNick(), client));
 	sendMessageToClient(client->getSocket(),":" + client->getNick() + " JOIN " + this->getName() + "\r\n");
-	printUsersInChannel(client, this->_name);
-	if(_clients.size() > 1)
-		notifyJoin(client->getNick());
+	//printUsersInChannel(client, this->_name);
+/* 	if(_clients.size() > 1)
+		notifyJoin(client->getNick()); */
+	std::string msg = ": 353 " + client->getNick() + " = " + this->getName() + " :";
+	std::map<std::string, Client *>::iterator it = _clients.begin();
+	std::map<std::string, Client *>::iterator ite = _clients.end();
+	for (; it != ite; it++)
+	{
+		msg += " ";
+		if (checkIfOp((it->second)->getNick()))
+			msg+="@";
+		msg+=((it->second)->getNick());
+	}
+	msg += "\r\n";
+	std::cout << msg << std::endl;
+	sendMessageToClient(client->getSocket(), msg);
+	msg = ": 366 " + client->getNick() + " " + this->getName() + " : End of /NAMES list." + "\r\n";
+	std::cout << msg << std::endl;
+	sendMessageToClient(client->getSocket(), msg);
+	msg = ":" + client->getNick() + "!" + client->getUsername() + " JOIN " + this->getName() + " * : realname \r\n";
+	std::cout << msg << std::endl;
+	sendMessageToAllClient(client->getNick(), msg);
 }
 
 void	Channel::notifyJoin(std::string nickname)
@@ -84,10 +103,10 @@ void	Channel::notifyJoin(std::string nickname)
 		sendMessageToClient(it->second->getSocket(), MSG_WELCOME(nickname, this->getName()));
 }
 
-void	Channel::sendMessageToAllClient(std::string error)
+void	Channel::sendMessageToAllClient(std::string msg)
 {
 	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-		sendMessageToClient(it->second->getSocket(), error);
+		sendMessageToClient(it->second->getSocket(), msg);
 }
 
 void	Channel::sendMessageToAllClient(std::string sender, std::string message)
@@ -198,13 +217,13 @@ bool					Channel::isModeOn(char mode)
 	return (r_value);
 }
 
-bool					Channel::isOperator(int socket_user)
+/* bool					Channel::isOperator(int socket_user)
 {
 	if (_operators.find(socket_user) != _operators.end())
 		return true;
 	else 
 		return false;
-}
+} */
 
 void	Channel::addClientToInvite(Client * client, Client * t_client)
 {

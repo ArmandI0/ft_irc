@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/25 14:28:30 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/26 15:20:57 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ class Channel
 		void						setInvite(int remove);
 
 		bool					isModeOn(char mode);
-		bool					isOperator(int socket_user);
+		//bool					isOperator(int socket_user);
 		
 		bool					hasUser(std::string nickname);
 
