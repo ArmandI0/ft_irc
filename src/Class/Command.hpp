@@ -55,9 +55,9 @@ class Command
 		void			execInviteMode(Channel * channel, int remove);
 
 		/*	COMMANDE D'AUTHENTIFICATION		*/
-		int			passCommand(std::vector<std::string> & password);
-		void		userCommand(std::vector<std::string> & username);
-		int			nickCommand(std::vector<std::string> & nickname);
+		void			passCommand(std::vector<std::string> & password);
+		void			userCommand(std::vector<std::string> & username);
+		void			nickCommand(std::vector<std::string> & nickname);
 
 		// void	response(std::string str_response, std::vector<Client> clients);
 	private :	

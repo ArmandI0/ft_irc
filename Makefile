@@ -13,8 +13,11 @@ D_OBJS			= mkdir -p $(@D)
 SRCS		=	\
 					main.cpp \
 					Class/Server.cpp \
+					Class/Server_ChannelManagement.cpp \
+					Class/Server_ClientManagement.cpp \
 					Class/Client.cpp \
 					Class/Command.cpp \
+					Class/Command_Auth.cpp \
 					Class/Channel.cpp \
 
 #-UTILS-#
