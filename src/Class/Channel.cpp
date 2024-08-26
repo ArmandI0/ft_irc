@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/26 15:20:36 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/26 15:22:16 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	Channel::addClientToCh(Client* client)
 void	Channel::notifyJoin(std::string nickname)
 {
 	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-		sendMessageToClient(it->second->getSocket(), MSG_WELCOME(nickname, this->getName()));
+		sendMessageToAllClient(MSG_WELCOME(nickname, this->getName()));
 }
 
 void	Channel::sendMessageToAllClient(std::string error)
