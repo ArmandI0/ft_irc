@@ -14,6 +14,7 @@
 
 Command::Command(std::string& input, Client* client): _input(input), _client_requester(client)
 {
+
 }
 Command::Command(std::string& input, Client* client, Server* server) : _input(input), _client_requester(client), _server(server)
 {
@@ -97,16 +98,6 @@ void	Command::execCommand(std::string cmd)
 		this->_client_requester->setAuth();
 		sendMessageToClient(this->_client_requester->getSocket(), "Welcome " + this->_client_requester->getNick() + "\r\n");
 	}
-}
-
-bool	Channel::checkIfOp(std::string name)
-{
-	for(std::map<std::string, Client *>::iterator it = _operator.begin(); it != _operator.end(); ++it)
-	{
-		if(it->first == name)
-			return (true);
-	}
-	return (false);
 }
 
 Channel*	Command::createChannel(std::string & channel_name, Client* client_creator, Server* server)
@@ -202,17 +193,17 @@ void Command::execQuit()
 
 /*			MODE COMMAND		*/
 
-void	Command::execOpMode(Channel * channel, Client * client, int remove)
+void	Command::execOpMode(Channel * channel, Client * client, int remove, std::string target)
 {
 	if(remove == false)
 	{
-		channel->addClientToOp(client);
-		channel->sendMessageToAllClient(MSG_NEWEOPERONCHANNEL(client->getNick(), channel->getName()));
+		channel->addClientToOp(target);
+		channel->sendMessageToAllClient(MSG_NEWEOPERONCHANNEL(client->getNick(), target, channel->getName()));
 	}
 	else
 	{
-		channel->delClientToOp(client);
-		channel->sendMessageToAllClient(MSG_REMOVEOP(client->getNick(), client->getNick(),  channel->getName()));
+		channel->delClientToOp(target);
+		channel->sendMessageToAllClient(MSG_REMOVEOP(client->getNick(), target,  channel->getName()));
 	}
 }
 
@@ -329,7 +320,7 @@ void	Command::execMode(std::vector<std::string> & command)
 								if(command[2][0] == '-')
 									i++;
 								if(command[2][1] == 'o')
-									execOpMode(channel, client, i);
+									execOpMode(channel, client, i, command[3]);
 								else if(command[2][1] == 'k')
 								{
 									if(i != 1)
@@ -394,9 +385,6 @@ void	Command::execMode(std::vector<std::string> & command)
 	}
 }
 
-
-
-
 /*	INVITE COMMAND		*/
 void	Command::execInvite(std::vector<std::string> & command)
 {
@@ -422,8 +410,6 @@ void	Command::execInvite(std::vector<std::string> & command)
 	else
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 }
-
-
 
 /*			JOIN COMMAND		*/
 
@@ -467,7 +453,7 @@ void	Command::execJoin(std::vector<std::string> & command)
 
 void	Command::execKick(std::vector<std::string> & command)
 {
-	if(command.size() != 3 && command.size() != 4)
+	if(command.size() < 3)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
 	{
@@ -480,10 +466,16 @@ void	Command::execKick(std::vector<std::string> & command)
 			{
 				if(channel->hasUser(command[2]) == false)
 					sendMessageToClient(this->_client_requester->getSocket(), ERR_USERNOTINCHANNEL(_client_requester->getNick(), command[2], command[1]));
+				
 				else if (command.size() == 3)
 					channel->kickClient(this->_client_requester, command[2], "");
 				else
-					channel->kickClient(this->_client_requester, command[2], command[3]);
+				{
+					std::string msg;
+					for(std::vector<std::string>::iterator it = command.begin() + 3; it != command.end(); ++it)
+						msg += *it + " ";
+					channel->kickClient(this->_client_requester, command[2], msg);
+				}
 			}
 		}
 		else
@@ -563,6 +555,3 @@ void sendMessageToClient(int fd, std::string error)
 	if (send < 0)
 		std::cerr << "Message error" << std::endl; 
 }
-
-
-

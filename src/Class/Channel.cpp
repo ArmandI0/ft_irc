@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/25 20:27:36 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/26 15:20:36 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,26 +20,41 @@ Channel::Channel(std::string & name, Client* creator, Server* serv):  _name(name
 {
 	sendMessageToClient(creator->getSocket(), ERR_NOTOPIC(creator->getNick(), this->getName()));
 	addClientToCh(creator);
-	addClientToOp(creator);
+	addClientToOp(creator->getNick());
 }
 
-void	Channel::addClientToOp(Client* client)
+void	Channel::addClientToOp(std::string & target)
 {
-	if(checkIfOp(client->getNick()) == true)
+	if(checkIfOp(target) == true)
 		return ;
+	Client * client = _server->findUserByNickname(target);
 	_operator.insert(std::make_pair(client->getNick(), client));
 }
 
-void	Channel::delClientToOp(Client* client)
+void	Channel::delClientToOp(std::string & target)
 {
+	if(_operator.empty())
+		return ;
 	for(std::map<std::string, Client *>::iterator it = _operator.begin(); it != _operator.end(); ++it)
-	{
-		if(it->first == client->getNick())
+	{	
+		if(it->first == target)
 		{
-			_clients.erase(it);
+			_operator.erase(it);
 			break ;
 		}
 	}
+}
+
+bool	Channel::checkIfOp(std::string & name)
+{
+	if(!_operator.empty())
+	{
+		std::map<std::string,Client*>::iterator it = _operator.find(name);
+		if (it == this->_operator.end())
+			return (false);
+		return (true);
+	}
+	return (false);
 }
 
 bool	Channel::checkLimitUser()
@@ -73,9 +88,7 @@ void	Channel::addClientToCh(Client* client)
 {
 	_clients.insert(std::make_pair(client->getNick(), client));
 	sendMessageToClient(client->getSocket(),":" + client->getNick() + " JOIN " + this->getName() + "\r\n");
-	printUsersInChannel(client, this->_name);
-	if(_clients.size() > 1)
-		notifyJoin(client->getNick());
+	notifyJoin(client->getNick());
 }
 
 void	Channel::notifyJoin(std::string nickname)
@@ -101,22 +114,24 @@ void	Channel::sendMessageToAllClient(std::string sender, std::string message)
 
 void	Channel::kickClient(Client* client, std::string target, std::string reason)
 {
-	(void)reason;
-	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
+	if(_clients.size() > 0)
 	{
-		if(it->first == target)
+		for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 		{
-			sendMessageToClient(it->second->getSocket(),":" + client->getNick() + " KICK " + this->getName() + " " + target + " :" + client->getNick() + "\r\n");
-			_clients.erase(it);
-			break ;
+			if(it->first == target)
+			{
+				sendMessageToAllClient(":" + client->getNick() + " KICK " + this->getName() + " " + target + " :" + reason + "\r\n");
+				_clients.erase(it);
+				break ;
+			}
 		}
-	}
-	for(std::map<std::string, Client *>::iterator it = _operator.begin(); it != _operator.end(); ++it)
-	{
-		if(it->first == target)
+		for(std::map<std::string, Client *>::iterator it = _operator.begin(); it != _operator.end(); ++it)
 		{
-			_clients.erase(it);
-			break ;
+			if(it->first == target)
+			{
+				_clients.erase(it);
+				break ;
+			}
 		}
 	}
 }
@@ -144,15 +159,6 @@ Channel& Channel::operator=(const Channel& src)
 	return (*this);
 }
 
-// std::string				Channel::getChannelTopic()
-// {
-// 	return (_channel_topic);
-// }
-
-std::string				Channel::getKey()
-{
-	return (_key);
-}
 
 void	Channel::addClientToInvite(Client * client, Client * t_client)
 {
@@ -164,6 +170,11 @@ void	Channel::addClientToInvite(Client * client, Client * t_client)
 	_invite_name.push_back(t_client->getNick());
 	sendMessageToClient(t_client->getSocket(), MSG_INVITEE(client->getNick(), t_client->getNick(), this->getName()));
 	sendMessageToClient(client->getSocket(), MSG_INVITER(client->getNick(), t_client->getNick(), this->getName()));
+}
+
+std::string				Channel::getKey()
+{
+	return (_key);
 }
 
 size_t	Channel::getUserLimit()
@@ -196,23 +207,10 @@ bool	Channel::getInvite()
 	return(this->_invite_only);
 }
 
-void	Channel::printUsersInChannel(Client* client, std::string& channel_name)
-{
-	std::string msg;
-	
-	sendMessageToClient(client->getSocket(), RPL_NAMREPLY(client->getNick(),channel_name));
-	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-	{
-		msg = it->first + " ";
-		sendMessageToClient(client->getSocket(), msg);
-	}
-	// sendMessageToClient(client->getSocket(), "\n");
-	// sendMessageToClient(client->getSocket(), ERR_ENDOFNAMES(client->getNick(), channel_name));
-}
-
 bool	Channel::hasUser(std::string nickname)
 {
-	std::cout << nickname << std::endl;
+	if(_clients.size() == 0)
+		return false;
 	for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
 	{
 		if(it->first == nickname)

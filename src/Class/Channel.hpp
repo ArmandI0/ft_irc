@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/25 20:28:02 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/26 15:05:47 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,18 +29,18 @@ class Channel
 		~Channel();
 
 		void					addClientToCh(Client * client);
-		void					addClientToOp(Client * client);
+		void					addClientToOp(std::string & target);
 		void					addClientToInvite(Client * client, Client * t_client);
 
 		void					kickClient(Client* client, std::string target, std::string reason);
-		void					delClientToOp(Client* client);
+		void					delClientToOp(std::string & target);
 		void					delClient(std::string client);
 		void					delChannel();
 
 		bool					checkLimitUser();
 		bool					checkInvite(std::string name);
-		bool					checkIfOp(std::string name);
-		
+		bool					checkIfOp(std::string & name);
+
 		void					notifyJoin(std::string nickname);
 		void					sendMessageToAllClient(std::string error);
 		void					sendMessageToAllClient(std::string sender, std::string message);
@@ -60,7 +60,6 @@ class Channel
 		void					setInvite(int remove);
 
 		bool					hasUser(std::string nickname);
-		void					printUsersInChannel(Client* client, std::string& channel_name);
 
 	private :	
 		
