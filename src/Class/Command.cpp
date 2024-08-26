@@ -142,15 +142,9 @@ void Command::privMsg(std::vector<std::string> & command)
 		if (message.empty())
 			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOTEXTTOSEND);
 		for (std::vector<std::string>::iterator i = clients.begin() ; i != clients.end(); ++i)
-		{
-			std::cout << "clients" << std::endl;
 			this->sendPrivateMessage(*i, message);
-		}
 		for (std::vector<std::string>::iterator i = channels.begin() ; i != channels.end(); ++i)
-		{
 			this->sendPrivateMessageToCh(*i, message);
-			std::cout << "channels" << std::endl;
-		}
 	}
 }
 
@@ -159,8 +153,10 @@ void Command::sendPrivateMessage(std::string & recv, std::string & message)
 	Client * receiver = this->_server->findUserByNickname(recv);
 	if (receiver && receiver->getAuth())
 	{
+		std::string msg = "";
+		msg = ":" + _client_requester->getNick() + "!" + _client_requester->getUsername() + " PRIVMSG " + receiver->getNick() + " :" + message + "\r\n";
 		sendMessageToClient(receiver->getSocket(), this->_client_requester->getNick() + " " + message + "\r\n");
-		std::cout << this->_client_requester->getNick() << " send private msg to " << recv << " " << message << std::endl;
+		std::cout << ">> " << msg << std::endl;
 	}
 	else
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(recv, ""));
