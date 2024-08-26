@@ -302,7 +302,7 @@ void	Command::execTopic(std::vector<std::string> & command)
 
 void	Command::execMode(std::vector<std::string> & command)
 {
-	if(command.size() <= 2 || command.size() >= 5)
+	if(command.size() < 2 || command.size() >= 5)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
 	{
