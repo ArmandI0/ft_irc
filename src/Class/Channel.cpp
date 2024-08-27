@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/26 18:38:04 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/27 15:49:02 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ bool	Channel::checkLimitUser()
 {
 	if(this->getLimitUser() > 0)
 	{
-		std::cout << "limit :" << this->getLimitUser() << "clients size" << _clients.size() << std::endl;
 		if(_clients.size() >= this->getLimitUser())
 			return(true);
 	}

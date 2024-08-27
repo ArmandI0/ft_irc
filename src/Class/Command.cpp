@@ -197,6 +197,11 @@ void Command::execQuit()
 
 void	Command::execOpMode(Channel * channel, Client * client, int remove, std::string target)
 {
+	if(channel->hasUser(target) == false)
+	{
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(client->getNick(), target));
+		return ;
+	}
 	if(remove == false)
 	{
 		channel->addClientToOp(target);
@@ -232,7 +237,7 @@ void	Command::execLimitMode(Channel * channel, std::string limit, int remove)
 	}
 	else
 	{
-		channel->setLimit("-1");
+		channel->setLimit("0");
 		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "-l"));
 	}
 }
