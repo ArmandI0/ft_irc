@@ -140,7 +140,6 @@ void Command::privMsg(std::vector<std::string> & command)
 				break;
 		}
 		message = this->_input.substr(i, this->_input.size());
-		std::cout << i << " mes = " << this->_input.substr(i, this->_input.size()) << std::endl;
 		if (message.empty())
 			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOTEXTTOSEND);
 		for (std::vector<std::string>::iterator i = clients.begin() ; i != clients.end(); ++i)
@@ -155,10 +154,7 @@ void Command::sendPrivateMessage(std::string & recv, std::string & message)
 	Client * receiver = this->_server->findUserByNickname(recv);
 	if (receiver && receiver->getAuth())
 	{
-		std::string str = "";
-		str = ":" + _client_requester->getNick() + "!" + _client_requester->getUsername() + " PRIVMSG " + receiver->getNick() + " " + message + "\r\n";
-		sendMessageToClient(receiver->getSocket(), str);
-		std::cout << ">> " << str << std::endl;
+		sendMessageToClient(receiver->getSocket(), ":" + this->_client_requester->getNick() + " PRIVMSG " + ": " + recv + " " + message);
 	}
 	else
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(recv, ""));
@@ -178,15 +174,6 @@ void Command::sendPrivateMessageToCh(std::string & channel, std::string & messag
 
 void Command::execQuit()
 {
-	std::map<std::string, Channel*> channels = this->_client_requester->getChannelsIn();
-
-	if (this->_client_requester->getAuth())
-	{
-		for (std::map<std::string, Channel*>::iterator it = channels.begin(); it != channels.end(); ++it)
-		{
-			it->second->delClient(this->_client_requester->getNick());
-		}
-	}
 	_server->delClient(this->_client_requester->getSocket());
 }
 
@@ -194,6 +181,11 @@ void Command::execQuit()
 
 void	Command::execOpMode(Channel * channel, Client * client, int remove, std::string target)
 {
+	if(channel->hasUser(target) == false)
+	{
+		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(client->getNick(), target));
+		return ;
+	}
 	if(remove == false)
 	{
 		channel->addClientToOp(target);
@@ -229,7 +221,7 @@ void	Command::execLimitMode(Channel * channel, std::string limit, int remove)
 	}
 	else
 	{
-		channel->setLimit("-1");
+		channel->setLimit("0");
 		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "-l"));
 	}
 }
@@ -329,7 +321,7 @@ void	Command::execList(std::vector<std::string> & command)
 
 void	Command::execMode(std::vector<std::string> & command)
 {
-	if(command.size() <= 2 || command.size() >= 5)
+	if(command.size() < 2 || command.size() >= 5)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else
 	{
@@ -338,7 +330,9 @@ void	Command::execMode(std::vector<std::string> & command)
 			Channel* channel = this->_server->getChannel(command[1]);
 			if(channel)
 			{
-				if(command.size() == 4)
+				if(command.size() == 2)
+					channel->execShowMode(this->_client_requester);
+				else if(command.size() == 4)
 				{
 					Client * client = this->_server->findUserByNickname(this->_client_requester->getNick());
 					if(client)
@@ -463,7 +457,10 @@ void	Command::execJoin(std::vector<std::string> & command)
 				else
 				{
 					if(channel->checkLimitUser() == true)
+					{
 						sendMessageToClient(this->_client_requester->getSocket(), ERR_CHANNELISFULL(_client_requester->getNick(), channel->getName()));
+						return ;
+					}
 					std::string key;
 					if(command.size() == 3)
 						key = command[2];

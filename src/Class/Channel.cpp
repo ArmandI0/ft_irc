@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nledent <nledent@42angouleme.fr>           +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/26 22:11:49 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/27 20:41:39 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,22 @@ Channel::Channel(){};
 Channel::Channel(const Channel& src){*this = src;};
 Channel::~Channel(){};
 
-Channel::Channel(std::string & name, Client* creator, Server* serv):  _name(name), _server(serv), _key(""), _limit_user(0), _invite_only(false), _topic_protection(false)
+Channel& Channel::operator=(const Channel& src)
+{
+	this->_clients = src._clients;
+	this->_operator = src._operator;
+	this->_invite_name = src._invite_name;
+	this->_name = src._name;
+	this->_server = src._server;
+	this->_key = src._key;
+	this->_limit_user = src._limit_user;
+	this->_invite_only = src._invite_only;
+	this->_topic_protection = src._topic_protection;
+	this->_channel_topic = src._channel_topic;
+	return *this;
+}
+
+Channel::Channel(std::string & name, Client* creator, Server* serv):  _name(name), _server(serv), _key(""), _limit_user(0), _invite_only(false), _topic_protection(false), _channel_topic("No topic is set\r\n")
 {
 	sendMessageToClient(creator->getSocket(), ERR_NOTOPIC(creator->getNick(), this->getName()));
 	addClientToCh(creator);
@@ -68,12 +83,9 @@ bool	Channel::checkKey(std::string key)
 
 bool	Channel::checkLimitUser()
 {
-	size_t i = 0;
 	if(this->getLimitUser() > 0)
 	{
-		for(std::map<std::string, Client *>::iterator it = _clients.begin(); it != _clients.end(); ++it)
-			i++;
-		if(i >= this->getLimitUser())
+		if(_clients.size() >= this->getLimitUser())
 			return(true);
 	}
 	return(false);
@@ -96,10 +108,8 @@ bool	Channel::checkInvite(std::string name)
 void	Channel::addClientToCh(Client* client)
 {
 	_clients.insert(std::make_pair(client->getNick(), client));
+	client->setChannelIn(this->_name, this);
 	sendMessageToClient(client->getSocket(),":" + client->getNick() + " JOIN " + this->getName() + "\r\n");
-	//printUsersInChannel(client, this->_name);
-/* 	if(_clients.size() > 1)
-		notifyJoin(client->getNick()); */
 	std::string msg = ": 353 " + client->getNick() + " = " + this->getName() + " :";
 	std::map<std::string, Client *>::iterator it = _clients.begin();
 	std::map<std::string, Client *>::iterator ite = _clients.end();
@@ -166,6 +176,21 @@ void	Channel::kickClient(Client* client, std::string target, std::string reason)
 	}
 }
 
+void	Channel::execShowMode(Client * client)
+{
+	std::string msg = "";
+	if(this->_invite_only == true)
+		msg += "i";
+	if(!_key.empty())
+		msg += "k";
+	if(this->_topic_protection == true)
+		msg += "t";
+	if(this->_limit_user != 0)
+		msg += "l";
+	if(!msg.empty())
+		sendMessageToClient(client->getSocket(), RPL_CHANNELMODEIS(client->getNick(), this->_name, msg));
+}
+
 void	Channel::delClient(std::string client)
 {
 	this->_clients.erase(client);
@@ -174,18 +199,6 @@ void	Channel::delClient(std::string client)
 void	Channel::delChannel()
 {
 	_server->delChannel(this->_name);
-}
-
-Channel& Channel::operator=(const Channel& src)
-{
-	_clients = src._clients;
-	_operator = src._operator;
-	_server = src._server;
-	_key = src._key;
-	_limit_user = src._limit_user;
-	_topic_protection = src._topic_protection;
-	_invite_only = src._invite_only;
-	return (*this);
 }
 
 void	Channel::addClientToInvite(Client * client, Client * t_client)

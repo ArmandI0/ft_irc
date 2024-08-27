@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nledent <nledent@42angouleme.fr>           +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/26 22:09:31 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/27 20:41:23 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ class Channel
 		void					sendMessageToAllClient(std::string error);
 		void					sendMessageToAllClient(std::string sender, std::string message);
 
+		void					execShowMode(Client * client);
+	
 		size_t					getUserLimit();
 		std::string 			getName();
 		std::string				getKey();
