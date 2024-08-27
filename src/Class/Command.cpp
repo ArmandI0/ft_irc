@@ -88,7 +88,7 @@ void	Command::execCommand(std::string cmd)
 		else if (checkAndComp(command, 0, "TOPIC"))
 			this->execTopic(command);
 		else if (checkAndComp(command, 0, "LIST"))
-			this->execList(command);
+			this->execList();
 	}
 	else if(!checkAndComp(command, 0, "CAP"))
 	{
@@ -288,9 +288,8 @@ void	Command::execTopic(std::vector<std::string> & command)
 }
 
 /*  LIST COMMAND        */
-void	Command::execList(std::vector<std::string> & command)
+void	Command::execList()
 {
-	(void)command;
 	std::string msg = ":localhost 322 " + _client_requester->getNick();
 	std::map<std::string, Channel*>	channels = _server->getChannels();
 

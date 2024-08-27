@@ -41,7 +41,7 @@ class Command
 		void			execMode(std::vector<std::string> & command);
 		void			execInvite(std::vector<std::string> & command);
 		void			execTopic(std::vector<std::string> & command);
-		void			execList(std::vector<std::string> & command);
+		void			execList();
 		void			execQuit();
 		Channel*		createChannel(std::string & channel_name, Client* client_creator, Server* server);
 		void			privMsg(std::vector<std::string> & command);

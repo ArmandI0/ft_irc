@@ -1,50 +1,56 @@
 #-PATH FILES-#
 
-SRC_DIR			= src
-OBJ_DIR			= obj
-
+SRC_DIR         = src
+OBJ_DIR         = obj
 
 #-SRC-#
 
-SRC				= $(addprefix src/, $(SRCS))
-OBJS			= $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-D_OBJS			= mkdir -p $(@D)
+SRCS            =   main.cpp \
+                    Class/Server.cpp \
+                    Class/Server_ChannelManagement.cpp \
+                    Class/Server_ClientManagement.cpp \
+                    Class/Client.cpp \
+                    Class/Command.cpp \
+                    Class/Command_Auth.cpp \
+                    Class/Channel.cpp
 
-SRCS		=	\
-					main.cpp \
-					Class/Server.cpp \
-					Class/Server_ChannelManagement.cpp \
-					Class/Server_ClientManagement.cpp \
-					Class/Client.cpp \
-					Class/Command.cpp \
-					Class/Command_Auth.cpp \
-					Class/Channel.cpp \
+SRCS_BOT        =   Bonus/Bot.cpp \
+					Bonus/main.cpp \
+
+OBJS            = $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
+OBJS_BOT        = $(SRCS_BOT:%.cpp=$(OBJ_DIR)/%.o)
 
 #-UTILS-#
 
-CXX 			= c++
-CXXFLAGS 		= -Wall -Wextra -Werror -g
-NAME 			= ft_irc
-RM 				= rm -f
-RMR				= rm -rf
+CXX             = c++
+CXXFLAGS        = -Wall -Wextra -Werror -g
+NAME            = ft_irc
+BOT             = ft_irc_bot
+RM              = rm -f
+RMR             = rm -rf
 
 #-RULES-#
 
-all:			$(NAME)
+all:            $(NAME)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-				$(D_OBJS)
+				@mkdir -p $(dir $@)
 				$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-$(NAME): 		$(OBJS)
-				@$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
-				
-clean:
-				@$(RMR) $(OBJ_DIR)
+$(NAME):        $(addprefix $(OBJ_DIR)/, $(SRCS:.cpp=.o))
+				$(CXX) $(CXXFLAGS) $(addprefix $(OBJ_DIR)/, $(SRCS:.cpp=.o)) -o $(NAME)
 
-fclean: 		clean
-				@$(RM) $(NAME)
+$(BOT):         $(addprefix $(OBJ_DIR)/, $(SRCS_BOT:.cpp=.o))
+				$(CXX) $(CXXFLAGS) $(addprefix $(OBJ_DIR)/, $(SRCS_BOT:.cpp=.o)) -o $(BOT)
+
+bot:			$(BOT)
+
+clean:
+				$(RMR) $(OBJ_DIR)
+
+fclean:			clean
+				$(RM) $(NAME) $(BOT)
 
 re:				fclean all
 
-.PHONY : 		all clean fclean re
+.PHONY:			all clean fclean re bot
