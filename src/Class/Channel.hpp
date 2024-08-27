@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/27 20:41:23 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/27 20:45:04 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ class Channel
 		size_t							_limit_user; // +l
 		bool							_invite_only; // +i
 		bool							_topic_protection; // +t
-		//std::string						_channel_topic;
+		std::string						_channel_topic;
 };
 
 #endif
