@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:35:42 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/26 18:03:22 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/27 13:59:38 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class Client
 		std::string	_second_choice;
 		std::string	_third_choice;
 		std::string	_entry;
-		std::map<std::string, Channel*> _channels_in; // Vraiment besoin ? 
+		std::map<std::string, Channel*> _channels_in;
 		
 	public:
 		Client();

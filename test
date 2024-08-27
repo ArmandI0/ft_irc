@@ -7,3 +7,5 @@ PASS abc
 NICK dboire
 USER dboire 12 0 0
 JOIN #home
+
+>> :irc-5e48.darkscience.net 433 * aranger :Nickname is already in use.

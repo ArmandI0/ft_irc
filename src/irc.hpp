@@ -40,7 +40,7 @@
 #define ERR_NOSUCHCHANNEL(nickname, channel_name) "403 " + nickname + " " + channel_name + " :No such channel\r\n" 
 #define ERR_NONICKNAMEGIVEN  "431 :No nickname given\r\n"
 #define ERR_ERRONEUSNICKNAME(nickname)  "432 " + nickname + " :Erroneus nickname\r\n" 
-#define ERR_NICKNAMEINUSE(nickname)  "433 " + nickname + " :Nickname is already in use\r\n" 
+#define ERR_NICKNAMEINUSE(nickname)  ":IRC_SERVER 433 * " + nickname + " :Nickname is already in use\r\n" 
 #define ERR_USERNOTINCHANNEL(nickname, t_nick, channel_name) "441 " + nickname + " " + channel_name  + " " + t_nick + " :They aren't on that channel\r\n" 
 #define ERR_USERONCHANNEL(nickname, channel_name) "443 " + nickname + " :is already on channel: " + channel_name + "\r\n" 
 #define ERR_NEEDMOREPARAMS(nickname, command)  "461 " + nickname + " " + command + " :Not enough parameters\r\n" 
