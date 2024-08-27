@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:14 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/26 17:58:04 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/27 20:45:04 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ class Channel
 		std::string 			getName();
 		std::string				getKey();
 		size_t					getLimitUser();
+		size_t					getClientsNb();
 		bool					getInvite();
 		bool					getTopicProtection();
 		std::string 			getTopic();

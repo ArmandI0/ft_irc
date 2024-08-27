@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@42angouleme.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/26 14:53:36 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/26 21:33:18 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@ class Server
 		/*		Channels managements	*/
 		void								setChannel(Channel * channel, std::string& channel_name);
 		void								delChannel(std::string & channel_name);
+		std::map<std::string, Channel*>		getChannels();
 		Channel*							getChannel(std::string & channel_name);
 		void								printChannels();
-
 	private:
 		Server();
 		

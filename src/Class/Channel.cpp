@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/27 15:49:02 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/27 20:41:39 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@ void	Channel::delClient(std::string client)
 
 void	Channel::delChannel()
 {
-	_server->delChannel(this->_channel_topic);
+	_server->delChannel(this->_name);
 }
 
 void	Channel::addClientToInvite(Client * client, Client * t_client)
@@ -230,7 +230,7 @@ std::string Channel::getName()
 
 std::string Channel::getTopic()
 {
-	return (this->_channel_topic);
+	return (this->_name);
 }
 
 bool	Channel::getTopicProtection()
@@ -267,7 +267,7 @@ void	Channel::setKey(std::string key)
 
 void	Channel::setTopicMsg(std::string topic)
 {
-	this->_channel_topic = topic;
+	this->_name = topic;
 }
 
 void	Channel::setLimit(std::string limit)
@@ -292,4 +292,22 @@ void	Channel::setInvite(int remove)
 		this->_invite_only = false;
 	else
 		this->_invite_only = true;
+}
+
+size_t		Channel::getClientsNb()
+{
+	return _clients.size();
+}
+
+bool	Channel::isModeOn(char mode)
+{
+	if (mode == 'i' && _invite_only)
+		return true;
+	if (mode == 't' && _topic_protection)
+		return true;
+	if (mode == 'k' && !_key.empty())
+		return true;
+	if (mode == 'l' && _limit_user)
+		return true;
+	return false;
 }

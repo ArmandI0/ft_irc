@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/27 17:20:56 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/27 20:42:37 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,4 +154,9 @@ void	Server::closeClientsFd()
 	{
 		close(it->first);
 	}
+}
+
+std::map<std::string, Channel*>		Server::getChannels()
+{
+	return (_channels);
 }
