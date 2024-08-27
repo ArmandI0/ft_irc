@@ -290,15 +290,17 @@ void	Command::execTopic(std::vector<std::string> & command)
 /*  LIST COMMAND        */
 void	Command::execList()
 {
-	std::string msg = ":localhost 322 " + _client_requester->getNick();
+	std::string msg = "";
 	std::map<std::string, Channel*>	channels = _server->getChannels();
-
 	std::map<std::string, Channel *>::iterator it = channels.begin();
 	std::map<std::string, Channel *>::iterator ite = channels.end();
+
 	for (; it != ite; ++it)
 	{
+		msg = ":localhost 322 " + _client_requester->getNick();
 		msg += " " + it->second->getTopic() + " ";
-		msg.append(1, it->second->getClientsNb() + '0') + " : [";
+		msg.append(1, it->second->getClientsNb() + '0');
+		msg += " : [";
 		if (it->second->isModeOn('i'))
 			msg += "i";
 		if (it->second->isModeOn('t'))
@@ -308,9 +310,9 @@ void	Command::execList()
 		if (it->second->isModeOn('l'))
 			msg += "l";
 		msg += "]\r\n";	
+		std::cout << GREEN << ">> " << msg << RESET << std::endl; 	
+		sendMessageToClient(this->_client_requester->getSocket(), msg);
 	}
-	std::cout << GREEN << ">> " << msg << RESET << std::endl; 	
-	sendMessageToClient(this->_client_requester->getSocket(), msg);
 	msg = ":localhost 323 " + _client_requester->getNick() + " :End of channel list\r\n";
 	std::cout << GREEN << ">> " << msg << RESET << std::endl; 	
 	sendMessageToClient(this->_client_requester->getSocket(), msg);

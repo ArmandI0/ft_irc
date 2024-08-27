@@ -202,21 +202,25 @@ void	Bot::botResponse(std::string& request)
 	while (std::getline(str_stream, element, ' '))
 		elements.push_back(element);
 
+	if (elements.size() < 4)
+		return;
+
 	author = elements[0];
 	if (author[0] == ':')
 		author.erase(0,1);
 
-	if (elements[1] == "PRIVMSG" && elements[2] == BOT)
+	if (elements[1] == "PRIVMSG" && elements[3] == BOT)
 	{
+		std::cout << elements[1] << " -- " << author << std::endl;
 		if (checkIfMean(request))
-			response = std::string("PRIVMSG ") + author + " You're mean !";
+			response = std::string("PRIVMSG ") + author + " :You're mean !" + " \r\n";
 		else
-			response = std::string("PRIVMSG ") + author + " You're nice !";
+			response = std::string("PRIVMSG ") + author + " :You're nice !" + " \r\n";
 	}
 	else if (elements[1] == "PRIVMSG" && elements[2] == "#politesse")
 	{
 		if (checkIfMean(request))
-			response = std::string("KICK #politesse ") + author +" \r\n";
+			response = std::string("KICK #politesse ") + author + " \r\n";
 		else
 			return;
 	}
