@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:22:46 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/26 16:30:49 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/27 14:37:03 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,6 @@ void Command::userCommand(std::vector<std::string> & username)
 {
 	if (username.size() < 5)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), "USER"));
-	else if (username.size() == 5 && this->_server->findUserByUsername(username[1]) != NULL)
-	{
-		std::cout << "borldel" << std::endl;	
-		sendMessageToClient(this->_client_requester->getSocket(), ERR_ALREADYREGIST);
-	}
 	else if (username.size() == 5)
 	{
 		this->_client_requester->setUser(username[1]);

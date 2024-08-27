@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/26 15:37:17 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/27 13:57:16 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int main(int ac, char** av)
 {
     if(ac != 3)
     {
-        std::cout <<  "Error : socket and password are requi."  << std::endl;
+		std::cerr << "Error : usage : ./ft_irc <port> <password> " << std::endl;
         return 0;
     }
     try
