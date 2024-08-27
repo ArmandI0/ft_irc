@@ -27,6 +27,7 @@
 # include <sstream>
 # include <algorithm>
 # include <string.h>
+# include <csignal>
 # define BOT "Best_Bot"
 # define INSULTS "insults.txt"
 

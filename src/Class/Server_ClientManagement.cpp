@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:45:41 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/26 16:35:14 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/27 16:55:02 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,16 @@ void	Server::delClient(int client_fd)
 	Client to_delete = getClientByFd(client_fd);
 	close(client_fd);
     epoll_ctl(this->_epoll_socket, EPOLL_CTL_DEL, client_fd, NULL);
+	std::map<std::string, Channel*> channels = to_delete.getChannelsIn();
+
+	if (to_delete.getAuth())
+	{
+		for (std::map<std::string, Channel*>::iterator it = channels.begin(); it != channels.end(); ++it)
+		{
+			it->second->delClient(to_delete.getNick());
+			std::cout << RED << "erase " << to_delete.getNick() << " from " << it->second->getName() << RESET << std::endl;
+		}
+	}
 	std::map<std::string,Client*>::iterator it = this->_nicknames.find(to_delete.getNick());
 	if (it != _nicknames.end())
 	{

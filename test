@@ -9,3 +9,6 @@ USER dboire 12 0 0
 JOIN #home
 
 >> :irc-5e48.darkscience.net 433 * aranger :Nickname is already in use.
+
+<< PRIVMSG aranger : blabala
+>> @time=2024-08-27T14:01:53.783Z :aranger!~gfdgdffdd@reid-num27j.20.unyc.it PRIVMSG aranger : blabala
