@@ -140,7 +140,6 @@ void Bot::waitingEvents()
 			{
 				buffer = readSocket(events[i].data.fd);
 				response = buffer;
-				//std::cout << "server '" << buffer << "'" << std::endl;
 				if (response.find('\n') == std::string::npos)
 					response += buffer;
 				else
