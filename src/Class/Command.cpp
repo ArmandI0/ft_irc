@@ -138,18 +138,15 @@ void Command::privMsg(std::vector<std::string> & command)
 				break;
 		}
 		message = this->_input.substr(i, this->_input.size());
-		std::cout << i << " mes = " << this->_input.substr(i, this->_input.size()) << std::endl;
 		if (message.empty())
 			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOTEXTTOSEND);
 		for (std::vector<std::string>::iterator i = clients.begin() ; i != clients.end(); ++i)
 		{
-			std::cout << "clients" << std::endl;
 			this->sendPrivateMessage(*i, message);
 		}
 		for (std::vector<std::string>::iterator i = channels.begin() ; i != channels.end(); ++i)
 		{
 			this->sendPrivateMessageToCh(*i, message);
-			std::cout << "channels" << std::endl;
 		}
 	}
 }
@@ -160,7 +157,6 @@ void Command::sendPrivateMessage(std::string & recv, std::string & message)
 	if (receiver && receiver->getAuth())
 	{
 		sendMessageToClient(receiver->getSocket(), ":" + this->_client_requester->getNick() + " PRIVMSG " + ": " + recv + " " + message);
-		std::cout << this->_client_requester->getNick() << " send private msg to " << recv << " " << message << std::endl;
 	}
 	else
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(recv, ""));
@@ -180,16 +176,6 @@ void Command::sendPrivateMessageToCh(std::string & channel, std::string & messag
 
 void Command::execQuit()
 {
-	std::map<std::string, Channel*> channels = this->_client_requester->getChannelsIn();
-
-	if (this->_client_requester->getAuth())
-	{
-		for (std::map<std::string, Channel*>::iterator it = channels.begin(); it != channels.end(); ++it)
-		{
-			it->second->delClient(this->_client_requester->getNick());
-			std::cout << RED << "erase " << this->_client_requester->getNick() << " from " << it->second->getName() << RESET << std::endl;
-		}
-	}
 	_server->delClient(this->_client_requester->getSocket());
 }
 

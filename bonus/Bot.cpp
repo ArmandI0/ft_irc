@@ -12,6 +12,14 @@
 
 #include "Bot.hpp"
 
+int sig = 1;
+
+void handle_sigint(int s)
+{
+	(void)s;
+	sig = 0;
+}
+
 Bot::Bot(char* ip, char* pass, char *port): _server_ip(ip), _server_pass(pass), _server_port(port), _res(NULL)
 {
 }
@@ -62,6 +70,8 @@ Bot& Bot::operator=(const Bot& src)
 
 Bot::~Bot()
 {
+	close(this->_server_socket);
+	close(this->_epoll_socket);
 	freeaddrinfo(_res);
 }
 
@@ -112,10 +122,14 @@ void Bot::waitingEvents()
 	std::string 	 	response = "";
 	std::string 	 	buffer = "";
 	struct epoll_event	events[10];
-	int 				nb_fds = epoll_wait(_epoll_socket, events, 10, -1);
+	int 				nb_fds;
 	
-	while (true)
+	std::signal(SIGINT, handle_sigint);
+	std::signal(SIGQUIT, handle_sigint);
+
+	while (sig)
 	{
+		nb_fds = epoll_wait(_epoll_socket, events, 10, -1);
 		if (nb_fds == -1)
 			throw std::runtime_error("epoll_wait() failed with error: " + std::string(strerror(errno)));
 		for (int i = 0; i < nb_fds; i++)
