@@ -20,7 +20,7 @@ void handle_sigint(int s)
 	sig = 0;
 }
 
-Bot::Bot(char* ip, char* pass, char *port): _server_ip(ip), _server_pass(pass), _server_port(port), _res(NULL)
+Bot::Bot(char* ip, char* pass, char *port):  _server_socket(-1), _server_ip(ip), _server_pass(pass), _server_port(port), _epoll_socket(-1) , _res(NULL)
 {
 }
 
@@ -70,8 +70,10 @@ Bot& Bot::operator=(const Bot& src)
 
 Bot::~Bot()
 {
-	close(this->_server_socket);
-	close(this->_epoll_socket);
+	if (this->_server_socket != -1)
+		close(this->_server_socket);
+	if (this->_epoll_socket != -1)
+		close(this->_epoll_socket);
 	freeaddrinfo(_res);
 }
 

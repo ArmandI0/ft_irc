@@ -1,22 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   UT_bot.cpp                                         :+:      :+:    :+:   */
+/*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/21 17:20:29 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/27 22:11:17 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../../bonus/Bot.hpp"
-
+# include "Bot.hpp"
 
 int main(int ac, char** av)
 {
-	(void)ac;
-	(void)av;
 	if (ac != 4)
 	{
 		std::cerr << "Error : usage : ./bot <server ip adress> <password> <port>" << std::endl;
