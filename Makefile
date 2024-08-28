@@ -23,7 +23,7 @@ OBJS_BOT        = $(SRCS_BOT:%.cpp=$(OBJ_DIR)/%.o)
 #-UTILS-#
 
 CXX             = c++
-CXXFLAGS        = -Wall -Wextra -Werror -g
+CXXFLAGS        = -Wall -Wextra -Werror -g -std=c++98
 NAME            = ft_irc
 BOT             = ft_irc_bot
 RM              = rm -f

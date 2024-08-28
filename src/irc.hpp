@@ -22,7 +22,7 @@
 # include <unistd.h>
 # include <sstream>
 # include <csignal>
-
+# include <cerrno>
 
 # include "Class/Server.hpp"
 # include "Class/Client.hpp"

@@ -507,7 +507,7 @@ void	Command::execKick(std::vector<std::string> & command)
 			}
 		}
 		else
-			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(_client_requester->getNick(), channel->getName()));
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(_client_requester->getNick(), command[1]));
 	}
 }
 
