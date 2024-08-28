@@ -29,7 +29,7 @@
 # include <string.h>
 # include <csignal>
 # define BOT "Best_Bot"
-# define INSULTS "insults.txt"
+# define INSULTS "src/Bonus/insults.txt"
 
 class Bot
 {

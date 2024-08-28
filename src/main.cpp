@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/27 13:57:16 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/28 11:18:24 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ int main(int ac, char** av)
             std::cerr << "Error: Invalid port." << std::endl;
             return 1;
         }
-        if (password.size() > 20)
+        if (password.size() > 20 || password.size() < 8 || password.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+[]{}|;:',.<>/?") != std::string::npos)
         {
-            std::cerr << "Error : password size max 20." << std::endl;
+            std::cerr << "Error: Your password must be between 8 and 20 characters long and can only include letters, numbers, and valid special characters (!, @, #, $, %, ^, &, *)." << std::endl;
             return 1;
         }
         Server serv = Server(p, password);

@@ -67,6 +67,6 @@
 
 #define MSG_KICK(nickname, username, t_nickname, channel_name, reason) nickname + "!" + username + "@ft_irc KICK " + channel_name + " " + t_nickname + " :" + reason + "\r\n" 
 
-#define ERR_NOTREGISTER  "TU ES PAS CONNECTE CONNARD ! METS LE PUTAIN DE MOT DE PASSE\r\n"  
+#define ERR_NOTREGISTER  "You are not register\r\n"  
 
 #endif
