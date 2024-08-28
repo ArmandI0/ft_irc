@@ -28,13 +28,12 @@
 # include <algorithm>
 # include <string.h>
 # include <csignal>
-# define BOT "Best_Bot"
 # define INSULTS "src/Bonus/insults.txt"
 
 class Bot
 {
     public:
-		Bot(char* ip, char *pass, char *port);
+		Bot(char* ip, char *pass, char *port, char *name);
 		Bot(const Bot& src);
 		Bot& operator=(const Bot& src);
 		~Bot();
@@ -59,6 +58,7 @@ class Bot
 		char*				_server_ip;
 		std::string			_server_pass;
 		char*				_server_port;
+		char*				_name;
 		int					_epoll_socket;
 		struct addrinfo*	_res;
 		std::vector<std::string> _insults;

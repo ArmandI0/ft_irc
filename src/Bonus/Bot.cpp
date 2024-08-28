@@ -20,8 +20,11 @@ void handle_sigint(int s)
 	sig = 0;
 }
 
-Bot::Bot(char* ip, char* pass, char *port):  _server_socket(-1), _server_ip(ip), _server_pass(pass), _server_port(port), _epoll_socket(-1) , _res(NULL)
+Bot::Bot(char* ip, char* pass, char *port, char *name):  _server_socket(-1), _server_ip(ip), _server_pass(pass), _server_port(port), _name(name), _res(NULL)
 {
+	_nickname = "";
+	_username = "";
+	_epoll_socket = -1;
 }
 
 std::string Bot::strToLower(std::string& str)
@@ -65,6 +68,13 @@ Bot& Bot::operator=(const Bot& src)
 	_server_pass = src._server_pass;
 	_server_port = src._server_port;
 	_server_socket = src._server_socket;
+	_name = src._name;
+	_bot_infos = src._bot_infos;
+	_nickname = src._nickname;
+	_username = src._username;
+	_epoll_socket = src._epoll_socket;
+	_res = src._res;
+	_insults = src._insults;
 	return(*this);
 }
 
@@ -180,8 +190,8 @@ void 	Bot::	authentification()
 	size_t bytes_sent = 0;
 	std::vector<std::string> auth_bot_cmds;
 	auth_bot_cmds.push_back(std::string("PASS ") + _server_pass + "\r\n");
-	auth_bot_cmds.push_back(std::string("NICK ") + BOT + "\r\n");
-	auth_bot_cmds.push_back(std::string("USER ") + BOT + " bot * :realname " + "\r\n");
+	auth_bot_cmds.push_back(std::string("NICK ") + _name + "\r\n");
+	auth_bot_cmds.push_back(std::string("USER ") + _name + " bot * :realname " + "\r\n");
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -209,9 +219,12 @@ void	Bot::botResponse(std::string& request)
 	if (author[0] == ':')
 		author.erase(0,1);
 
-	if (elements[1] == "PRIVMSG" && elements[3] == BOT)
+	if (elements[1] == "433")
+		throw std::runtime_error("authentification error : nickname already in use");
+	if (elements[1] == "464")
+		throw std::runtime_error("authentification error : bad password");
+	if (elements[1] == "PRIVMSG" && elements[2] == std::string(":") + _name)
 	{
-		std::cout << elements[1] << " -- " << author << std::endl;
 		if (checkIfMean(request))
 			response = std::string("PRIVMSG ") + author + " :You're mean !" + " \r\n";
 		else
