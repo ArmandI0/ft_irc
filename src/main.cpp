@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:51:33 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/28 11:18:24 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/28 18:01:32 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int main(int ac, char** av)
         char* end;
         errno = 0;
         unsigned long p = strtoul(port.c_str(), &end, 10);
-        if (end == port.c_str() || *end != '\0' || errno == ERANGE || p > 65535)
+        if (end == port.c_str() || *end != '\0' || errno == ERANGE || p > 65535 || p == 0)
         {
             std::cerr << "Error: Invalid port." << std::endl;
             return 1;
