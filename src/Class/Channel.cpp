@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/27 20:41:39 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/28 14:03:38 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,7 +230,7 @@ std::string Channel::getName()
 
 std::string Channel::getTopic()
 {
-	return (this->_name);
+	return (this->_channel_topic);
 }
 
 bool	Channel::getTopicProtection()
@@ -267,7 +267,9 @@ void	Channel::setKey(std::string key)
 
 void	Channel::setTopicMsg(std::string topic)
 {
-	this->_name = topic;
+	if (topic[0] == ':')
+		topic.erase(0,1);
+	this->_channel_topic = topic;
 }
 
 void	Channel::setLimit(std::string limit)

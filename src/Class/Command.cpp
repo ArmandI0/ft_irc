@@ -203,12 +203,12 @@ void	Command::execKeyMode(Channel * channel, std::string key, int remove)
 	if(remove == false)
 	{
 		channel->setKey(key);
-		channel->sendMessageToAllClient(MSG_KEYONCHANNEL(channel->getName(), "+k"));
+		channel->sendMessageToAllClient(MSG_KEYONCHANNEL(channel->getName(), "+k", key));
 	}
 	else
 	{
 		channel->setKey("");
-		channel->sendMessageToAllClient(MSG_KEYONCHANNEL(channel->getName(), "-k"));
+		channel->sendMessageToAllClient(MSG_KEYONCHANNEL(channel->getName(), "-k", " "));
 	}
 }
 
@@ -217,7 +217,7 @@ void	Command::execLimitMode(Channel * channel, std::string limit, int remove)
 	if(remove == false)
 	{
 		channel->setLimit(limit);
-		channel->sendMessageToAllClient(MSG_MODECHANGE(channel->getName(), "+l"));
+		channel->sendMessageToAllClient(MSG_LIMITONCHANNEL(channel->getName(), "+l", limit));
 	}
 	else
 	{
@@ -298,7 +298,7 @@ void	Command::execList()
 	for (; it != ite; ++it)
 	{
 		msg = ":localhost 322 " + _client_requester->getNick();
-		msg += " " + it->second->getTopic() + " ";
+		msg += " " + it->second->getName() + " ";
 		msg.append(1, it->second->getClientsNb() + '0');
 		msg += " : [";
 		if (it->second->isModeOn('i'))
@@ -309,7 +309,7 @@ void	Command::execList()
 			msg += "k";
 		if (it->second->isModeOn('l'))
 			msg += "l";
-		msg += "]\r\n";	
+		msg += "] " + it->second->getTopic() + "\r\n";	
 		std::cout << GREEN << ">> " << msg << RESET << std::endl; 	
 		sendMessageToClient(this->_client_requester->getSocket(), msg);
 	}
@@ -335,10 +335,7 @@ void	Command::execMode(std::vector<std::string> & command)
 					channel->execShowMode(this->_client_requester);
 				else if(command.size() == 4)
 				{
-					Client * client = this->_server->findUserByNickname(this->_client_requester->getNick());
-					if(client)
-					{
-						if(channel->checkIfOp(client->getNick()) == true)
+						if(channel->checkIfOp(this->_client_requester->getNick()) == true)
 						{
 							if(command[2][0] == '+' || command[2][0] == '-')
 							{
@@ -346,7 +343,7 @@ void	Command::execMode(std::vector<std::string> & command)
 								if(command[2][0] == '-')
 									i++;
 								if(command[2][1] == 'o')
-									execOpMode(channel, client, i, command[3]);
+									execOpMode(channel, this->_client_requester, i, command[3]);
 								else if(command[2][1] == 'k')
 								{
 									if(i != 1)
@@ -371,9 +368,8 @@ void	Command::execMode(std::vector<std::string> & command)
 						}
 						else
 							sendMessageToClient(this->_client_requester->getSocket(), ERR_CHANOPRIVSNEEDED(this->_client_requester->getNick(), command[1]));
-					}
 				}
-				else
+				else if(channel->checkIfOp(this->_client_requester->getNick()) == true)
 				{
 					if(command[2][0] == '-' || command[2][0] == '+')
 					{
@@ -394,20 +390,14 @@ void	Command::execMode(std::vector<std::string> & command)
 							sendMessageToClient(this->_client_requester->getSocket(), ERR_UMODEUNKNOWNFLAG(this->_client_requester->getNick(), command[2]));
 					}
 				}
+				else
+					sendMessageToClient(this->_client_requester->getSocket(), ERR_CHANOPRIVSNEEDED(this->_client_requester->getNick(), command[1]));
 			}
 			else
 				sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[1]));
 		}
 		else
-		{
-			Client * client = this->_server->findUserByNickname(command[1]);
-			if(client)
-			{
-				
-			}
-			else
 				sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(this->_client_requester->getNick(), command[1]));
-		}
 	}
 }
 
