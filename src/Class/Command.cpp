@@ -154,7 +154,7 @@ void Command::sendPrivateMessage(std::string & recv, std::string & message)
 	Client * receiver = this->_server->findUserByNickname(recv);
 	if (receiver && receiver->getAuth())
 	{
-		sendMessageToClient(receiver->getSocket(), ":" + this->_client_requester->getNick() + " PRIVMSG " + ": " + recv + " " + message);
+		sendMessageToClient(receiver->getSocket(), ":" + this->_client_requester->getNick() + " PRIVMSG " + ":" + recv + " " + message);
 	}
 	else
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(recv, ""));
