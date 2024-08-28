@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nledent <nledent@42angouleme.fr>           +#+  +:+       +#+        */
+/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 16:28:21 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/26 21:33:18 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/28 11:41:38 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,8 @@ class Server
 
 		epoll_event							addNewClient(int new_client_fd);
 		void								addNewNickname(std::string & nick, Client * client);
-		void								addNewUsername(std::string & username, Client * client);
 		Client&								getClientByFd(int socket);
 		Client*								findUserByNickname(std::string & nickname);
-		Client*								findUserByUsername(std::string & username);
 		void								delClient(int client_fd);
 		
 		/*		Channels managements	*/
@@ -55,7 +53,6 @@ class Server
 		struct sockaddr_in					_server_infos;
 		std::map<int,Client>				_users;
 		std::map<std::string, Client*>		_nicknames;
-		std::map<std::string, Client*>		_usernames;
 		std::map<std::string, Channel*>		_channels;
 		std::string							_password;
 

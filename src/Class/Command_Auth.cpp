@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:22:46 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/27 14:37:03 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/28 11:41:46 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ void Command::userCommand(std::vector<std::string> & username)
 	else if (username.size() == 5)
 	{
 		this->_client_requester->setUser(username[1]);
-		this->_server->addNewUsername(username[1], _client_requester);
         std::cout << MAGENTA << "exec USER :" << username[1] << RESET << std::endl;
 	}
 }

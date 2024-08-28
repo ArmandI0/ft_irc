@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:45:41 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/27 16:55:02 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/28 11:42:40 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,6 @@ void Server::addNewNickname(std::string & nick, Client * client)
 	this->_nicknames.insert(std::make_pair(nick, client));
 }
 
-void	Server::addNewUsername(std::string & username, Client * client)
-{
-	this->_usernames.insert(std::make_pair(username, client));
-}
-
 Client&		Server::getClientByFd(int socket)
 {
 	Client& ref = _users[socket];
@@ -44,15 +39,6 @@ Client*	Server::findUserByNickname(std::string & nickname)
 {
 	std::map<std::string,Client*>::iterator it = this->_nicknames.find(nickname);
 	if (it == this->_nicknames.end())
-		return NULL;
-	return it->second;
-}
-
-
-Client*	Server::findUserByUsername(std::string & username)
-{
-	std::map<std::string,Client*>::iterator it = this->_usernames.find(username);
-	if (it == this->_usernames.end())
 		return NULL;
 	return it->second;
 }
@@ -77,12 +63,6 @@ void	Server::delClient(int client_fd)
 	{
 		std::cout << RED << "erase nickname:" <<  it->first << RESET << std::endl;
 		this->_nicknames.erase(it);
-	}
-	it = this->_usernames.find(to_delete.getUsername());
-	if (it != _usernames.end())
-	{
-		std::cout << RED << "erase username:" <<  it->first << RESET << std::endl;
-		this->_usernames.erase(it);
 	}
 	this->_users.erase(client_fd);
 	std::cout << MAGENTA << "Client : " << client_fd << " left the server." << RESET << std::endl;
