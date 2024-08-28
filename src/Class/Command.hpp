@@ -18,8 +18,6 @@
 class Server;
 class Channel;
 class Client;
-// Parsing a faire avec 'sender', 'type', 'target', 'message'
-
 class Command
 {
 

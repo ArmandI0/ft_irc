@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:22:46 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/28 11:41:46 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/28 13:56:25 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void	Command::passCommand(std::vector<std::string> & password)
 		(this->_client_requester)->setPass();
         std::cout << MAGENTA << "exec PASS :" << password[1] << RESET << std::endl;
 	}
+	else
+		sendMessageToClient(this->_client_requester->getSocket(), ": 464 * :Incorrect password\r\n");
 }
 
 void	Command::nickCommand(std::vector<std::string> & nickname)
