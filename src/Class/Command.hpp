@@ -58,7 +58,6 @@ class Command
 		void			userCommand(std::vector<std::string> & username);
 		void			nickCommand(std::vector<std::string> & nickname);
 
-		// void	response(std::string str_response, std::vector<Client> clients);
 	private :	
 		std::string					_input;
 		Client*						_client_requester;

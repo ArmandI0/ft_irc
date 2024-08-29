@@ -6,7 +6,7 @@
 /*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 15:48:29 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/27 20:42:37 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/29 11:57:38 by aranger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	Server::execServer()
 	ev.data.fd = this->_listen_socket;
     std::signal(SIGINT, handle_sigint);
 	std::signal(SIGQUIT, handle_sigint);
+
 	this->_epoll_socket = epoll_create1(0);
 	if (this->_epoll_socket == -1)
 		throw std::runtime_error("Error : epoll_create fail.");
