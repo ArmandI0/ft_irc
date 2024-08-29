@@ -532,8 +532,10 @@ bool checkAndComp(std::vector<std::string> & entry, size_t i, const char* toComp
 
 void sendMessageToClient(int fd, std::string error)
 {
+	std::signal(SIGPIPE, SIG_IGN);
 	int send = write(fd, error.c_str(), error.size());
 	std::cout << GREEN << ">> fd = " << fd << " :" << RESET << error;
 	if (send < 0)
-		std::cerr << "Message error" << std::endl; 
+		std::cerr << "Message error : client has disconnected" << std::endl;
+	std::signal(SIGPIPE, SIG_DFL);
 }
