@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
+/*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/28 14:03:38 by nledent          ###   ########.fr       */
+/*   Updated: 2024/08/29 20:58:58 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,10 +274,15 @@ void	Channel::setTopicMsg(std::string topic)
 
 void	Channel::setLimit(std::string limit)
 {
-	std::stringstream ss(limit);
-	size_t limit_value;
-	ss >> limit_value;
-	this->_limit_user = limit_value;
+	if(limit.empty())
+		this->_limit_user = 0;
+	else
+	{
+		std::stringstream ss(limit);
+		size_t limit_value;
+		ss >> limit_value;
+		this->_limit_user = limit_value;
+	}
 }
 
 void	Channel::setTopic(int remove)
