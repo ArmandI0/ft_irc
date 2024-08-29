@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server_ClientManagement.cpp                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aranger <aranger@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nledent <nledent@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/26 14:45:41 by aranger           #+#    #+#             */
-/*   Updated: 2024/08/28 11:42:40 by aranger          ###   ########.fr       */
+/*   Updated: 2024/08/29 13:11:06 by nledent          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	Server::delClient(int client_fd)
 		{
 			it->second->delClient(to_delete.getNick());
 			std::cout << RED << "erase " << to_delete.getNick() << " from " << it->second->getName() << RESET << std::endl;
+			it->second->sendMessageToAllClient(":" + to_delete.getNick() + " QUIT :Quit: " + to_delete.getNick() +"\r\n");
 		}
 	}
 	std::map<std::string,Client*>::iterator it = this->_nicknames.find(to_delete.getNick());
