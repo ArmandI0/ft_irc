@@ -214,10 +214,13 @@ void	Command::execKeyMode(Channel * channel, std::string key, int remove)
 
 void	Command::execLimitMode(Channel * channel, std::string limit, int remove)
 {
+	if(limit.find_first_not_of("0123456789") != std::string::npos)
+		return ;
 	if(remove == false)
 	{
 		channel->setLimit(limit);
-		channel->sendMessageToAllClient(MSG_LIMITONCHANNEL(channel->getName(), "+l", limit));
+		if(channel->getLimitUser() != 0)
+			channel->sendMessageToAllClient(MSG_LIMITONCHANNEL(channel->getName(), "+l", limit));
 	}
 	else
 	{
@@ -335,6 +338,11 @@ void	Command::execMode(std::vector<std::string> & command)
 					channel->execShowMode(this->_client_requester);
 				else if(command.size() == 4)
 				{
+						if(command[2].size() != 2)
+						{
+							sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
+							return ;
+						}
 						if(channel->checkIfOp(this->_client_requester->getNick()) == true)
 						{
 							if(command[2][0] == '+' || command[2][0] == '-')
@@ -371,6 +379,11 @@ void	Command::execMode(std::vector<std::string> & command)
 				}
 				else if(channel->checkIfOp(this->_client_requester->getNick()) == true)
 				{
+					if(command[2].size() != 2)
+					{
+						sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
+						return ;
+					}
 					if(command[2][0] == '-' || command[2][0] == '+')
 					{
 						int i = 0;

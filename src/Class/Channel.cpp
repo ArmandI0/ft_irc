@@ -6,7 +6,7 @@
 /*   By: dboire <dboire@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/22 21:07:07 by dboire            #+#    #+#             */
-/*   Updated: 2024/08/29 20:58:58 by dboire           ###   ########.fr       */
+/*   Updated: 2024/08/31 17:56:51 by dboire           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@ void	Channel::kickClient(Client* client, std::string target, std::string reason)
 		{
 			if(it->first == target)
 			{
-				_clients.erase(it);
+				_operator.erase(it);
 				break ;
 			}
 		}
