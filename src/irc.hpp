@@ -58,10 +58,10 @@
 
 
 #define MSG_MODECHANGE(channel_name, mode) ": MODE " + channel_name + " " + mode + "\r\n" 
-#define MSG_NEWEOPERONCHANNEL(nickname, target, channel_name) nickname + ": " + target + " Has been promoted to operator on " + channel_name + " Congratulations !\r\n" 
+#define	MSG_NEWEOPERONCHANNEL(nickname, target, channel_name) ":" + nickname + " MODE " + channel_name + " +o " + target + "\r\n" 
 #define MSG_KEYONCHANNEL(channel_name, add_remove, key) ": MODE " + channel_name + " " + add_remove + " " + key + "\r\n"  
 #define MSG_LIMITONCHANNEL(channel_name, add_remove, limit) ": MODE " + channel_name + " " + add_remove + " " + limit + "\r\n"  
-#define MSG_REMOVEOP(nickname, t_nickname, channel_name) ": User :" + t_nickname + " has been removed Operator rights in " + channel_name + " from " + nickname + "\r\n" 
+#define	MSG_REMOVEOP(nickname, t_nickname, channel_name) ":" + nickname + " MODE " + channel_name + " -o " + t_nickname + "\r\n" 
 #define MSG_WELCOME(nickname, channel_name) ": Welcome " + nickname + " in " + channel_name + " !\r\n" 
 #define	MSG_INVITER(nickname, t_nickname, channel_name) ": 341 " + nickname + " " + t_nickname + " " + channel_name + "\r\n" 
 #define	MSG_INVITEE(nickname, t_nickname, channel_name) ":" + nickname + " INVITE " + t_nickname + " :" + channel_name + "\r\n" 
