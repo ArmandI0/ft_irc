@@ -98,7 +98,7 @@ void	Bot::connectBot()
 
 	status = getaddrinfo(_server_ip, _server_port, &hints, &_res);
 	if (status != 0)
-		throw std::runtime_error("getaddrinfo() failed with error code: " + std::to_string(status));
+		throw std::runtime_error("getaddrinfo() failed");
 
 	_server_socket = socket(_res->ai_family, _res->ai_socktype, _res->ai_protocol);
 	if (_server_socket == -1)
