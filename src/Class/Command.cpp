@@ -69,7 +69,7 @@ void	Command::execCommand(std::string cmd)
 		command.push_back(content);
 	if (checkAndComp(command, 0, "PASS"))
 		this->passCommand(command);
-	else if (checkAndComp(command, 0, "NICK"))
+	else if (checkAndComp(command, 0, "NICK") && this->_client_requester->getNick().empty())
 		this->nickCommand(command);
 	else if (checkAndComp(command, 0, "USER"))
 		this->userCommand(command);
