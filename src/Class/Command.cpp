@@ -448,7 +448,6 @@ void	Command::execJoin(std::vector<std::string> & command)
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
 	else if(!command[1].empty())
 	{
-		std::cout << command[1] << std::endl;
 		if(command[1][0] != '#' && command[1][0] != '&')
 			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[1]));
 		else
