@@ -419,22 +419,22 @@ void	Command::execInvite(std::vector<std::string> & command)
 {
 	if(command.size() == 3)
 	{
-		Client * client = this->_server->findUserByNickname(command[2]);
+		Client * client = this->_server->findUserByNickname(command[1]);
 		if(client)
 		{
-			Channel* channel = this->_server->getChannel(command[1]);
+			Channel* channel = this->_server->getChannel(command[2]);
 			if(channel)
 			{
 				if(channel->hasUser(client->getNick()) == false)
 					channel->addClientToInvite(this->_client_requester, client);
 				else
-					sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), command[1]));
+					sendMessageToClient(this->_client_requester->getSocket(), ERR_USERONCHANNEL(_client_requester->getNick(), command[2]));
 			}
 			else
 				sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHCHANNEL(this->_client_requester->getNick(), command[2]));
 		}
 		else
-			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(this->_client_requester->getNick(), command[2]));
+			sendMessageToClient(this->_client_requester->getSocket(), ERR_NOSUCHNICK(this->_client_requester->getNick(), command[1]));
 	}
 	else
 		sendMessageToClient(this->_client_requester->getSocket(), ERR_NEEDMOREPARAMS(this->_client_requester->getNick(), command[0]));
